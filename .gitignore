@@ -1,0 +1,11 @@
+# Temporary files
+~$*
+nul
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/

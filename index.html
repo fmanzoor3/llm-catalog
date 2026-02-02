@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Selection Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e4e4e4;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        /* Finder Section */
+        .finder-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .finder-section h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #aaa;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+
+        .filter-group select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        /* Results */
+        .results {
+            margin-top: 2rem;
+        }
+
+        .results h3 {
+            margin-bottom: 1rem;
+            color: #00d4ff;
+        }
+
+        .recommendation-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .rec-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid #00d4ff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .rec-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .rec-card.top-pick {
+            border-left-color: #ffd700;
+            background: rgba(255,215,0,0.08);
+        }
+
+        .rec-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .rec-card .provider {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.75rem;
+        }
+
+        .rec-card .why {
+            font-size: 0.95rem;
+            color: #ccc;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background: #ffd700;
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+
+        .cost-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .cost-low { background: #22c55e; color: #fff; }
+        .cost-mid { background: #eab308; color: #1a1a2e; }
+        .cost-high { background: #ef4444; color: #fff; }
+
+        /* Provider Cards */
+        .providers-section {
+            margin-bottom: 3rem;
+        }
+
+        .providers-section h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .provider-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .provider-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .provider-card .logo {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .provider-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .provider-card .tagline {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .provider-card .strengths {
+            margin-bottom: 1rem;
+        }
+
+        .provider-card .strengths li {
+            list-style: none;
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .provider-card .strengths li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #22c55e;
+        }
+
+        .provider-card .tradeoffs {
+            font-size: 0.85rem;
+            color: #f59e0b;
+            padding: 0.75rem;
+            background: rgba(245,158,11,0.1);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .provider-card .models {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .model-tag {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Comparison Table */
+        .comparison-section {
+            margin-bottom: 3rem;
+        }
+
+        .comparison-section h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .comparison-table th {
+            background: rgba(255,255,255,0.1);
+            font-weight: 600;
+            color: #00d4ff;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .comparison-table .best {
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        /* Links Section */
+        .links-section {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+        }
+
+        .links-section h2 {
+            margin-bottom: 1rem;
+        }
+
+        .links-section p {
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .link-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .link-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .link-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* No results message */
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: #888;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>LLM Selection Guide</h1>
+            <p class="subtitle">Find the right AI model for your project</p>
+        </header>
+
+        <!-- Finder Section -->
+        <section class="finder-section">
+            <h2>Find Your LLM</h2>
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label for="useCase">What are you building?</label>
+                    <select id="useCase">
+                        <option value="">Select a use case...</option>
+                        <option value="chatbot">Customer Support / Chatbot</option>
+                        <option value="coding">Code Generation & Review</option>
+                        <option value="documents">Document Analysis / RAG</option>
+                        <option value="content">Content Writing / Marketing</option>
+                        <option value="extraction">Data Extraction (PDFs, Forms)</option>
+                        <option value="research">Research & Complex Analysis</option>
+                        <option value="knowledge">Internal Knowledge Base / Q&A</option>
+                        <option value="translation">Translation / Multilingual</option>
+                        <option value="vision">Image & Vision Tasks</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="priority">What matters most?</label>
+                    <select id="priority">
+                        <option value="">Select priority...</option>
+                        <option value="cost">Lowest Cost</option>
+                        <option value="quality">Highest Quality</option>
+                        <option value="speed">Fastest Response</option>
+                        <option value="privacy">Data Privacy (Self-hosted)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="budget">Budget</label>
+                    <select id="budget">
+                        <option value="">Any budget</option>
+                        <option value="low">Budget-conscious ($)</option>
+                        <option value="mid">Mid-range ($$)</option>
+                        <option value="high">Premium ($$$)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="results" id="results">
+                <h3>Recommendations</h3>
+                <div class="recommendation-cards" id="recCards">
+                    <p class="no-results">Select a use case to see recommendations</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Provider Overview -->
+        <section class="providers-section">
+            <h2>Provider Overview</h2>
+            <div class="provider-grid">
+                <div class="provider-card">
+                    <div class="logo">🟠</div>
+                    <h3>Claude (Anthropic)</h3>
+                    <p class="tagline">Best for coding & following instructions</p>
+                    <ul class="strengths">
+                        <li>Excellent at complex, detailed instructions</li>
+                        <li>Industry-leading code generation</li>
+                        <li>Natural, human-like conversation</li>
+                        <li>Strong reasoning with "extended thinking"</li>
+                    </ul>
+                    <div class="tradeoffs">Trade-off: More expensive than DeepSeek/Gemini</div>
+                    <div class="models">
+                        <span class="model-tag">Opus 4.5 ($$$)</span>
+                        <span class="model-tag">Sonnet 4.5 ($$)</span>
+                        <span class="model-tag">Haiku 4.5 ($)</span>
+                    </div>
+                </div>
+
+                <div class="provider-card">
+                    <div class="logo">🟢</div>
+                    <h3>OpenAI (GPT)</h3>
+                    <p class="tagline">Most widely used, strong all-rounder</p>
+                    <ul class="strengths">
+                        <li>Largest ecosystem & integrations</li>
+                        <li>Best reasoning models (o3 series)</li>
+                        <li>Strong multimodal capabilities</li>
+                        <li>1M token context (GPT-4.1)</li>
+                    </ul>
+                    <div class="tradeoffs">Trade-off: Premium pricing, especially GPT-5 and o3</div>
+                    <div class="models">
+                        <span class="model-tag">GPT-5 ($$$)</span>
+                        <span class="model-tag">o3 ($$$)</span>
+                        <span class="model-tag">GPT-4o ($$)</span>
+                        <span class="model-tag">4o-mini ($)</span>
+                    </div>
+                </div>
+
+                <div class="provider-card">
+                    <div class="logo">🔵</div>
+                    <h3>Google (Gemini)</h3>
+                    <p class="tagline">Long context & Google integration</p>
+                    <ul class="strengths">
+                        <li>Longest context (up to 2M tokens)</li>
+                        <li>Native Google Workspace integration</li>
+                        <li>Good price-performance ratio</li>
+                        <li>Strong multimodal (text, image, video)</li>
+                    </ul>
+                    <div class="tradeoffs">Trade-off: Less consistent on complex reasoning</div>
+                    <div class="models">
+                        <span class="model-tag">Gemini 3 Pro ($$$)</span>
+                        <span class="model-tag">Gemini Flash ($)</span>
+                        <span class="model-tag">2.5 Pro ($$)</span>
+                    </div>
+                </div>
+
+                <div class="provider-card">
+                    <div class="logo">🟣</div>
+                    <h3>DeepSeek</h3>
+                    <p class="tagline">Incredible value - 10-30x cheaper</p>
+                    <ul class="strengths">
+                        <li>Quality comparable to GPT-4/Sonnet</li>
+                        <li>Fraction of the cost of competitors</li>
+                        <li>Open source (can self-host)</li>
+                        <li>Strong reasoning model (R1)</li>
+                    </ul>
+                    <div class="tradeoffs">Trade-off: Chinese company (compliance considerations)</div>
+                    <div class="models">
+                        <span class="model-tag">V3.2 ($)</span>
+                        <span class="model-tag">R1 ($)</span>
+                        <span class="model-tag">Coder ($)</span>
+                    </div>
+                </div>
+
+                <div class="provider-card">
+                    <div class="logo">⚪</div>
+                    <h3>Open Source</h3>
+                    <p class="tagline">Self-host for privacy & control</p>
+                    <ul class="strengths">
+                        <li>Full data privacy - your infrastructure</li>
+                        <li>No per-token API costs</li>
+                        <li>Customizable & fine-tunable</li>
+                        <li>No vendor lock-in</li>
+                    </ul>
+                    <div class="tradeoffs">Trade-off: Requires GPUs & technical expertise</div>
+                    <div class="models">
+                        <span class="model-tag">Llama 4</span>
+                        <span class="model-tag">Qwen 3</span>
+                        <span class="model-tag">Mistral</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Comparison -->
+        <section class="comparison-section">
+            <h2>Quick Comparison: Best For Each Need</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Need</th>
+                        <th>Best Choice</th>
+                        <th>Runner Up</th>
+                        <th>Budget Option</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Coding</td>
+                        <td class="best">Claude Opus 4.5</td>
+                        <td>Gemini 3 Flash</td>
+                        <td>DeepSeek Coder</td>
+                    </tr>
+                    <tr>
+                        <td>Complex Reasoning</td>
+                        <td class="best">OpenAI o3</td>
+                        <td>Claude Opus (extended)</td>
+                        <td>DeepSeek R1</td>
+                    </tr>
+                    <tr>
+                        <td>Long Documents</td>
+                        <td class="best">Gemini 2.5 Pro (2M)</td>
+                        <td>GPT-4.1 (1M)</td>
+                        <td>Gemini Flash</td>
+                    </tr>
+                    <tr>
+                        <td>Speed</td>
+                        <td class="best">Claude Haiku</td>
+                        <td>Gemini Flash</td>
+                        <td>GPT-4o-mini</td>
+                    </tr>
+                    <tr>
+                        <td>Value for Money</td>
+                        <td class="best">DeepSeek V3.2</td>
+                        <td>Gemini Flash</td>
+                        <td>Claude Haiku</td>
+                    </tr>
+                    <tr>
+                        <td>Data Privacy</td>
+                        <td class="best">Llama 4 (self-hosted)</td>
+                        <td>Qwen 3</td>
+                        <td>DeepSeek (self-hosted)</td>
+                    </tr>
+                    <tr>
+                        <td>Vision/Images</td>
+                        <td class="best">Claude Opus 4.5</td>
+                        <td>Gemini 3 Pro</td>
+                        <td>DeepSeek VL2</td>
+                    </tr>
+                    <tr>
+                        <td>Multilingual</td>
+                        <td class="best">Qwen 3 (119 langs)</td>
+                        <td>Gemini</td>
+                        <td>Mistral (European)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- External Links -->
+        <section class="links-section">
+            <h2>Want More Details?</h2>
+            <p>These sites provide real-time pricing, benchmarks, and let you test models yourself</p>
+            <div class="link-buttons">
+                <a href="https://artificialanalysis.ai/" target="_blank" class="link-btn">Artificial Analysis - Pricing & Speed</a>
+                <a href="https://lmarena.ai/" target="_blank" class="link-btn">LMArena - Try Side-by-Side</a>
+                <a href="https://whatllm.org/" target="_blank" class="link-btn">WhatLLM - Weekly Updates</a>
+            </div>
+        </section>
+
+        <!-- References Section -->
+        <section class="references-section" style="margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.03); border-radius: 16px;">
+            <h2 style="margin-bottom: 1.5rem; color: #00d4ff;">References & Sources</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+
+                <div class="ref-group">
+                    <h3 style="color: #fff; margin-bottom: 0.75rem; font-size: 1.1rem;">Claude (Anthropic)</h3>
+                    <ul style="list-style: none; font-size: 0.9rem;">
+                        <li style="margin-bottom: 0.4rem;"><a href="https://docs.anthropic.com/en/docs/about-claude/models/all-models" target="_blank" style="color: #888; text-decoration: none;">Official Model Documentation</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://www.anthropic.com/pricing" target="_blank" style="color: #888; text-decoration: none;">API Pricing</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://www.anthropic.com/news/claude-4-5-opus" target="_blank" style="color: #888; text-decoration: none;">Claude 4.5 Opus Announcement</a></li>
+                    </ul>
+                </div>
+
+                <div class="ref-group">
+                    <h3 style="color: #fff; margin-bottom: 0.75rem; font-size: 1.1rem;">OpenAI (GPT)</h3>
+                    <ul style="list-style: none; font-size: 0.9rem;">
+                        <li style="margin-bottom: 0.4rem;"><a href="https://platform.openai.com/docs/models" target="_blank" style="color: #888; text-decoration: none;">Official Model Catalog</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://openai.com/api/pricing/" target="_blank" style="color: #888; text-decoration: none;">API Pricing</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://openai.com/index/introducing-gpt-5/" target="_blank" style="color: #888; text-decoration: none;">GPT-5 Announcement</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://openai.com/index/introducing-o3-and-o4-mini/" target="_blank" style="color: #888; text-decoration: none;">o3 Reasoning Models</a></li>
+                    </ul>
+                </div>
+
+                <div class="ref-group">
+                    <h3 style="color: #fff; margin-bottom: 0.75rem; font-size: 1.1rem;">Google (Gemini)</h3>
+                    <ul style="list-style: none; font-size: 0.9rem;">
+                        <li style="margin-bottom: 0.4rem;"><a href="https://ai.google.dev/gemini-api/docs/models/gemini" target="_blank" style="color: #888; text-decoration: none;">Official Documentation</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://ai.google.dev/pricing" target="_blank" style="color: #888; text-decoration: none;">API Pricing</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/" target="_blank" style="color: #888; text-decoration: none;">Gemini 2.5 Pro Release</a></li>
+                    </ul>
+                </div>
+
+                <div class="ref-group">
+                    <h3 style="color: #fff; margin-bottom: 0.75rem; font-size: 1.1rem;">DeepSeek</h3>
+                    <ul style="list-style: none; font-size: 0.9rem;">
+                        <li style="margin-bottom: 0.4rem;"><a href="https://api-docs.deepseek.com/" target="_blank" style="color: #888; text-decoration: none;">API Documentation</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" style="color: #888; text-decoration: none;">Pricing</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://github.com/deepseek-ai/DeepSeek-V3" target="_blank" style="color: #888; text-decoration: none;">DeepSeek-V3 GitHub</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://github.com/deepseek-ai/DeepSeek-R1" target="_blank" style="color: #888; text-decoration: none;">DeepSeek-R1 GitHub</a></li>
+                    </ul>
+                </div>
+
+                <div class="ref-group">
+                    <h3 style="color: #fff; margin-bottom: 0.75rem; font-size: 1.1rem;">Open Source Models</h3>
+                    <ul style="list-style: none; font-size: 0.9rem;">
+                        <li style="margin-bottom: 0.4rem;"><a href="https://github.com/meta-llama/llama-models" target="_blank" style="color: #888; text-decoration: none;">Llama 4 (Meta)</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://huggingface.co/collections/Qwen/qwen3-67dd247413f0e2e4f653967f" target="_blank" style="color: #888; text-decoration: none;">Qwen 3 (Hugging Face)</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://docs.mistral.ai/getting-started/models/models_overview/" target="_blank" style="color: #888; text-decoration: none;">Mistral AI Models</a></li>
+                    </ul>
+                </div>
+
+                <div class="ref-group">
+                    <h3 style="color: #fff; margin-bottom: 0.75rem; font-size: 1.1rem;">Benchmarks & Comparisons</h3>
+                    <ul style="list-style: none; font-size: 0.9rem;">
+                        <li style="margin-bottom: 0.4rem;"><a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" style="color: #888; text-decoration: none;">Artificial Analysis Leaderboard</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://lmarena.ai/" target="_blank" style="color: #888; text-decoration: none;">LMArena Human Rankings</a></li>
+                        <li style="margin-bottom: 0.4rem;"><a href="https://www.vellum.ai/llm-leaderboard" target="_blank" style="color: #888; text-decoration: none;">Vellum LLM Leaderboard</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <footer>
+            Last updated: February 2026
+        </footer>
+    </div>
+
+    <script>
+        // Recommendation data
+        const recommendations = {
+            chatbot: {
+                quality: [
+                    { name: "Claude Sonnet 4.5", provider: "Anthropic", why: "Natural conversation, excellent at understanding context and nuance", cost: "mid", top: true },
+                    { name: "GPT-4o", provider: "OpenAI", why: "Strong all-rounder with good conversational abilities", cost: "mid" },
+                    { name: "Gemini 3 Pro", provider: "Google", why: "Good quality with native Google integrations", cost: "high" }
+                ],
+                cost: [
+                    { name: "DeepSeek V3.2", provider: "DeepSeek", why: "10-30x cheaper than competitors, handles routine queries well", cost: "low", top: true },
+                    { name: "Gemini Flash", provider: "Google", why: "Great balance of quality and cost", cost: "low" },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Fast and affordable from a top provider", cost: "low" }
+                ],
+                speed: [
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "2-4x faster than other options, ideal for real-time chat", cost: "low", top: true },
+                    { name: "Gemini Flash", provider: "Google", why: "Quick responses at low cost", cost: "low" },
+                    { name: "GPT-4o-mini", provider: "OpenAI", why: "Fast and budget-friendly", cost: "low" }
+                ],
+                privacy: [
+                    { name: "Llama 4", provider: "Meta (self-hosted)", why: "Run on your own servers, no data leaves your infrastructure", cost: "low", top: true },
+                    { name: "Qwen 3", provider: "Alibaba (self-hosted)", why: "Apache 2.0 license, full commercial freedom", cost: "low" },
+                    { name: "DeepSeek", provider: "Self-hosted", why: "MIT license, can run locally", cost: "low" }
+                ]
+            },
+            coding: {
+                quality: [
+                    { name: "Claude Opus 4.5", provider: "Anthropic", why: "Industry-leading at writing, reviewing, and debugging code", cost: "high", top: true },
+                    { name: "GPT-5", provider: "OpenAI", why: "Strong coding with excellent reasoning", cost: "high" },
+                    { name: "Gemini 3 Flash", provider: "Google", why: "Great code generation at a reasonable price", cost: "low" }
+                ],
+                cost: [
+                    { name: "DeepSeek Coder", provider: "DeepSeek", why: "Supports 338+ languages, excellent value", cost: "low", top: true },
+                    { name: "Gemini Flash", provider: "Google", why: "Strong coding ability at low cost", cost: "low" },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Good coding from top provider at budget price", cost: "low" }
+                ],
+                speed: [
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Fast completions for IDE integration", cost: "low", top: true },
+                    { name: "Gemini Flash", provider: "Google", why: "Quick code generation", cost: "low" },
+                    { name: "GPT-4o-mini", provider: "OpenAI", why: "Speedy responses for coding copilot use", cost: "low" }
+                ],
+                privacy: [
+                    { name: "DeepSeek Coder", provider: "Self-hosted", why: "338+ languages, runs locally", cost: "low", top: true },
+                    { name: "Llama 4", provider: "Meta (self-hosted)", why: "Strong coding capabilities, self-hosted", cost: "low" },
+                    { name: "Qwen 3", provider: "Alibaba (self-hosted)", why: "Good code generation, Apache 2.0 license", cost: "low" }
+                ]
+            },
+            documents: {
+                quality: [
+                    { name: "Gemini 2.5 Pro", provider: "Google", why: "2M token context - fits entire books/codebases", cost: "mid", top: true },
+                    { name: "GPT-4.1", provider: "OpenAI", why: "1M token context with strong comprehension", cost: "mid" },
+                    { name: "Claude Opus 4.5", provider: "Anthropic", why: "Excellent at understanding nuance and extracting key points", cost: "high" }
+                ],
+                cost: [
+                    { name: "Gemini Flash", provider: "Google", why: "Large context at low cost, good for batch processing", cost: "low", top: true },
+                    { name: "DeepSeek V3.2", provider: "DeepSeek", why: "128K context at fraction of the price", cost: "low" },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Good comprehension at budget price", cost: "low" }
+                ],
+                speed: [
+                    { name: "Gemini Flash", provider: "Google", why: "Fast processing of long documents", cost: "low", top: true },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Quick analysis and summarization", cost: "low" },
+                    { name: "GPT-4o-mini", provider: "OpenAI", why: "Speedy document processing", cost: "low" }
+                ],
+                privacy: [
+                    { name: "Llama 4 Scout", provider: "Meta (self-hosted)", why: "10M token context, runs on your infrastructure", cost: "low", top: true },
+                    { name: "Qwen 3", provider: "Alibaba (self-hosted)", why: "128K+ context, fully private", cost: "low" },
+                    { name: "DeepSeek", provider: "Self-hosted", why: "128K context, MIT license", cost: "low" }
+                ]
+            },
+            content: {
+                quality: [
+                    { name: "Claude Sonnet 4.5", provider: "Anthropic", why: "Known for natural, human-like, engaging prose", cost: "mid", top: true },
+                    { name: "Claude Opus 4.5", provider: "Anthropic", why: "Best at following detailed style guides", cost: "high" },
+                    { name: "GPT-5", provider: "OpenAI", why: "Strong creative writing capabilities", cost: "high" }
+                ],
+                cost: [
+                    { name: "DeepSeek V3.2", provider: "DeepSeek", why: "Great value for bulk content generation", cost: "low", top: true },
+                    { name: "Gemini Flash", provider: "Google", why: "Good quality content at low price", cost: "low" },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Decent writing at budget price", cost: "low" }
+                ],
+                speed: [
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Fast content generation", cost: "low", top: true },
+                    { name: "Gemini Flash", provider: "Google", why: "Quick marketing copy", cost: "low" },
+                    { name: "GPT-4o-mini", provider: "OpenAI", why: "Speedy content creation", cost: "low" }
+                ],
+                privacy: [
+                    { name: "Llama 4", provider: "Meta (self-hosted)", why: "Good content generation, runs locally", cost: "low", top: true },
+                    { name: "Qwen 3", provider: "Alibaba (self-hosted)", why: "Strong writing, Apache 2.0 license", cost: "low" },
+                    { name: "Mistral", provider: "Self-hosted", why: "Good for European content", cost: "low" }
+                ]
+            },
+            extraction: {
+                quality: [
+                    { name: "Claude Opus 4.5", provider: "Anthropic", why: "Excellent at structured data extraction from complex documents", cost: "high", top: true },
+                    { name: "Gemini 3 Pro", provider: "Google", why: "Strong vision for scanned documents and tables", cost: "high" },
+                    { name: "GPT-4o", provider: "OpenAI", why: "Reliable structured output with JSON mode", cost: "mid" }
+                ],
+                cost: [
+                    { name: "DeepSeek VL2", provider: "DeepSeek", why: "Good vision capabilities at low cost", cost: "low", top: true },
+                    { name: "Gemini Flash", provider: "Google", why: "Decent extraction at budget price", cost: "low" },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Basic extraction at low cost", cost: "low" }
+                ],
+                speed: [
+                    { name: "Gemini Flash", provider: "Google", why: "Fast document processing", cost: "low", top: true },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Quick extraction for high volume", cost: "low" },
+                    { name: "GPT-4o-mini", provider: "OpenAI", why: "Speedy basic extraction", cost: "low" }
+                ],
+                privacy: [
+                    { name: "DeepSeek VL2", provider: "Self-hosted", why: "Vision model that runs locally", cost: "low", top: true },
+                    { name: "Llama 4", provider: "Meta (self-hosted)", why: "Multimodal, self-hosted", cost: "low" },
+                    { name: "Qwen 3", provider: "Alibaba (self-hosted)", why: "Good extraction, full privacy", cost: "low" }
+                ]
+            },
+            research: {
+                quality: [
+                    { name: "OpenAI o3", provider: "OpenAI", why: "Purpose-built for multi-step reasoning and complex analysis", cost: "high", top: true },
+                    { name: "Claude Opus 4.5", provider: "Anthropic", why: "Extended thinking mode for deep analysis", cost: "high" },
+                    { name: "GPT-5", provider: "OpenAI", why: "Strong at technical and academic content", cost: "high" }
+                ],
+                cost: [
+                    { name: "DeepSeek R1", provider: "DeepSeek", why: "Similar capability to o3 at ~1/20th the cost", cost: "low", top: true },
+                    { name: "Gemini Flash", provider: "Google", why: "Good reasoning at budget price", cost: "low" },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Basic research at low cost", cost: "low" }
+                ],
+                speed: [
+                    { name: "Gemini Flash", provider: "Google", why: "Fast for iterative research", cost: "low", top: true },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Quick research queries", cost: "low" },
+                    { name: "GPT-4o", provider: "OpenAI", why: "Good balance of speed and depth", cost: "mid" }
+                ],
+                privacy: [
+                    { name: "DeepSeek R1", provider: "Self-hosted", why: "Strong reasoning model, runs locally", cost: "low", top: true },
+                    { name: "Llama 4 Maverick", provider: "Meta (self-hosted)", why: "Advanced reasoning, self-hosted", cost: "low" },
+                    { name: "Qwen 3", provider: "Alibaba (self-hosted)", why: "Good research capabilities, Apache 2.0", cost: "low" }
+                ]
+            },
+            knowledge: {
+                quality: [
+                    { name: "Claude Sonnet 4.5", provider: "Anthropic", why: "Excellent at RAG and retrieval-augmented generation", cost: "mid", top: true },
+                    { name: "GPT-4.1", provider: "OpenAI", why: "Can fit entire knowledge bases in 1M context", cost: "mid" },
+                    { name: "Gemini 2.5 Pro", provider: "Google", why: "2M context for massive document sets", cost: "mid" }
+                ],
+                cost: [
+                    { name: "Gemini Flash", provider: "Google", why: "Good RAG at low cost", cost: "low", top: true },
+                    { name: "DeepSeek V3.2", provider: "DeepSeek", why: "Solid Q&A at fraction of price", cost: "low" },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Basic knowledge base queries", cost: "low" }
+                ],
+                speed: [
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Fast Q&A responses", cost: "low", top: true },
+                    { name: "Gemini Flash", provider: "Google", why: "Quick knowledge retrieval", cost: "low" },
+                    { name: "GPT-4o-mini", provider: "OpenAI", why: "Speedy answers", cost: "low" }
+                ],
+                privacy: [
+                    { name: "Llama 4", provider: "Meta (self-hosted)", why: "No data leaves your servers", cost: "low", top: true },
+                    { name: "Qwen 3", provider: "Alibaba (self-hosted)", why: "Full privacy, Apache 2.0 license", cost: "low" },
+                    { name: "DeepSeek", provider: "Self-hosted", why: "MIT license, runs locally", cost: "low" }
+                ]
+            },
+            translation: {
+                quality: [
+                    { name: "Qwen 3", provider: "Alibaba", why: "119 languages, best multilingual coverage", cost: "mid", top: true },
+                    { name: "Claude Opus 4.5", provider: "Anthropic", why: "Best at capturing nuance and idioms", cost: "high" },
+                    { name: "GPT-5", provider: "OpenAI", why: "Strong translation quality", cost: "high" }
+                ],
+                cost: [
+                    { name: "DeepSeek V3.2", provider: "DeepSeek", why: "Good multilingual at very low cost", cost: "low", top: true },
+                    { name: "Gemini Flash", provider: "Google", why: "Decent translation at budget price", cost: "low" },
+                    { name: "Qwen 3", provider: "Alibaba", why: "119 languages, reasonable pricing", cost: "low" }
+                ],
+                speed: [
+                    { name: "Gemini Flash", provider: "Google", why: "Fast multilingual processing", cost: "low", top: true },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Quick translations", cost: "low" },
+                    { name: "GPT-4o-mini", provider: "OpenAI", why: "Speedy language tasks", cost: "low" }
+                ],
+                privacy: [
+                    { name: "Qwen 3", provider: "Alibaba (self-hosted)", why: "119 languages, Apache 2.0, runs locally", cost: "low", top: true },
+                    { name: "Llama 4", provider: "Meta (self-hosted)", why: "Good multilingual, self-hosted", cost: "low" },
+                    { name: "Mistral", provider: "Self-hosted", why: "Strong on European languages", cost: "low" }
+                ]
+            },
+            vision: {
+                quality: [
+                    { name: "Claude Opus 4.5", provider: "Anthropic", why: "Leading vision benchmark scores, excellent image understanding", cost: "high", top: true },
+                    { name: "Gemini 3 Pro", provider: "Google", why: "Strong at charts, diagrams, and document analysis", cost: "high" },
+                    { name: "GPT-4o", provider: "OpenAI", why: "Good multimodal with image generation", cost: "mid" }
+                ],
+                cost: [
+                    { name: "DeepSeek VL2", provider: "DeepSeek", why: "Good vision capabilities at very low cost", cost: "low", top: true },
+                    { name: "Gemini Flash", provider: "Google", why: "Decent vision at budget price", cost: "low" },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Basic image understanding", cost: "low" }
+                ],
+                speed: [
+                    { name: "Gemini Flash", provider: "Google", why: "Fast image processing", cost: "low", top: true },
+                    { name: "Claude Haiku 4.5", provider: "Anthropic", why: "Quick vision tasks", cost: "low" },
+                    { name: "GPT-4o-mini", provider: "OpenAI", why: "Speedy image analysis", cost: "low" }
+                ],
+                privacy: [
+                    { name: "DeepSeek VL2", provider: "Self-hosted", why: "Vision-language model, runs locally", cost: "low", top: true },
+                    { name: "Llama 4", provider: "Meta (self-hosted)", why: "Multimodal, self-hosted", cost: "low" },
+                    { name: "Qwen 3", provider: "Alibaba (self-hosted)", why: "Vision support, Apache 2.0", cost: "low" }
+                ]
+            }
+        };
+
+        // Default recommendations when no priority selected
+        const defaultByUseCase = {
+            chatbot: "quality",
+            coding: "quality",
+            documents: "quality",
+            content: "quality",
+            extraction: "quality",
+            research: "quality",
+            knowledge: "quality",
+            translation: "quality",
+            vision: "quality"
+        };
+
+        function getCostClass(cost) {
+            if (cost === 'low') return 'cost-low';
+            if (cost === 'mid') return 'cost-mid';
+            return 'cost-high';
+        }
+
+        function getCostLabel(cost) {
+            if (cost === 'low') return '$';
+            if (cost === 'mid') return '$$';
+            return '$$$';
+        }
+
+        function filterByBudget(recs, budget) {
+            if (!budget) return recs;
+            return recs.filter(r => {
+                if (budget === 'low') return r.cost === 'low';
+                if (budget === 'mid') return r.cost === 'low' || r.cost === 'mid';
+                return true; // high budget = all options
+            });
+        }
+
+        function updateRecommendations() {
+            const useCase = document.getElementById('useCase').value;
+            const priority = document.getElementById('priority').value;
+            const budget = document.getElementById('budget').value;
+            const container = document.getElementById('recCards');
+
+            if (!useCase) {
+                container.innerHTML = '<p class="no-results">Select a use case to see recommendations</p>';
+                return;
+            }
+
+            const effectivePriority = priority || defaultByUseCase[useCase];
+            let recs = recommendations[useCase]?.[effectivePriority] || [];
+
+            // Filter by budget
+            recs = filterByBudget(recs, budget);
+
+            if (recs.length === 0) {
+                container.innerHTML = '<p class="no-results">No models match your criteria. Try adjusting filters.</p>';
+                return;
+            }
+
+            container.innerHTML = recs.map((rec, idx) => `
+                <div class="rec-card ${rec.top ? 'top-pick' : ''}">
+                    <h4>
+                        ${rec.name}
+                        ${rec.top ? '<span class="badge">TOP PICK</span>' : ''}
+                    </h4>
+                    <div class="provider">${rec.provider}</div>
+                    <div class="why">${rec.why}</div>
+                    <span class="cost-badge ${getCostClass(rec.cost)}">${getCostLabel(rec.cost)}</span>
+                </div>
+            `).join('');
+        }
+
+        // Event listeners
+        document.getElementById('useCase').addEventListener('change', updateRecommendations);
+        document.getElementById('priority').addEventListener('change', updateRecommendations);
+        document.getElementById('budget').addEventListener('change', updateRecommendations);
+    </script>
+</body>
+</html>
