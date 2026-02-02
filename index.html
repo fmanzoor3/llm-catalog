@@ -318,7 +318,18 @@
     <div class="update-panel" id="updatePanel">
         <button class="close-btn" onclick="toggleUpdatePanel()">&times;</button>
         <h3>Check for Updates</h3>
-        <p>Open benchmark leaderboards to check for the latest model rankings and scores:</p>
+
+        <!-- Automatic Update (when deployed) -->
+        <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(0,212,255,0.1); border-radius: 8px; border: 1px solid rgba(0,212,255,0.2);">
+            <button id="fetchDataBtn" class="btn-primary" onclick="fetchLatestData()" style="width: 100%; margin-bottom: 0.5rem;">
+                Fetch Latest Data
+            </button>
+            <p id="updateStatus" style="font-size: 0.8rem; color: #888; text-align: center; margin: 0;">
+                Click to check for updates
+            </p>
+        </div>
+
+        <p style="font-size: 0.85rem; color: #888; margin-bottom: 0.75rem;">Or view benchmark sources:</p>
 
         <ul class="source-list">
             <li><a href="https://artificialanalysis.ai/leaderboards/models" target="_blank">Artificial Analysis Leaderboard</a></li>
@@ -327,13 +338,11 @@
         </ul>
 
         <div class="btn-group">
-            <button class="btn-primary" onclick="openAllSources()">Open All Sources</button>
-            <button class="btn-secondary" onclick="runUpdateScript()">Run Update Script</button>
+            <button class="btn-secondary" onclick="openAllSources()">Open All Sources</button>
         </div>
 
-        <p style="margin-top: 1rem; font-size: 0.8rem; color: #666;">
-            To update data, run:<br>
-            <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">python auto_update.py</code>
+        <p style="margin-top: 1rem; font-size: 0.75rem; color: #555;">
+            Local development: <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">python auto_update.py</code>
         </p>
     </div>
 
@@ -514,6 +523,75 @@
 
         function runUpdateScript() {
             alert('To update the data, run this command in your terminal:\n\npython auto_update.py\n\nThis will open an interactive menu where you can:\n- Update benchmark scores\n- Add new models\n- Sync changes to this page');
+        }
+
+        // Fetch latest data from serverless API (when deployed on Vercel)
+        async function fetchLatestData() {
+            const statusEl = document.getElementById('updateStatus');
+            const btnEl = document.getElementById('fetchDataBtn');
+
+            statusEl.textContent = 'Fetching latest data...';
+            statusEl.style.color = '#00d4ff';
+            btnEl.disabled = true;
+
+            try {
+                // Try to fetch from the API endpoint
+                const response = await fetch('/api/update');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.status === 'success' && result.data) {
+                    // Compare versions
+                    const currentDate = modelData.lastUpdated;
+                    const newDate = result.data.lastUpdated;
+                    const currentModels = modelData.models.length;
+                    const newModels = result.data.models.length;
+
+                    if (newDate > currentDate || newModels > currentModels) {
+                        // Update the local data
+                        Object.assign(modelData, result.data);
+
+                        // Refresh the page content
+                        document.getElementById('lastUpdated').textContent =
+                            `Data last updated: ${newDate} | Source: ${modelData.dataSources.benchmarks}`;
+                        document.getElementById('footerDate').textContent = newDate;
+
+                        // Refresh providers and comparison table
+                        document.getElementById('providerGrid').innerHTML = '';
+                        document.getElementById('comparisonBody').innerHTML = '';
+                        document.getElementById('referencesGrid').innerHTML = '';
+                        populateProviders();
+                        populateComparisonTable();
+                        populateReferences();
+                        updateRecommendations();
+
+                        statusEl.textContent = `Updated! ${newModels} models loaded (was ${currentModels})`;
+                        statusEl.style.color = '#22c55e';
+                    } else {
+                        statusEl.textContent = `Already up to date (${currentModels} models)`;
+                        statusEl.style.color = '#22c55e';
+                    }
+                } else {
+                    throw new Error(result.message || 'Invalid response');
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+
+                // Check if we're running locally (file:// or localhost without API)
+                if (window.location.protocol === 'file:' || error.message.includes('404')) {
+                    statusEl.innerHTML = 'API not available locally.<br>Deploy to Vercel or run <code>python auto_update.py</code>';
+                    statusEl.style.color = '#f59e0b';
+                } else {
+                    statusEl.textContent = `Error: ${error.message}`;
+                    statusEl.style.color = '#ef4444';
+                }
+            } finally {
+                btnEl.disabled = false;
+            }
         }
     </script>
 </body>

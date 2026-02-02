@@ -1,0 +1,2 @@
+# No additional requirements needed for basic functionality
+# The handler uses only Python standard library
