@@ -1,2 +1,2 @@
-# No additional requirements needed for basic functionality
-# The handler uses only Python standard library
+# Python dependencies for Vercel serverless functions
+# Using only standard library - no external packages needed
