@@ -7,45 +7,67 @@ from datetime import datetime
 
 PERPLEXITY_API_KEY = os.environ.get('PERPLEXITY_API_KEY')
 
-PROMPT = """What are the CURRENT flagship LLM models available via API RIGHT NOW?
+PROMPT = """Search the web for the CURRENT flagship LLM models from these 5 providers.
+I need you to find SPECIFIC information for EACH provider - do not skip any.
 
-Only include models that are:
-1. Currently available (not deprecated, not announced-but-unreleased)
-2. The LATEST version from each provider (not old versions)
+## REQUIRED: Search for each provider separately
 
-For each provider, find their current TOP models:
+### 1. ANTHROPIC (search: "Claude models Anthropic current")
+Find the current versions of:
+- Claude Opus (their most capable model)
+- Claude Sonnet (their balanced model)
+- Claude Haiku (their fast/cheap model)
+For each: What version number? What's the context window? Any SWE-bench scores?
 
-- **OpenAI**: Current flagship (GPT-4o/GPT-5?), current budget option, current reasoning model (o3/o4?)
-- **Anthropic**: Current Opus, Sonnet, and Haiku versions
-- **Google**: Current Gemini Pro and Flash versions
-- **DeepSeek**: Current V3.x and R1 versions
-- **Open Source**: Latest Llama, Qwen, Mistral flagship models
+### 2. OPENAI (search: "OpenAI GPT models current API")
+Find the current versions of:
+- Their flagship model (GPT-4o? GPT-5?)
+- Their reasoning models (o1? o3? o4?)
+- Their budget option (mini variants)
+For each: What's the latest version? Context window?
 
-For each model provide:
-- Exact current version/name
-- Context window size
-- SWE-bench score if available
-- What it's best for
+### 3. GOOGLE (search: "Google Gemini models current")
+Find the current versions of:
+- Gemini Pro (their flagship)
+- Gemini Flash (their fast/cheap option)
+For each: What version (2.0? 2.5? 3.0?)? Context window?
 
-Return ONLY valid JSON (no markdown):
+### 4. DEEPSEEK (search: "DeepSeek models V3 R1 current")
+Find the current versions of:
+- DeepSeek V3 (what's the latest? V3.1? V3.2?)
+- DeepSeek R1 (reasoning model)
+For each: Context window? Any benchmark scores?
+
+### 5. OPEN SOURCE (search: "Llama 4 Qwen Mistral latest models")
+Find current flagship models from:
+- Meta Llama (Llama 3? Llama 4?)
+- Alibaba Qwen (Qwen 2? Qwen 3?)
+- Mistral AI
+
+## OUTPUT FORMAT
+Return ONLY this JSON structure (no markdown, no explanation):
 {
   "lastUpdated": "YYYY-MM-DD",
   "models": [
     {
-      "id": "model-id",
-      "name": "Display Name",
-      "provider": "openai|anthropic|google|deepseek|opensource",
-      "costTier": "low|mid|high|self-hosted",
-      "contextWindow": 128000,
-      "benchmarks": {"sweBenchVerified": 50.0},
+      "id": "claude-opus-4.5",
+      "name": "Claude Opus 4.5",
+      "provider": "anthropic",
+      "costTier": "high",
+      "contextWindow": 200000,
+      "benchmarks": {"sweBenchVerified": 80.0},
       "bestFor": ["coding", "reasoning"],
-      "description": "Short description"
+      "description": "One line description"
     }
   ],
-  "summary": "What's new or changed recently"
+  "summary": "Brief summary of what's new"
 }
 
-Use today's date. Only include verified, currently available models."""
+Provider values: "openai", "anthropic", "google", "deepseek", "opensource"
+CostTier values: "low", "mid", "high", "self-hosted"
+
+IMPORTANT: You MUST include at least 2 models from EACH of the 5 providers (minimum 10 models total).
+Use today's date. Only include models currently available via API."""
 
 
 def fetch_from_perplexity():
@@ -56,18 +78,18 @@ def fetch_from_perplexity():
     url = "https://api.perplexity.ai/chat/completions"
 
     payload = {
-        "model": "sonar",
+        "model": "sonar-pro",
         "messages": [
             {
                 "role": "system",
-                "content": "You are a helpful assistant that returns only valid JSON. No markdown formatting, no code blocks, just raw JSON."
+                "content": "You are a research assistant. Search the web thoroughly for each provider mentioned. Return ONLY valid JSON with no markdown formatting, no code blocks, no explanation - just the raw JSON object."
             },
             {
                 "role": "user",
                 "content": PROMPT
             }
         ],
-        "temperature": 0.2,
+        "temperature": 0.1,
         "max_tokens": 8000
     }
 
