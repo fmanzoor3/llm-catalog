@@ -643,7 +643,7 @@
                     // Display sources if available
                     const sources = result.data.sources || [];
                     if (sources.length > 0) {
-                        const sourceLinks = sources.slice(0, 3).map(s =>
+                        const sourceLinks = sources.map(s =>
                             `<a href="${s.url}" target="_blank" style="color: #00d4ff;">${s.name || 'Source'}</a>`
                         ).join(' · ');
                         statusEl.innerHTML = `${statusMsg}<br><small style="color: #888;">Sources: ${sourceLinks}</small>`;
