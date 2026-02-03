@@ -4,50 +4,32 @@ import os
 import urllib.request
 import urllib.error
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 PERPLEXITY_API_KEY = os.environ.get('PERPLEXITY_API_KEY')
 
-PROMPT = """Search the web for the CURRENT flagship LLM models from these 5 providers.
-I need you to find SPECIFIC information for EACH provider - do not skip any.
+# Provider-specific prompts for focused, deep research
+PROVIDER_PROMPTS = {
+    "anthropic": """Search the web for the CURRENT Claude models from Anthropic (as of today).
 
-## REQUIRED: Search for each provider separately
+Search queries to use:
+- "Anthropic Claude models 2026"
+- "Claude Opus Sonnet Haiku latest version"
+- "Claude API models documentation"
 
-### 1. ANTHROPIC (search: "Claude models Anthropic current")
-Find the current versions of:
-- Claude Opus (their most capable model)
-- Claude Sonnet (their balanced model)
-- Claude Haiku (their fast/cheap model)
-For each: What version number? What's the context window? Any SWE-bench scores?
+Find these specific models:
+1. Claude Opus - their most capable/intelligent model
+2. Claude Sonnet - their balanced model for complex tasks
+3. Claude Haiku - their fast, cheap model
 
-### 2. OPENAI (search: "OpenAI GPT models current API")
-Find the current versions of:
-- Their flagship model (GPT-4o? GPT-5?)
-- Their reasoning models (o1? o3? o4?)
-- Their budget option (mini variants)
-For each: What's the latest version? Context window?
+For EACH model, find:
+- Exact version number (e.g., 4.5, 5.0)
+- Context window size
+- SWE-bench score if available
+- What it's best for
 
-### 3. GOOGLE (search: "Google Gemini models current")
-Find the current versions of:
-- Gemini Pro (their flagship)
-- Gemini Flash (their fast/cheap option)
-For each: What version (2.0? 2.5? 3.0?)? Context window?
-
-### 4. DEEPSEEK (search: "DeepSeek models V3 R1 current")
-Find the current versions of:
-- DeepSeek V3 (what's the latest? V3.1? V3.2?)
-- DeepSeek R1 (reasoning model)
-For each: Context window? Any benchmark scores?
-
-### 5. OPEN SOURCE (search: "Llama 4 Qwen Mistral latest models")
-Find current flagship models from:
-- Meta Llama (Llama 3? Llama 4?)
-- Alibaba Qwen (Qwen 2? Qwen 3?)
-- Mistral AI
-
-## OUTPUT FORMAT
-Return ONLY this JSON structure (no markdown, no explanation):
+Return ONLY this JSON (no markdown, no explanation):
 {
-  "lastUpdated": "YYYY-MM-DD",
   "models": [
     {
       "id": "claude-opus-4.5",
@@ -57,28 +39,172 @@ Return ONLY this JSON structure (no markdown, no explanation):
       "contextWindow": 200000,
       "benchmarks": {"sweBenchVerified": 80.0},
       "bestFor": ["coding", "reasoning"],
-      "description": "One line description"
+      "description": "Brief description"
     }
   ],
-  "sources": [
-    {"name": "Source name", "url": "https://..."}
-  ],
-  "summary": "Brief summary of what's new"
+  "sources": [{"name": "Source name", "url": "https://..."}]
 }
 
-Provider values: "openai", "anthropic", "google", "deepseek", "opensource"
-CostTier values: "low", "mid", "high", "self-hosted"
+costTier: "high" for Opus, "mid" for Sonnet, "low" for Haiku""",
 
-IMPORTANT:
-- Include at least 2 models from EACH of the 5 providers (minimum 10 models total)
-- Include the URLs of the sources you used to find this information in the "sources" array
-- Use today's date. Only include models currently available via API."""
+    "openai": """Search the web for the CURRENT OpenAI GPT models (as of today).
+
+Search queries to use:
+- "OpenAI GPT models 2026"
+- "GPT-5 GPT-4.1 o3 o4 latest"
+- "OpenAI API models documentation"
+
+Find these specific models:
+1. GPT-5 series - their latest flagship
+2. GPT-4.1 - coding optimized model
+3. o3 - their reasoning model
+4. o4-mini - fast reasoning model
+5. GPT-4o - multimodal model (if still current)
+
+For EACH model, find:
+- Exact version number
+- Context window size
+- Any benchmark scores
+- What it's best for
+
+Return ONLY this JSON (no markdown, no explanation):
+{
+  "models": [
+    {
+      "id": "gpt-5",
+      "name": "GPT-5",
+      "provider": "openai",
+      "costTier": "high",
+      "contextWindow": 128000,
+      "benchmarks": {},
+      "bestFor": ["general", "reasoning"],
+      "description": "Brief description"
+    }
+  ],
+  "sources": [{"name": "Source name", "url": "https://..."}]
+}
+
+costTier: "high" for flagship/reasoning, "mid" for standard, "low" for mini variants""",
+
+    "google": """Search the web for the CURRENT Google Gemini models (as of today).
+
+Search queries to use:
+- "Google Gemini models 2026"
+- "Gemini 2.5 3.0 Pro Flash latest"
+- "Google AI Gemini API models"
+
+Find these specific models:
+1. Gemini Pro - their most capable model (what version? 2.5? 3.0?)
+2. Gemini Flash - their fast, cheap model
+3. Any new Gemini models released recently
+
+For EACH model, find:
+- Exact version number (2.0, 2.5, 3.0?)
+- Context window size (Google has long contexts)
+- Any benchmark scores
+- What it's best for
+
+Return ONLY this JSON (no markdown, no explanation):
+{
+  "models": [
+    {
+      "id": "gemini-2.5-pro",
+      "name": "Gemini 2.5 Pro",
+      "provider": "google",
+      "costTier": "mid",
+      "contextWindow": 1000000,
+      "benchmarks": {},
+      "bestFor": ["long-context", "multimodal"],
+      "description": "Brief description"
+    }
+  ],
+  "sources": [{"name": "Source name", "url": "https://..."}]
+}
+
+costTier: "mid" for Pro, "low" for Flash""",
+
+    "deepseek": """Search the web for the CURRENT DeepSeek models (as of today).
+
+Search queries to use:
+- "DeepSeek V3 R1 models 2026"
+- "DeepSeek latest version API"
+- "DeepSeek V3.2 R1 benchmarks"
+
+Find these specific models:
+1. DeepSeek V3 - their general model (what's the latest? V3.1? V3.2?)
+2. DeepSeek R1 - their reasoning model
+3. DeepSeek Coder - if it's a separate model
+
+For EACH model, find:
+- Exact version number
+- Context window size
+- AIME or other benchmark scores
+- What it's best for
+- Pricing tier (they're known for being cheap)
+
+Return ONLY this JSON (no markdown, no explanation):
+{
+  "models": [
+    {
+      "id": "deepseek-v3.2",
+      "name": "DeepSeek V3.2",
+      "provider": "deepseek",
+      "costTier": "low",
+      "contextWindow": 128000,
+      "benchmarks": {},
+      "bestFor": ["general", "coding", "budget"],
+      "description": "Brief description"
+    }
+  ],
+  "sources": [{"name": "Source name", "url": "https://..."}]
+}
+
+costTier: Usually "low" for DeepSeek (they're budget-friendly)""",
+
+    "opensource": """Search the web for the CURRENT open source LLM models (as of today).
+
+Search queries to use:
+- "Llama 4 Meta latest 2026"
+- "Qwen 3 Alibaba latest model"
+- "Mistral AI latest models 2026"
+
+Find the flagship models from:
+1. Meta Llama - Llama 4 series (Scout, Maverick, etc.)
+2. Alibaba Qwen - Qwen 3 or latest
+3. Mistral AI - their latest models
+
+For EACH model, find:
+- Exact version/name
+- Context window size (Llama 4 Scout has huge context)
+- Parameter count
+- What it's best for
+- Can it be self-hosted?
+
+Return ONLY this JSON (no markdown, no explanation):
+{
+  "models": [
+    {
+      "id": "llama-4-maverick",
+      "name": "Llama 4 Maverick",
+      "provider": "opensource",
+      "costTier": "self-hosted",
+      "contextWindow": 1000000,
+      "benchmarks": {},
+      "bestFor": ["privacy", "self-hosting"],
+      "description": "Brief description"
+    }
+  ],
+  "sources": [{"name": "Source name", "url": "https://..."}]
+}
+
+costTier: "self-hosted" for models you run yourself, "low" if available via cheap API"""
+}
 
 
-def fetch_from_perplexity():
-    """Call Perplexity API to get latest LLM data"""
+def fetch_provider_data(provider_name, prompt):
+    """Fetch data for a single provider from Perplexity API"""
     if not PERPLEXITY_API_KEY:
-        return None, "PERPLEXITY_API_KEY not configured"
+        return provider_name, None, "PERPLEXITY_API_KEY not configured"
 
     url = "https://api.perplexity.ai/chat/completions"
 
@@ -87,15 +213,15 @@ def fetch_from_perplexity():
         "messages": [
             {
                 "role": "system",
-                "content": "You are a research assistant. Search the web thoroughly for each provider mentioned. Return ONLY valid JSON with no markdown formatting, no code blocks, no explanation - just the raw JSON object."
+                "content": f"You are a research assistant specializing in {provider_name} AI models. Search the web thoroughly and return ONLY valid JSON with no markdown formatting, no code blocks, no explanation - just the raw JSON object."
             },
             {
                 "role": "user",
-                "content": PROMPT
+                "content": prompt
             }
         ],
         "temperature": 0.1,
-        "max_tokens": 8000
+        "max_tokens": 4000
     }
 
     headers = {
@@ -111,7 +237,7 @@ def fetch_from_perplexity():
             method='POST'
         )
 
-        with urllib.request.urlopen(req, timeout=60) as response:
+        with urllib.request.urlopen(req, timeout=90) as response:
             result = json.loads(response.read().decode('utf-8'))
             content = result['choices'][0]['message']['content']
 
@@ -127,22 +253,65 @@ def fetch_from_perplexity():
 
             # Parse the JSON
             data = json.loads(content)
-            return data, None
+            return provider_name, data, None
 
     except urllib.error.HTTPError as e:
-        return None, f"Perplexity API error: {e.code} - {e.reason}"
+        return provider_name, None, f"API error: {e.code} - {e.reason}"
     except json.JSONDecodeError as e:
-        return None, f"Failed to parse response as JSON: {str(e)}"
+        return provider_name, None, f"JSON parse error: {str(e)}"
     except Exception as e:
-        return None, f"Error: {str(e)}"
+        return provider_name, None, f"Error: {str(e)}"
+
+
+def fetch_all_providers():
+    """Fetch data from all providers in parallel"""
+    all_models = []
+    all_sources = []
+    errors = []
+    summaries = []
+
+    # Use ThreadPoolExecutor for parallel requests
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {
+            executor.submit(fetch_provider_data, provider, prompt): provider
+            for provider, prompt in PROVIDER_PROMPTS.items()
+        }
+
+        for future in as_completed(futures):
+            provider_name = futures[future]
+            try:
+                provider, data, error = future.result()
+                if error:
+                    errors.append(f"{provider}: {error}")
+                elif data:
+                    models = data.get('models', [])
+                    sources = data.get('sources', [])
+
+                    all_models.extend(models)
+                    all_sources.extend(sources)
+                    summaries.append(f"{provider}: {len(models)} models found")
+            except Exception as e:
+                errors.append(f"{provider_name}: {str(e)}")
+
+    # Build aggregated result
+    result = {
+        "lastUpdated": datetime.now().strftime('%Y-%m-%d'),
+        "models": all_models,
+        "sources": all_sources,
+        "summary": f"Fetched {len(all_models)} models from {len(PROVIDER_PROMPTS)} providers. " +
+                   "; ".join(summaries) if summaries else "No data fetched",
+        "errors": errors if errors else None
+    }
+
+    return result, None if all_models else "No models found from any provider"
 
 
 def build_full_catalog(perplexity_data):
-    """Build full catalog structure from Perplexity response"""
+    """Build full catalog structure from aggregated Perplexity responses"""
 
     models = perplexity_data.get('models', [])
 
-    # Build provider info based on models found
+    # Build provider info
     providers = {
         "anthropic": {
             "name": "Anthropic",
@@ -213,11 +382,11 @@ def build_full_catalog(perplexity_data):
     }
 
     # Build use case recommendations based on models
-    coding_quality = [m['id'] for m in models if 'coding' in m.get('bestFor', []) and m['costTier'] == 'high'][:3]
-    coding_budget = [m['id'] for m in models if 'coding' in m.get('bestFor', []) and m['costTier'] == 'low'][:3]
+    coding_quality = [m['id'] for m in models if 'coding' in m.get('bestFor', []) and m.get('costTier') == 'high'][:3]
+    coding_budget = [m['id'] for m in models if 'coding' in m.get('bestFor', []) and m.get('costTier') == 'low'][:3]
 
-    general_quality = [m['id'] for m in models if m['costTier'] == 'high'][:3]
-    general_budget = [m['id'] for m in models if m['costTier'] == 'low'][:3]
+    general_quality = [m['id'] for m in models if m.get('costTier') == 'high'][:3]
+    general_budget = [m['id'] for m in models if m.get('costTier') == 'low'][:3]
 
     use_cases = {
         "coding": {
@@ -265,7 +434,7 @@ def build_full_catalog(perplexity_data):
             "benchmarks": "https://artificialanalysis.ai/leaderboards/models",
             "pricing": "Official provider pricing pages",
             "lastVerified": datetime.now().strftime('%Y-%m-%d'),
-            "method": "Perplexity AI web search"
+            "method": "Perplexity AI web search (5 parallel provider queries)"
         },
         "providers": providers,
         "models": models,
@@ -273,6 +442,7 @@ def build_full_catalog(perplexity_data):
         "quickDecisions": quick_decisions,
         "summary": perplexity_data.get('summary', 'Data fetched from web sources'),
         "sources": perplexity_data.get('sources', []),
+        "errors": perplexity_data.get('errors'),
         "references": {
             "benchmarks": [
                 {"name": "Artificial Analysis", "url": "https://artificialanalysis.ai/leaderboards/models"},
@@ -290,8 +460,8 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
 
-        # Try to fetch from Perplexity
-        perplexity_data, error = fetch_from_perplexity()
+        # Fetch from all providers in parallel
+        perplexity_data, error = fetch_all_providers()
 
         if error:
             response = {
