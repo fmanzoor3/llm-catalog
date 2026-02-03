@@ -525,6 +525,40 @@
             alert('To update the data, run this command in your terminal:\n\npython auto_update.py\n\nThis will open an interactive menu where you can:\n- Update benchmark scores\n- Add new models\n- Sync changes to this page');
         }
 
+        // Merge new models with existing - add new ones, update existing ones
+        function mergeModelData(existingModels, newModels) {
+            const modelMap = new Map();
+
+            // Add all existing models first
+            existingModels.forEach(m => modelMap.set(m.id, m));
+
+            // Merge in new models (update if exists, add if new)
+            let added = 0, updated = 0;
+            newModels.forEach(newModel => {
+                if (modelMap.has(newModel.id)) {
+                    // Update existing model with new data (prefer new benchmarks/specs)
+                    const existing = modelMap.get(newModel.id);
+                    modelMap.set(newModel.id, {
+                        ...existing,
+                        ...newModel,
+                        // Merge benchmarks instead of replacing
+                        benchmarks: { ...existing.benchmarks, ...newModel.benchmarks }
+                    });
+                    updated++;
+                } else {
+                    // Add new model
+                    modelMap.set(newModel.id, newModel);
+                    added++;
+                }
+            });
+
+            return {
+                models: Array.from(modelMap.values()),
+                added,
+                updated
+            };
+        }
+
         // Fetch latest data from serverless API (when deployed on Vercel)
         async function fetchLatestData() {
             const statusEl = document.getElementById('updateStatus');
@@ -545,35 +579,47 @@
                 const result = await response.json();
 
                 if (result.status === 'success' && result.data) {
-                    // Compare versions
-                    const currentDate = modelData.lastUpdated;
-                    const newDate = result.data.lastUpdated;
                     const currentModels = modelData.models.length;
-                    const newModels = result.data.models.length;
+                    const newDate = result.data.lastUpdated;
 
-                    if (newDate > currentDate || newModels > currentModels) {
-                        // Update the local data
-                        Object.assign(modelData, result.data);
+                    // Merge new models with existing (don't replace)
+                    const mergeResult = mergeModelData(modelData.models, result.data.models || []);
+                    modelData.models = mergeResult.models;
+                    modelData.lastUpdated = newDate;
 
-                        // Refresh the page content
-                        document.getElementById('lastUpdated').textContent =
-                            `Data last updated: ${newDate} | Source: ${modelData.dataSources.benchmarks}`;
-                        document.getElementById('footerDate').textContent = newDate;
+                    // Update data sources info
+                    if (result.data.dataSources) {
+                        modelData.dataSources = { ...modelData.dataSources, ...result.data.dataSources };
+                    }
 
-                        // Refresh providers and comparison table
-                        document.getElementById('providerGrid').innerHTML = '';
-                        document.getElementById('comparisonBody').innerHTML = '';
-                        document.getElementById('referencesGrid').innerHTML = '';
-                        populateProviders();
-                        populateComparisonTable();
-                        populateReferences();
-                        updateRecommendations();
+                    // Refresh the page content
+                    document.getElementById('lastUpdated').textContent =
+                        `Data last updated: ${newDate} | Source: ${modelData.dataSources.benchmarks}`;
+                    document.getElementById('footerDate').textContent = newDate;
 
-                        statusEl.textContent = `Updated! ${newModels} models loaded (was ${currentModels})`;
-                        statusEl.style.color = '#22c55e';
+                    // Refresh providers and comparison table
+                    document.getElementById('providerGrid').innerHTML = '';
+                    document.getElementById('comparisonBody').innerHTML = '';
+                    document.getElementById('referencesGrid').innerHTML = '';
+                    populateProviders();
+                    populateComparisonTable();
+                    populateReferences();
+                    updateRecommendations();
+
+                    // Show what changed
+                    const totalNow = modelData.models.length;
+                    if (mergeResult.added > 0) {
+                        statusEl.textContent = `Added ${mergeResult.added} new model(s)! (${totalNow} total)`;
+                    } else if (mergeResult.updated > 0) {
+                        statusEl.textContent = `Updated ${mergeResult.updated} model(s). (${totalNow} total)`;
                     } else {
-                        statusEl.textContent = `Already up to date (${currentModels} models)`;
-                        statusEl.style.color = '#22c55e';
+                        statusEl.textContent = `Already up to date (${totalNow} models)`;
+                    }
+                    statusEl.style.color = '#22c55e';
+
+                    // Show summary if available
+                    if (result.data.summary) {
+                        console.log('Update summary:', result.data.summary);
                     }
                 } else {
                     throw new Error(result.message || 'Invalid response');

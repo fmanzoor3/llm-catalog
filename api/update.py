@@ -7,55 +7,45 @@ from datetime import datetime
 
 PERPLEXITY_API_KEY = os.environ.get('PERPLEXITY_API_KEY')
 
-PROMPT = """Search for the latest LLM models available via API as of today. Return data for ALL of these models (you MUST include at least 2-3 models per provider):
+PROMPT = """What are the CURRENT flagship LLM models available via API RIGHT NOW?
 
-**OpenAI** (include ALL available):
-- GPT-4o (flagship multimodal)
-- GPT-4o-mini (budget option)
-- o1 / o3 / o3-mini (reasoning models)
-- Any newer models like GPT-4.1 or GPT-5 if released
+Only include models that are:
+1. Currently available (not deprecated, not announced-but-unreleased)
+2. The LATEST version from each provider (not old versions)
 
-**Anthropic** (include ALL available):
-- Claude Opus 4 / 4.5 (top tier)
-- Claude Sonnet 4 / 4.5 (balanced)
-- Claude Haiku 3.5 (fast/cheap)
+For each provider, find their current TOP models:
 
-**Google** (include ALL available):
-- Gemini 2.0 Pro / 2.5 Pro (flagship)
-- Gemini 2.0 Flash / 2.5 Flash (fast/cheap)
-- Any newer Gemini models
+- **OpenAI**: Current flagship (GPT-4o/GPT-5?), current budget option, current reasoning model (o3/o4?)
+- **Anthropic**: Current Opus, Sonnet, and Haiku versions
+- **Google**: Current Gemini Pro and Flash versions
+- **DeepSeek**: Current V3.x and R1 versions
+- **Open Source**: Latest Llama, Qwen, Mistral flagship models
 
-**DeepSeek** (include ALL available):
-- DeepSeek V3 (general purpose)
-- DeepSeek R1 (reasoning)
-- DeepSeek Coder V2/V3
+For each model provide:
+- Exact current version/name
+- Context window size
+- SWE-bench score if available
+- What it's best for
 
-**Open Source** (include top options):
-- Llama 3.1/4 405B (Meta)
-- Qwen 2.5/3 (Alibaba)
-- Mistral Large (Mistral AI)
-
-For EACH model provide: context window, cost tier (low/mid/high/self-hosted), what it's best for, and any benchmark scores you find (SWE-bench, AIME, etc).
-
-Return ONLY valid JSON (no markdown, no code blocks):
+Return ONLY valid JSON (no markdown):
 {
   "lastUpdated": "YYYY-MM-DD",
   "models": [
     {
-      "id": "model-id-lowercase",
+      "id": "model-id",
       "name": "Display Name",
       "provider": "openai|anthropic|google|deepseek|opensource",
       "costTier": "low|mid|high|self-hosted",
       "contextWindow": 128000,
       "benchmarks": {"sweBenchVerified": 50.0},
-      "bestFor": ["coding", "reasoning", "general", "budget", "multimodal"],
-      "description": "One line description"
+      "bestFor": ["coding", "reasoning"],
+      "description": "Short description"
     }
   ],
-  "summary": "Brief summary of what's new"
+  "summary": "What's new or changed recently"
 }
 
-IMPORTANT: Include at least 12-15 models total. Use today's date. Be accurate with specs."""
+Use today's date. Only include verified, currently available models."""
 
 
 def fetch_from_perplexity():
