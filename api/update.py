@@ -7,40 +7,55 @@ from datetime import datetime
 
 PERPLEXITY_API_KEY = os.environ.get('PERPLEXITY_API_KEY')
 
-PROMPT = """Search for the latest LLM model information and benchmarks as of today. I need accurate, up-to-date data about:
+PROMPT = """Search for the latest LLM models available via API as of today. Return data for ALL of these models (you MUST include at least 2-3 models per provider):
 
-1. **OpenAI models**: GPT-4o, GPT-4o-mini, GPT-4.1, o3, o3-mini, and any newer models (GPT-5, etc.)
-2. **Anthropic models**: Claude Opus 4, Claude Sonnet 4, Claude Haiku, and any newer versions
-3. **Google models**: Gemini 2.0, Gemini 2.5, Gemini Flash, and any newer versions
-4. **DeepSeek models**: DeepSeek V3, DeepSeek R1, DeepSeek Coder
-5. **Open source**: Llama 4, Qwen 3, Mistral Large
+**OpenAI** (include ALL available):
+- GPT-4o (flagship multimodal)
+- GPT-4o-mini (budget option)
+- o1 / o3 / o3-mini (reasoning models)
+- Any newer models like GPT-4.1 or GPT-5 if released
 
-For each model, find:
-- Current version/name
-- Context window size
-- Key benchmark scores (especially SWE-bench, AIME, ARC-AGI if available)
-- Relative cost tier (low/mid/high)
-- What it's best for
+**Anthropic** (include ALL available):
+- Claude Opus 4 / 4.5 (top tier)
+- Claude Sonnet 4 / 4.5 (balanced)
+- Claude Haiku 3.5 (fast/cheap)
 
-Return ONLY valid JSON in this exact format (no markdown, no explanation):
+**Google** (include ALL available):
+- Gemini 2.0 Pro / 2.5 Pro (flagship)
+- Gemini 2.0 Flash / 2.5 Flash (fast/cheap)
+- Any newer Gemini models
+
+**DeepSeek** (include ALL available):
+- DeepSeek V3 (general purpose)
+- DeepSeek R1 (reasoning)
+- DeepSeek Coder V2/V3
+
+**Open Source** (include top options):
+- Llama 3.1/4 405B (Meta)
+- Qwen 2.5/3 (Alibaba)
+- Mistral Large (Mistral AI)
+
+For EACH model provide: context window, cost tier (low/mid/high/self-hosted), what it's best for, and any benchmark scores you find (SWE-bench, AIME, etc).
+
+Return ONLY valid JSON (no markdown, no code blocks):
 {
   "lastUpdated": "YYYY-MM-DD",
   "models": [
     {
-      "id": "model-id",
+      "id": "model-id-lowercase",
       "name": "Display Name",
       "provider": "openai|anthropic|google|deepseek|opensource",
       "costTier": "low|mid|high|self-hosted",
       "contextWindow": 128000,
       "benchmarks": {"sweBenchVerified": 50.0},
-      "bestFor": ["coding", "reasoning"],
-      "description": "Short description"
+      "bestFor": ["coding", "reasoning", "general", "budget", "multimodal"],
+      "description": "One line description"
     }
   ],
-  "summary": "Brief summary of major changes or new models found"
+  "summary": "Brief summary of what's new"
 }
 
-Be accurate. Only include models you can verify exist. Use today's date for lastUpdated."""
+IMPORTANT: Include at least 12-15 models total. Use today's date. Be accurate with specs."""
 
 
 def fetch_from_perplexity():
@@ -62,8 +77,8 @@ def fetch_from_perplexity():
                 "content": PROMPT
             }
         ],
-        "temperature": 0.1,
-        "max_tokens": 4000
+        "temperature": 0.2,
+        "max_tokens": 8000
     }
 
     headers = {
