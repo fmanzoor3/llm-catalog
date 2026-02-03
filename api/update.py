@@ -60,14 +60,19 @@ Return ONLY this JSON structure (no markdown, no explanation):
       "description": "One line description"
     }
   ],
+  "sources": [
+    {"name": "Source name", "url": "https://..."}
+  ],
   "summary": "Brief summary of what's new"
 }
 
 Provider values: "openai", "anthropic", "google", "deepseek", "opensource"
 CostTier values: "low", "mid", "high", "self-hosted"
 
-IMPORTANT: You MUST include at least 2 models from EACH of the 5 providers (minimum 10 models total).
-Use today's date. Only include models currently available via API."""
+IMPORTANT:
+- Include at least 2 models from EACH of the 5 providers (minimum 10 models total)
+- Include the URLs of the sources you used to find this information in the "sources" array
+- Use today's date. Only include models currently available via API."""
 
 
 def fetch_from_perplexity():
@@ -267,6 +272,7 @@ def build_full_catalog(perplexity_data):
         "useCases": use_cases,
         "quickDecisions": quick_decisions,
         "summary": perplexity_data.get('summary', 'Data fetched from web sources'),
+        "sources": perplexity_data.get('sources', []),
         "references": {
             "benchmarks": [
                 {"name": "Artificial Analysis", "url": "https://artificialanalysis.ai/leaderboards/models"},

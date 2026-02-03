@@ -631,16 +631,28 @@
 
                     // Show what changed
                     const totalNow = modelData.models.length;
+                    let statusMsg = '';
                     if (mergeResult.added > 0) {
-                        statusEl.textContent = `Added ${mergeResult.added} new model(s)! (${totalNow} total)`;
+                        statusMsg = `Added ${mergeResult.added} new model(s)! (${totalNow} total)`;
                     } else if (mergeResult.updated > 0) {
-                        statusEl.textContent = `Updated ${mergeResult.updated} model(s). (${totalNow} total)`;
+                        statusMsg = `Updated ${mergeResult.updated} model(s). (${totalNow} total)`;
                     } else {
-                        statusEl.textContent = `Already up to date (${totalNow} models)`;
+                        statusMsg = `Already up to date (${totalNow} models)`;
+                    }
+
+                    // Display sources if available
+                    const sources = result.data.sources || [];
+                    if (sources.length > 0) {
+                        const sourceLinks = sources.slice(0, 3).map(s =>
+                            `<a href="${s.url}" target="_blank" style="color: #00d4ff;">${s.name || 'Source'}</a>`
+                        ).join(' · ');
+                        statusEl.innerHTML = `${statusMsg}<br><small style="color: #888;">Sources: ${sourceLinks}</small>`;
+                    } else {
+                        statusEl.textContent = statusMsg;
                     }
                     statusEl.style.color = '#22c55e';
 
-                    // Show summary if available
+                    // Log summary to console
                     if (result.data.summary) {
                         console.log('Update summary:', result.data.summary);
                     }
