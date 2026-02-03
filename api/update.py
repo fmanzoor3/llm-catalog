@@ -1,23 +1,124 @@
 from http.server import BaseHTTPRequestHandler
 import json
+import os
+import urllib.request
+import urllib.error
 from datetime import datetime
 
-# Current model data
-CURRENT_DATA = {
-    "lastUpdated": "2026-02-02",
-    "dataSources": {
-        "benchmarks": "https://artificialanalysis.ai/leaderboards/models",
-        "pricing": "Official provider pricing pages",
-        "lastVerified": "2026-02-02"
-    },
-    "providers": {
+PERPLEXITY_API_KEY = os.environ.get('PERPLEXITY_API_KEY')
+
+PROMPT = """Search for the latest LLM model information and benchmarks as of today. I need accurate, up-to-date data about:
+
+1. **OpenAI models**: GPT-4o, GPT-4o-mini, GPT-4.1, o3, o3-mini, and any newer models (GPT-5, etc.)
+2. **Anthropic models**: Claude Opus 4, Claude Sonnet 4, Claude Haiku, and any newer versions
+3. **Google models**: Gemini 2.0, Gemini 2.5, Gemini Flash, and any newer versions
+4. **DeepSeek models**: DeepSeek V3, DeepSeek R1, DeepSeek Coder
+5. **Open source**: Llama 4, Qwen 3, Mistral Large
+
+For each model, find:
+- Current version/name
+- Context window size
+- Key benchmark scores (especially SWE-bench, AIME, ARC-AGI if available)
+- Relative cost tier (low/mid/high)
+- What it's best for
+
+Return ONLY valid JSON in this exact format (no markdown, no explanation):
+{
+  "lastUpdated": "YYYY-MM-DD",
+  "models": [
+    {
+      "id": "model-id",
+      "name": "Display Name",
+      "provider": "openai|anthropic|google|deepseek|opensource",
+      "costTier": "low|mid|high|self-hosted",
+      "contextWindow": 128000,
+      "benchmarks": {"sweBenchVerified": 50.0},
+      "bestFor": ["coding", "reasoning"],
+      "description": "Short description"
+    }
+  ],
+  "summary": "Brief summary of major changes or new models found"
+}
+
+Be accurate. Only include models you can verify exist. Use today's date for lastUpdated."""
+
+
+def fetch_from_perplexity():
+    """Call Perplexity API to get latest LLM data"""
+    if not PERPLEXITY_API_KEY:
+        return None, "PERPLEXITY_API_KEY not configured"
+
+    url = "https://api.perplexity.ai/chat/completions"
+
+    payload = {
+        "model": "sonar",
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant that returns only valid JSON. No markdown formatting, no code blocks, just raw JSON."
+            },
+            {
+                "role": "user",
+                "content": PROMPT
+            }
+        ],
+        "temperature": 0.1,
+        "max_tokens": 4000
+    }
+
+    headers = {
+        "Authorization": f"Bearer {PERPLEXITY_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode('utf-8'),
+            headers=headers,
+            method='POST'
+        )
+
+        with urllib.request.urlopen(req, timeout=60) as response:
+            result = json.loads(response.read().decode('utf-8'))
+            content = result['choices'][0]['message']['content']
+
+            # Clean up response - remove markdown code blocks if present
+            content = content.strip()
+            if content.startswith('```json'):
+                content = content[7:]
+            if content.startswith('```'):
+                content = content[3:]
+            if content.endswith('```'):
+                content = content[:-3]
+            content = content.strip()
+
+            # Parse the JSON
+            data = json.loads(content)
+            return data, None
+
+    except urllib.error.HTTPError as e:
+        return None, f"Perplexity API error: {e.code} - {e.reason}"
+    except json.JSONDecodeError as e:
+        return None, f"Failed to parse response as JSON: {str(e)}"
+    except Exception as e:
+        return None, f"Error: {str(e)}"
+
+
+def build_full_catalog(perplexity_data):
+    """Build full catalog structure from Perplexity response"""
+
+    models = perplexity_data.get('models', [])
+
+    # Build provider info based on models found
+    providers = {
         "anthropic": {
             "name": "Anthropic",
             "displayName": "Claude (Anthropic)",
             "tagline": "Best for coding & following instructions",
             "strengths": [
                 "Excellent at complex, detailed instructions",
-                "Industry-leading code generation (80.9% SWE-bench)",
+                "Industry-leading code generation",
                 "Natural, human-like conversation",
                 "Extended thinking for deep analysis"
             ],
@@ -28,14 +129,13 @@ CURRENT_DATA = {
         "openai": {
             "name": "OpenAI",
             "displayName": "OpenAI (GPT)",
-            "tagline": "Top intelligence, math & reasoning leader",
+            "tagline": "Most widely used, strong ecosystem",
             "strengths": [
-                "GPT-5.2 leads in math (100% AIME) and abstract reasoning (52.9% ARC-AGI-2)",
                 "Most widely used, extensive ecosystem",
-                "Best reasoning models (o-series and GPT-5.2)",
+                "Strong reasoning models (o-series)",
                 "Good integrations with Microsoft tools"
             ],
-            "tradeoffs": "Premium pricing, especially for GPT-5.2 and o3",
+            "tradeoffs": "Premium pricing",
             "docsUrl": "https://platform.openai.com/docs/models",
             "pricingUrl": "https://openai.com/api/pricing/"
         },
@@ -44,10 +144,9 @@ CURRENT_DATA = {
             "displayName": "Google (Gemini)",
             "tagline": "Long context & Google integration",
             "strengths": [
-                "Longest context (up to 2M tokens)",
+                "Longest context windows",
                 "Native Google Workspace integration",
-                "Good price-performance ratio",
-                "Strong multimodal (text, image, video)"
+                "Good price-performance ratio"
             ],
             "tradeoffs": "Less consistent on complex reasoning",
             "docsUrl": "https://ai.google.dev/gemini-api/docs/models/gemini",
@@ -58,10 +157,9 @@ CURRENT_DATA = {
             "displayName": "DeepSeek",
             "tagline": "Incredible value - 10-30x cheaper",
             "strengths": [
-                "Quality comparable to GPT-4/Sonnet",
+                "Quality comparable to top models",
                 "Fraction of competitors' cost",
-                "Open source (can self-host)",
-                "Strong reasoning model (R1)"
+                "Open source (can self-host)"
             ],
             "tradeoffs": "Chinese company (compliance considerations)",
             "docsUrl": "https://api-docs.deepseek.com/",
@@ -74,62 +172,82 @@ CURRENT_DATA = {
             "strengths": [
                 "Full data privacy - your infrastructure",
                 "No per-token API costs",
-                "Customizable & fine-tunable",
-                "No vendor lock-in"
+                "Customizable & fine-tunable"
             ],
             "tradeoffs": "Requires GPUs & technical expertise",
             "docsUrl": "https://github.com/meta-llama/llama-models",
             "pricingUrl": None
         }
-    },
-    "models": [
-        {"id": "gpt-5.2", "name": "GPT-5.2", "provider": "openai", "costTier": "high", "contextWindow": 400000, "benchmarks": {"aime2025": 100, "arcAgi2": 52.9, "gpqaDiamond": 92.4, "sweBenchPro": 55.6}, "bestFor": ["math", "reasoning", "professional-tasks"], "description": "Top overall intelligence, leads math and abstract reasoning"},
-        {"id": "gpt-5.2-codex", "name": "GPT-5.2 Codex", "provider": "openai", "costTier": "high", "contextWindow": 400000, "benchmarks": {"sweBenchVerified": 80.0}, "bestFor": ["coding", "fast-generation"], "description": "Coding specialist, 23% faster code generation"},
-        {"id": "o3", "name": "OpenAI o3", "provider": "openai", "costTier": "high", "contextWindow": 200000, "benchmarks": {}, "bestFor": ["reasoning", "multi-step"], "description": "Purpose-built for complex multi-step reasoning"},
-        {"id": "gpt-4.1", "name": "GPT-4.1", "provider": "openai", "costTier": "mid", "contextWindow": 1000000, "benchmarks": {}, "bestFor": ["long-documents"], "description": "1M token context for large documents/codebases"},
-        {"id": "gpt-4o", "name": "GPT-4o", "provider": "openai", "costTier": "mid", "contextWindow": 128000, "benchmarks": {}, "bestFor": ["general", "multimodal"], "description": "General tasks, multimodal"},
-        {"id": "gpt-4o-mini", "name": "GPT-4o-mini", "provider": "openai", "costTier": "low", "contextWindow": 128000, "benchmarks": {}, "bestFor": ["budget", "high-volume"], "description": "Budget option, high volume"},
-        {"id": "claude-opus-4.5", "name": "Claude Opus 4.5", "provider": "anthropic", "costTier": "high", "contextWindow": 200000, "benchmarks": {"sweBenchVerified": 80.9, "terminalBench": 59.3, "arcAgi2": 37.6}, "bestFor": ["coding", "instructions", "quality"], "description": "Maximum quality, leads SWE-bench (80.9%)"},
-        {"id": "claude-sonnet-4.5", "name": "Claude Sonnet 4.5", "provider": "anthropic", "costTier": "mid", "contextWindow": 200000, "benchmarks": {}, "bestFor": ["balanced", "production", "conversation"], "description": "Balanced quality and cost, natural conversation"},
-        {"id": "claude-haiku-4.5", "name": "Claude Haiku 4.5", "provider": "anthropic", "costTier": "low", "contextWindow": 200000, "benchmarks": {}, "bestFor": ["speed", "high-volume", "budget"], "description": "Fastest responses, 2-4x faster than competitors"},
-        {"id": "gemini-3-pro", "name": "Gemini 3 Pro", "provider": "google", "costTier": "high", "contextWindow": 1000000, "benchmarks": {}, "bestFor": ["quality", "multimodal"], "description": "Maximum quality, strong multimodal"},
-        {"id": "gemini-3-flash", "name": "Gemini 3 Flash", "provider": "google", "costTier": "low", "contextWindow": 1000000, "benchmarks": {}, "bestFor": ["speed", "budget", "coding"], "description": "Fast and cheap, good coding"},
-        {"id": "gemini-2.5-pro", "name": "Gemini 2.5 Pro", "provider": "google", "costTier": "mid", "contextWindow": 2000000, "benchmarks": {}, "bestFor": ["long-documents"], "description": "Longest context window (2M tokens)"},
-        {"id": "deepseek-v3.2", "name": "DeepSeek V3.2", "provider": "deepseek", "costTier": "low", "contextWindow": 128000, "benchmarks": {}, "bestFor": ["budget", "value", "general"], "description": "Best value - 10-30x cheaper than competitors"},
-        {"id": "deepseek-r1", "name": "DeepSeek R1", "provider": "deepseek", "costTier": "low", "contextWindow": 128000, "benchmarks": {}, "bestFor": ["reasoning", "budget"], "description": "Strong reasoning at ~1/20th cost of o3"},
-        {"id": "deepseek-coder", "name": "DeepSeek Coder", "provider": "deepseek", "costTier": "low", "contextWindow": 128000, "benchmarks": {}, "bestFor": ["coding", "multi-language"], "description": "338+ programming languages, excellent value"},
-        {"id": "llama-4", "name": "Llama 4", "provider": "opensource", "costTier": "self-hosted", "contextWindow": 128000, "benchmarks": {}, "bestFor": ["privacy", "self-hosted"], "description": "Most popular open-source, free up to 700M users"},
-        {"id": "qwen-3", "name": "Qwen 3", "provider": "opensource", "costTier": "self-hosted", "contextWindow": 128000, "benchmarks": {}, "bestFor": ["multilingual", "privacy"], "description": "119 languages, Apache 2.0 license"},
-        {"id": "mistral", "name": "Mistral Large", "provider": "opensource", "costTier": "self-hosted", "contextWindow": 128000, "benchmarks": {}, "bestFor": ["european", "coding"], "description": "Strong on European languages"}
-    ],
-    "useCases": {
-        "chatbot": {"name": "Customer Support / Chatbots", "recommendations": {"quality": {"models": ["claude-sonnet-4.5", "gpt-4o", "gemini-3-pro"], "topPick": "claude-sonnet-4.5", "reason": "Natural conversation, excellent context understanding"}, "cost": {"models": ["deepseek-v3.2", "gemini-3-flash", "claude-haiku-4.5"], "topPick": "deepseek-v3.2", "reason": "10-30x cheaper, handles routine queries well"}, "speed": {"models": ["claude-haiku-4.5", "gemini-3-flash", "gpt-4o-mini"], "topPick": "claude-haiku-4.5", "reason": "2-4x faster than other options"}, "privacy": {"models": ["llama-4", "qwen-3", "deepseek-v3.2"], "topPick": "llama-4", "reason": "Run on your own servers, no data leaves infrastructure"}}},
-        "coding": {"name": "Code Generation & Review", "recommendations": {"quality": {"models": ["claude-opus-4.5", "gpt-5.2-codex", "gemini-3-flash"], "topPick": "claude-opus-4.5", "reason": "Industry-leading 80.9% SWE-bench score"}, "cost": {"models": ["deepseek-coder", "gemini-3-flash", "claude-haiku-4.5"], "topPick": "deepseek-coder", "reason": "338+ languages, excellent value"}, "speed": {"models": ["gpt-5.2-codex", "claude-haiku-4.5", "gemini-3-flash"], "topPick": "gpt-5.2-codex", "reason": "23% faster code generation in timed challenges"}, "privacy": {"models": ["deepseek-coder", "llama-4", "qwen-3"], "topPick": "deepseek-coder", "reason": "338+ languages, runs locally"}}},
-        "documents": {"name": "Document Analysis / RAG", "recommendations": {"quality": {"models": ["gemini-2.5-pro", "gpt-4.1", "claude-opus-4.5"], "topPick": "gemini-2.5-pro", "reason": "2M token context - fits entire books/codebases"}, "cost": {"models": ["gemini-3-flash", "deepseek-v3.2", "claude-haiku-4.5"], "topPick": "gemini-3-flash", "reason": "Large context at low cost"}, "speed": {"models": ["gemini-3-flash", "claude-haiku-4.5", "gpt-4o-mini"], "topPick": "gemini-3-flash", "reason": "Fast processing of long documents"}, "privacy": {"models": ["llama-4", "qwen-3", "deepseek-v3.2"], "topPick": "llama-4", "reason": "10M context available, runs on your servers"}}},
-        "research": {"name": "Research & Complex Analysis", "recommendations": {"quality": {"models": ["gpt-5.2", "o3", "claude-opus-4.5"], "topPick": "gpt-5.2", "reason": "100% AIME, 52.9% ARC-AGI-2 - best abstract reasoning"}, "cost": {"models": ["deepseek-r1", "gemini-3-flash", "claude-haiku-4.5"], "topPick": "deepseek-r1", "reason": "Similar to o3 at ~1/20th the cost"}, "speed": {"models": ["gemini-3-flash", "claude-haiku-4.5", "gpt-4o"], "topPick": "gemini-3-flash", "reason": "Fast for iterative research"}, "privacy": {"models": ["deepseek-r1", "llama-4", "qwen-3"], "topPick": "deepseek-r1", "reason": "Strong reasoning model, runs locally"}}},
-        "content": {"name": "Content Writing / Marketing", "recommendations": {"quality": {"models": ["claude-sonnet-4.5", "claude-opus-4.5", "gpt-5.2"], "topPick": "claude-sonnet-4.5", "reason": "Natural, human-like, engaging prose"}, "cost": {"models": ["deepseek-v3.2", "gemini-3-flash", "claude-haiku-4.5"], "topPick": "deepseek-v3.2", "reason": "Great value for bulk content"}, "speed": {"models": ["claude-haiku-4.5", "gemini-3-flash", "gpt-4o-mini"], "topPick": "claude-haiku-4.5", "reason": "Fast content generation"}, "privacy": {"models": ["llama-4", "qwen-3", "mistral"], "topPick": "llama-4", "reason": "Good content generation, runs locally"}}},
-        "extraction": {"name": "Data Extraction (PDFs, Forms)", "recommendations": {"quality": {"models": ["claude-opus-4.5", "gemini-3-pro", "gpt-4o"], "topPick": "claude-opus-4.5", "reason": "Excellent structured data extraction"}, "cost": {"models": ["gemini-3-flash", "deepseek-v3.2", "claude-haiku-4.5"], "topPick": "gemini-3-flash", "reason": "Decent extraction at budget price"}, "speed": {"models": ["gemini-3-flash", "claude-haiku-4.5", "gpt-4o-mini"], "topPick": "gemini-3-flash", "reason": "Fast document processing"}, "privacy": {"models": ["llama-4", "qwen-3", "deepseek-v3.2"], "topPick": "llama-4", "reason": "Multimodal, self-hosted"}}},
-        "translation": {"name": "Translation / Multilingual", "recommendations": {"quality": {"models": ["qwen-3", "claude-opus-4.5", "gpt-5.2"], "topPick": "qwen-3", "reason": "119 languages, best multilingual coverage"}, "cost": {"models": ["deepseek-v3.2", "gemini-3-flash", "qwen-3"], "topPick": "deepseek-v3.2", "reason": "Good multilingual at very low cost"}, "speed": {"models": ["gemini-3-flash", "claude-haiku-4.5", "gpt-4o-mini"], "topPick": "gemini-3-flash", "reason": "Fast multilingual processing"}, "privacy": {"models": ["qwen-3", "llama-4", "mistral"], "topPick": "qwen-3", "reason": "119 languages, Apache 2.0, runs locally"}}},
-        "vision": {"name": "Image & Vision Tasks", "recommendations": {"quality": {"models": ["claude-opus-4.5", "gemini-3-pro", "gpt-4o"], "topPick": "claude-opus-4.5", "reason": "Leading vision benchmark scores"}, "cost": {"models": ["gemini-3-flash", "deepseek-v3.2", "claude-haiku-4.5"], "topPick": "gemini-3-flash", "reason": "Decent vision at budget price"}, "speed": {"models": ["gemini-3-flash", "claude-haiku-4.5", "gpt-4o-mini"], "topPick": "gemini-3-flash", "reason": "Fast image processing"}, "privacy": {"models": ["llama-4", "qwen-3", "deepseek-v3.2"], "topPick": "llama-4", "reason": "Multimodal, self-hosted"}}}
-    },
-    "quickDecisions": [
-        {"priority": "Lowest cost", "recommendations": ["deepseek-v3.2", "gemini-3-flash", "claude-haiku-4.5"]},
-        {"priority": "Highest quality", "recommendations": ["gpt-5.2", "claude-opus-4.5", "gemini-3-pro"]},
-        {"priority": "Fastest responses", "recommendations": ["claude-haiku-4.5", "gemini-3-flash", "gpt-4o-mini"]},
-        {"priority": "Data privacy", "recommendations": ["llama-4", "deepseek-v3.2", "qwen-3"]},
-        {"priority": "Best for coding", "recommendations": ["claude-opus-4.5", "gpt-5.2-codex", "deepseek-coder"]},
-        {"priority": "Complex reasoning", "recommendations": ["gpt-5.2", "o3", "deepseek-r1"]},
-        {"priority": "Math & abstract reasoning", "recommendations": ["gpt-5.2", "claude-opus-4.5", "deepseek-r1"]}
-    ],
-    "references": {
-        "claude": [{"name": "Official Model Documentation", "url": "https://docs.anthropic.com/en/docs/about-claude/models/all-models"}, {"name": "API Pricing", "url": "https://www.anthropic.com/pricing"}],
-        "openai": [{"name": "Official Model Catalog", "url": "https://platform.openai.com/docs/models"}, {"name": "API Pricing", "url": "https://openai.com/api/pricing/"}],
-        "google": [{"name": "Official Documentation", "url": "https://ai.google.dev/gemini-api/docs/models/gemini"}],
-        "deepseek": [{"name": "API Documentation", "url": "https://api-docs.deepseek.com/"}],
-        "opensource": [{"name": "Llama (Meta)", "url": "https://github.com/meta-llama/llama-models"}],
-        "benchmarks": [{"name": "Artificial Analysis Leaderboard", "url": "https://artificialanalysis.ai/leaderboards/models"}]
     }
-}
+
+    # Build use case recommendations based on models
+    coding_quality = [m['id'] for m in models if 'coding' in m.get('bestFor', []) and m['costTier'] == 'high'][:3]
+    coding_budget = [m['id'] for m in models if 'coding' in m.get('bestFor', []) and m['costTier'] == 'low'][:3]
+
+    general_quality = [m['id'] for m in models if m['costTier'] == 'high'][:3]
+    general_budget = [m['id'] for m in models if m['costTier'] == 'low'][:3]
+
+    use_cases = {
+        "coding": {
+            "name": "Code Generation & Review",
+            "recommendations": {
+                "quality": {
+                    "models": coding_quality or general_quality,
+                    "topPick": (coding_quality or general_quality or [''])[0],
+                    "reason": "Best coding benchmark scores"
+                },
+                "cost": {
+                    "models": coding_budget or general_budget,
+                    "topPick": (coding_budget or general_budget or [''])[0],
+                    "reason": "Good coding at low cost"
+                }
+            }
+        },
+        "general": {
+            "name": "General Tasks",
+            "recommendations": {
+                "quality": {
+                    "models": general_quality,
+                    "topPick": (general_quality or [''])[0],
+                    "reason": "Best overall quality"
+                },
+                "cost": {
+                    "models": general_budget,
+                    "topPick": (general_budget or [''])[0],
+                    "reason": "Best value"
+                }
+            }
+        }
+    }
+
+    # Quick decisions
+    quick_decisions = [
+        {"priority": "Lowest cost", "recommendations": general_budget[:3]},
+        {"priority": "Highest quality", "recommendations": general_quality[:3]},
+        {"priority": "Best for coding", "recommendations": coding_quality[:3] or general_quality[:3]}
+    ]
+
+    return {
+        "lastUpdated": perplexity_data.get('lastUpdated', datetime.now().strftime('%Y-%m-%d')),
+        "dataSources": {
+            "benchmarks": "https://artificialanalysis.ai/leaderboards/models",
+            "pricing": "Official provider pricing pages",
+            "lastVerified": datetime.now().strftime('%Y-%m-%d'),
+            "method": "Perplexity AI web search"
+        },
+        "providers": providers,
+        "models": models,
+        "useCases": use_cases,
+        "quickDecisions": quick_decisions,
+        "summary": perplexity_data.get('summary', 'Data fetched from web sources'),
+        "references": {
+            "benchmarks": [
+                {"name": "Artificial Analysis", "url": "https://artificialanalysis.ai/leaderboards/models"},
+                {"name": "LMArena", "url": "https://lmarena.ai/"},
+                {"name": "Vellum Leaderboard", "url": "https://www.vellum.ai/llm-leaderboard"}
+            ]
+        }
+    }
 
 
 class handler(BaseHTTPRequestHandler):
@@ -139,13 +257,24 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
 
-        response = {
-            "status": "success",
-            "timestamp": datetime.now().isoformat(),
-            "data": CURRENT_DATA
-        }
+        # Try to fetch from Perplexity
+        perplexity_data, error = fetch_from_perplexity()
 
-        self.wfile.write(json.dumps(response).encode())
+        if error:
+            response = {
+                "status": "error",
+                "message": error,
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            full_catalog = build_full_catalog(perplexity_data)
+            response = {
+                "status": "success",
+                "timestamp": datetime.now().isoformat(),
+                "data": full_catalog
+            }
+
+        self.wfile.write(json.dumps(response, indent=2).encode())
 
     def do_OPTIONS(self):
         self.send_response(200)
