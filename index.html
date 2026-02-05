@@ -7,26 +7,24 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e0e0;
             min-height: 100vh;
-            color: #e4e4e4;
             line-height: 1.6;
         }
-        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
-        header { text-align: center; margin-bottom: 3rem; }
-        h1 {
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        header { text-align: center; margin-bottom: 3rem; padding: 2rem 0; }
+        header h1 {
             font-size: 2.5rem;
-            margin-bottom: 0.5rem;
             background: linear-gradient(90deg, #00d4ff, #7b2cbf);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin-bottom: 0.5rem;
         }
-        .subtitle { color: #888; font-size: 1.1rem; }
-        .last-updated { color: #666; font-size: 0.85rem; margin-top: 0.5rem; }
-
-        /* Finder Section */
+        .subtitle { color: #888; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .last-updated { color: #666; font-size: 0.85rem; }
         .finder-section {
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
@@ -37,201 +35,304 @@
         .finder-section h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
         .filter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
             margin-bottom: 1.5rem;
         }
-        .filter-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #aaa; }
+        .filter-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
         .filter-group select {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.75rem;
             border-radius: 8px;
             border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             color: #fff;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
         }
-        .filter-group select:focus { outline: none; border-color: #00d4ff; }
         .filter-group select option { background: #1a1a2e; color: #fff; }
-
-        /* Results */
-        .results { margin-top: 2rem; }
-        .results h3 { margin-bottom: 1rem; color: #00d4ff; }
+        .results { margin-top: 1.5rem; }
+        .results h3 { margin-bottom: 1rem; font-size: 1.2rem; color: #00d4ff; }
         .recommendation-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1rem;
         }
         .rec-card {
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.06);
             border-radius: 12px;
             padding: 1.5rem;
-            border-left: 4px solid #00d4ff;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: transform 0.2s;
         }
-        .rec-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-        .rec-card.top-pick { border-left-color: #ffd700; background: rgba(255,215,0,0.08); }
-        .rec-card h4 { font-size: 1.2rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
-        .rec-card .provider { font-size: 0.85rem; color: #888; margin-bottom: 0.75rem; }
-        .rec-card .why { font-size: 0.95rem; color: #ccc; }
-        .badge { font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 4px; background: #ffd700; color: #1a1a2e; font-weight: 600; }
-        .cost-badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; margin-top: 0.5rem; }
-        .cost-low { background: #22c55e; color: #fff; }
-        .cost-mid { background: #eab308; color: #1a1a2e; }
-        .cost-high { background: #ef4444; color: #fff; }
-
-        /* Provider Cards */
+        .rec-card:hover { transform: translateY(-2px); }
+        .rec-card.top-pick { border-color: #00d4ff; box-shadow: 0 0 20px rgba(0,212,255,0.1); }
+        .rec-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .badge {
+            background: #00d4ff;
+            color: #1a1a2e;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+        .rec-card .provider { color: #888; font-size: 0.85rem; margin-bottom: 0.5rem; }
+        .rec-card .why { font-size: 0.9rem; color: #aaa; margin-bottom: 0.75rem; line-height: 1.5; }
+        .cost-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .cost-low { background: rgba(34,197,94,0.2); color: #22c55e; }
+        .cost-mid { background: rgba(234,179,8,0.2); color: #eab308; }
+        .cost-high { background: rgba(239,68,68,0.2); color: #ef4444; }
         .providers-section { margin-bottom: 3rem; }
         .providers-section h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
-        .provider-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
         .provider-card {
             background: rgba(255,255,255,0.05);
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 1.5rem;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: transform 0.2s, border-color 0.2s;
+            border: 1px solid rgba(255,255,255,0.08);
         }
-        .provider-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.2); }
-        .provider-card h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
-        .provider-card .tagline { color: #888; font-size: 0.9rem; margin-bottom: 1rem; }
-        .provider-card .strengths { margin-bottom: 1rem; }
-        .provider-card .strengths li { list-style: none; padding-left: 1.5rem; position: relative; margin-bottom: 0.4rem; font-size: 0.9rem; }
-        .provider-card .strengths li::before { content: "✓"; position: absolute; left: 0; color: #22c55e; }
-        .provider-card .tradeoffs { font-size: 0.85rem; color: #f59e0b; padding: 0.75rem; background: rgba(245,158,11,0.1); border-radius: 8px; margin-bottom: 1rem; }
-        .provider-card .models { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-        .model-tag { font-size: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 6px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
-
-        /* Comparison Table */
-        .comparison-section { margin-bottom: 3rem; }
-        .comparison-section h2 { margin-bottom: 1.5rem; }
-        .comparison-table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; }
-        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .comparison-table th { background: rgba(255,255,255,0.1); font-weight: 600; color: #00d4ff; }
-        .comparison-table tr:hover { background: rgba(255,255,255,0.05); }
-        .comparison-table .best { color: #22c55e; font-weight: 600; }
-
-        /* Links Section */
-        .links-section { text-align: center; padding: 2rem; background: rgba(255,255,255,0.03); border-radius: 16px; margin-bottom: 2rem; }
-        .links-section h2 { margin-bottom: 1rem; }
-        .links-section p { color: #888; margin-bottom: 1.5rem; }
-        .link-buttons { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-        .link-btn { display: inline-block; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.1); color: #fff; text-decoration: none; border-radius: 8px; transition: background 0.2s; }
-        .link-btn:hover { background: rgba(255,255,255,0.2); }
-
-        /* References */
-        .references-section { margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.03); border-radius: 16px; }
-        .references-section h2 { margin-bottom: 1.5rem; color: #00d4ff; }
-        .ref-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-        .ref-group h3 { color: #fff; margin-bottom: 0.75rem; font-size: 1.1rem; }
-        .ref-group ul { list-style: none; font-size: 0.9rem; }
-        .ref-group li { margin-bottom: 0.4rem; }
-        .ref-group a { color: #888; text-decoration: none; }
-        .ref-group a:hover { color: #00d4ff; }
-
-        footer { text-align: center; padding: 2rem; color: #666; font-size: 0.9rem; }
-        .no-results { text-align: center; padding: 2rem; color: #888; }
-
-        /* Update Button */
-        .update-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #22c55e, #00d4ff);
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 1000;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .update-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
-        .update-btn svg { width: 18px; height: 18px; }
-
-        /* Update Panel */
-        .update-panel {
-            display: none;
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 320px;
-            background: #1a1a2e;
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            z-index: 1001;
-        }
-        .update-panel.active { display: block; }
-        .update-panel h3 { color: #00d4ff; margin-bottom: 1rem; font-size: 1.1rem; }
-        .update-panel p { color: #888; font-size: 0.85rem; margin-bottom: 1rem; }
-        .update-panel .source-list { list-style: none; margin-bottom: 1.5rem; }
-        .update-panel .source-list li {
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+        .provider-card h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
+        .tagline { color: #888; font-size: 0.85rem; margin-bottom: 1rem; }
+        .strengths { list-style: none; margin-bottom: 1rem; }
+        .strengths li {
+            padding-left: 1.2rem;
+            position: relative;
+            margin-bottom: 0.4rem;
             font-size: 0.9rem;
         }
-        .update-panel .source-list a { color: #00d4ff; text-decoration: none; }
-        .update-panel .source-list a:hover { text-decoration: underline; }
-        .update-panel .btn-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .update-panel button {
-            padding: 0.75rem 1rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .update-panel .btn-primary { background: #22c55e; color: white; }
-        .update-panel .btn-primary:hover { background: #1da34d; }
-        .update-panel .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
-        .update-panel .btn-secondary:hover { background: rgba(255,255,255,0.2); }
-        .update-panel .close-btn {
+        .strengths li::before {
+            content: "\2713";
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            color: #666;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0;
-            line-height: 1;
+            left: 0;
+            color: #22c55e;
         }
-        .update-panel .close-btn:hover { color: #fff; }
-
-        /* Verify links on provider cards */
-        .verify-links {
-            margin-top: 1rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
+        .tradeoffs {
+            font-size: 0.85rem;
+            color: #f59e0b;
+            padding: 0.5rem 0.75rem;
+            background: rgba(245,158,11,0.1);
+            border-radius: 6px;
+            margin-bottom: 1rem;
         }
-        .verify-link {
-            font-size: 0.75rem;
+        .models { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .model-tag {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(0,212,255,0.15);
+            color: #00d4ff;
+        }
+        .comparison-section { margin-bottom: 3rem; }
+        .comparison-section h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .comparison-table th {
+            padding: 1rem;
+            text-align: left;
+            background: rgba(255,255,255,0.08);
+            font-size: 0.85rem;
             color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .comparison-table td {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            font-size: 0.9rem;
+        }
+        .comparison-table td.best { color: #00d4ff; font-weight: 600; }
+        .links-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+        }
+        .links-section h2 { margin-bottom: 0.5rem; }
+        .links-section p { color: #888; margin-bottom: 1.5rem; }
+        .link-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .link-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            background: rgba(0,212,255,0.15);
+            color: #00d4ff;
             text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid rgba(0,212,255,0.3);
+        }
+        .link-btn:hover { background: rgba(0,212,255,0.25); transform: translateY(-1px); }
+        .references-section { margin-bottom: 3rem; }
+        .references-section h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .ref-group {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+        .ref-group h3 { font-size: 1rem; margin-bottom: 0.75rem; color: #00d4ff; }
+        .ref-group ul { list-style: none; }
+        .ref-group li { margin-bottom: 0.5rem; }
+        .ref-group a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.85rem;
             transition: color 0.2s;
         }
-        .verify-link:hover {
-            color: #00d4ff;
+        .ref-group a:hover { color: #00d4ff; }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .no-results { color: #666; font-style: italic; text-align: center; padding: 2rem; }
+
+        /* Clickable model styling */
+        .clickable-model { cursor: pointer; transition: color 0.2s; }
+        .clickable-model:hover { color: #00d4ff; }
+
+        /* All Models Section */
+        .all-models-section { margin-bottom: 3rem; }
+        .all-models-section h2 { margin-bottom: 0.5rem; font-size: 1.5rem; }
+        .section-subtitle { color: #888; margin-bottom: 1.5rem; }
+        .model-filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .filter-chip {
+            padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);
+            background: transparent; color: #888; cursor: pointer; font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .filter-chip:hover { border-color: #00d4ff; color: #00d4ff; }
+        .filter-chip.active { background: #00d4ff; color: #1a1a2e; border-color: #00d4ff; font-weight: 600; }
+        .all-models-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+        .model-card {
+            background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1.25rem;
+            border: 1px solid rgba(255,255,255,0.08); cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+        .model-card:hover { transform: translateY(-2px); border-color: rgba(0,212,255,0.3); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .model-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .model-card-header h4 { font-size: 1.05rem; color: #fff; }
+        .model-card-provider { font-size: 0.8rem; color: #888; margin-bottom: 0.5rem; }
+        .model-card-desc { font-size: 0.85rem; color: #aaa; margin-bottom: 0.75rem; line-height: 1.4; }
+        .model-card-meta { display: flex; gap: 0.75rem; font-size: 0.75rem; color: #666; margin-bottom: 0.75rem; }
+        .model-card-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+        .mini-tag { font-size: 0.7rem; padding: 0.15rem 0.45rem; border-radius: 4px; background: rgba(0,212,255,0.1); color: #00d4ff; }
+
+        /* Modal */
+        .model-modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px); z-index: 2000; justify-content: center;
+            align-items: flex-start; padding: 2rem; overflow-y: auto;
+        }
+        .model-modal-overlay.active { display: flex; }
+        .model-modal {
+            background: linear-gradient(135deg, #1e1e3a 0%, #1a2040 100%);
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 20px;
+            max-width: 800px; width: 100%; padding: 2.5rem; position: relative;
+            margin: 2rem auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: modalSlideIn 0.25s ease-out;
+        }
+        @keyframes modalSlideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-close {
+            position: absolute; top: 1rem; right: 1.25rem; background: none;
+            border: none; color: #888; font-size: 2rem; cursor: pointer; line-height: 1;
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: #fff; }
+        .modal-title-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.25rem; flex-wrap: wrap; }
+        .modal-title-row h2 {
+            font-size: 1.8rem; background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .modal-provider { color: #888; font-size: 0.95rem; margin-bottom: 1rem; }
+        .modal-description { color: #ccc; font-size: 1rem; line-height: 1.7; margin-bottom: 1.5rem; }
+        .modal-specs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 2rem; }
+        .spec-card {
+            background: rgba(255,255,255,0.06); border-radius: 10px; padding: 0.75rem;
+            text-align: center;
+        }
+        .spec-card .spec-label { font-size: 0.7rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
+        .spec-card .spec-value { font-size: 1rem; font-weight: 600; color: #fff; margin-top: 0.2rem; }
+        .modal-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1.5rem; }
+        .modal-section { margin-bottom: 1.5rem; }
+        .modal-section h3 {
+            font-size: 1.05rem; color: #00d4ff; margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .modal-strengths, .modal-weaknesses { list-style: none; padding: 0; }
+        .modal-strengths li, .modal-weaknesses li {
+            padding-left: 1.5rem; position: relative; margin-bottom: 0.5rem;
+            font-size: 0.88rem; color: #ccc; line-height: 1.5;
+        }
+        .modal-strengths li::before { content: "\2713"; position: absolute; left: 0; color: #22c55e; font-weight: bold; }
+        .modal-weaknesses li::before { content: "!"; position: absolute; left: 0; color: #f59e0b; font-weight: bold; }
+        .use-case-item {
+            background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .use-case-item h4 { font-size: 0.95rem; margin-bottom: 0.3rem; color: #fff; }
+        .use-case-item p { font-size: 0.85rem; color: #aaa; line-height: 1.5; }
+        .modal-pricing {
+            display: flex; gap: 2rem; background: rgba(255,255,255,0.05);
+            border-radius: 10px; padding: 1rem 1.5rem; flex-wrap: wrap;
+        }
+        .pricing-item .pricing-label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+        .pricing-item .pricing-value { font-size: 1.2rem; font-weight: 600; color: #22c55e; }
+        .modal-benchmarks { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .benchmark-chip {
+            background: rgba(255,255,255,0.06); border-radius: 8px; padding: 0.5rem 1rem;
+            text-align: center; min-width: 110px;
+        }
+        .benchmark-chip .bench-name { font-size: 0.65rem; color: #888; text-transform: uppercase; }
+        .benchmark-chip .bench-value { font-size: 1.05rem; font-weight: 600; color: #fff; }
+        .modal-tags {
+            display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;
+            padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .modal-tag {
+            font-size: 0.8rem; padding: 0.3rem 0.7rem; border-radius: 6px;
+            background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3);
         }
 
         @media (max-width: 768px) {
             .container { padding: 1rem; }
-            h1 { font-size: 1.8rem; }
+            header h1 { font-size: 1.8rem; }
             .filter-grid { grid-template-columns: 1fr; }
-            .update-panel { width: calc(100% - 40px); right: 20px; left: 20px; }
+            .recommendation-cards { grid-template-columns: 1fr; }
+            .provider-grid { grid-template-columns: 1fr; }
+            .comparison-table { font-size: 0.8rem; }
+            .comparison-table th, .comparison-table td { padding: 0.5rem; }
+            .ref-grid { grid-template-columns: 1fr; }
+            .modal-specs-grid { grid-template-columns: repeat(2, 1fr); }
+            .modal-columns { grid-template-columns: 1fr; }
+            .model-modal { padding: 1.5rem; margin: 1rem; }
+            .all-models-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -249,9 +350,7 @@
             <div class="filter-grid">
                 <div class="filter-group">
                     <label for="useCase">What are you building?</label>
-                    <select id="useCase">
-                        <option value="">Select a use case...</option>
-                    </select>
+                    <select id="useCase"><option value="">Select a use case...</option></select>
                 </div>
                 <div class="filter-group">
                     <label for="priority">What matters most?</label>
@@ -287,18 +386,26 @@
             <div class="provider-grid" id="providerGrid"></div>
         </section>
 
+        <!-- All Models -->
+        <section class="all-models-section">
+            <h2>All Models</h2>
+            <p class="section-subtitle">Click any model for detailed information</p>
+            <div class="model-filter-bar" id="modelFilterBar">
+                <button class="filter-chip active" data-filter="all">All</button>
+                <button class="filter-chip" data-filter="anthropic">Anthropic</button>
+                <button class="filter-chip" data-filter="openai">OpenAI</button>
+                <button class="filter-chip" data-filter="google">Google</button>
+                <button class="filter-chip" data-filter="deepseek">DeepSeek</button>
+                <button class="filter-chip" data-filter="opensource">Open Source</button>
+            </div>
+            <div class="all-models-grid" id="allModelsGrid"></div>
+        </section>
+
         <!-- Quick Comparison -->
         <section class="comparison-section">
             <h2>Quick Comparison: Best For Each Need</h2>
             <table class="comparison-table" id="comparisonTable">
-                <thead>
-                    <tr>
-                        <th>Need</th>
-                        <th>Best Choice</th>
-                        <th>Runner Up</th>
-                        <th>Budget Option</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Need</th><th>Best Choice</th><th>Runner Up</th><th>Budget Option</th></tr></thead>
                 <tbody id="comparisonBody"></tbody>
             </table>
         </section>
@@ -308,7 +415,7 @@
             <h2>Want More Details?</h2>
             <p>These sites provide real-time pricing, benchmarks, and let you test models yourself</p>
             <div class="link-buttons">
-                <a href="https://artificialanalysis.ai/" target="_blank" class="link-btn">Artificial Analysis - Pricing & Speed</a>
+                <a href="https://artificialanalysis.ai/" target="_blank" class="link-btn">Artificial Analysis - Pricing &amp; Speed</a>
                 <a href="https://lmarena.ai/" target="_blank" class="link-btn">LMArena - Try Side-by-Side</a>
                 <a href="https://whatllm.org/" target="_blank" class="link-btn">WhatLLM - Weekly Updates</a>
             </div>
@@ -316,364 +423,280 @@
 
         <!-- References Section -->
         <section class="references-section">
-            <h2>References & Sources</h2>
+            <h2>References &amp; Sources</h2>
             <div class="ref-grid" id="referencesGrid"></div>
         </section>
 
-        <footer id="footer">
-            Last updated: <span id="footerDate">Loading...</span>
-        </footer>
+        <footer id="footer">Last updated: <span id="footerDate">Loading...</span></footer>
     </div>
 
-    <!-- Update Button -->
-    <button class="update-btn" onclick="toggleUpdatePanel()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
-        </svg>
-        Check for Updates
-    </button>
-
-    <!-- Update Panel -->
-    <div class="update-panel" id="updatePanel">
-        <button class="close-btn" onclick="toggleUpdatePanel()">&times;</button>
-        <h3>Check for Updates</h3>
-
-        <!-- Automatic Update (when deployed) -->
-        <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(0,212,255,0.1); border-radius: 8px; border: 1px solid rgba(0,212,255,0.2);">
-            <button id="fetchDataBtn" class="btn-primary" onclick="fetchLatestData()" style="width: 100%; margin-bottom: 0.5rem;">
-                Fetch Latest Data
-            </button>
-            <p id="updateStatus" style="font-size: 0.8rem; color: #888; text-align: center; margin: 0;">
-                Click to check for updates
-            </p>
+    <!-- Model Detail Modal -->
+    <div class="model-modal-overlay" id="modelModal">
+        <div class="model-modal">
+            <button class="modal-close" onclick="closeModelModal()">&times;</button>
+            <div class="modal-title-row">
+                <h2 id="modalModelName"></h2>
+                <span class="cost-badge" id="modalCostBadge"></span>
+            </div>
+            <p class="modal-provider" id="modalProvider"></p>
+            <p class="modal-description" id="modalOverview"></p>
+            <div class="modal-specs-grid" id="modalSpecs"></div>
+            <div class="modal-section" id="modalPricingSection">
+                <h3>Pricing</h3>
+                <div class="modal-pricing" id="modalPricing"></div>
+            </div>
+            <div class="modal-columns">
+                <div class="modal-section">
+                    <h3>Strengths</h3>
+                    <ul class="modal-strengths" id="modalStrengths"></ul>
+                </div>
+                <div class="modal-section">
+                    <h3>Limitations</h3>
+                    <ul class="modal-weaknesses" id="modalWeaknesses"></ul>
+                </div>
+            </div>
+            <div class="modal-section" id="modalUseCasesSection">
+                <h3>Best Use Cases</h3>
+                <div id="modalUseCases"></div>
+            </div>
+            <div class="modal-section" id="modalBenchmarksSection">
+                <h3>Benchmarks</h3>
+                <div class="modal-benchmarks" id="modalBenchmarks"></div>
+            </div>
+            <div class="modal-tags" id="modalTags"></div>
         </div>
-
-        <p style="font-size: 0.85rem; color: #888; margin-bottom: 0.75rem;">Or view benchmark sources:</p>
-
-        <ul class="source-list">
-            <li><a href="https://artificialanalysis.ai/leaderboards/models" target="_blank">Artificial Analysis Leaderboard</a></li>
-            <li><a href="https://www.vellum.ai/llm-leaderboard" target="_blank">Vellum LLM Leaderboard</a></li>
-            <li><a href="https://lmarena.ai/" target="_blank">LMArena Rankings</a></li>
-        </ul>
-
-        <div class="btn-group">
-            <button class="btn-secondary" onclick="openAllSources()">Open All Sources</button>
-        </div>
-
-        <p style="margin-top: 1rem; font-size: 0.75rem; color: #555;">
-            Local development: <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">python auto_update.py</code>
-        </p>
     </div>
 
     <script>
-        // Embedded data - auto-generated from data/models.json
-        const modelData = {"lastUpdated":"2026-02-03","dataSources":{"benchmarks":"https://artificialanalysis.ai/leaderboards/models","pricing":"Official provider pricing pages","lastVerified":"2026-02-03"},"providers":{"anthropic":{"name":"Anthropic","displayName":"Claude (Anthropic)","tagline":"Best for coding & complex instructions","strengths":["Industry-leading coding (Opus 4.5: 80.9% SWE-bench)","Excellent at complex, detailed instructions","Extended thinking for deep analysis","Natural, human-like conversation"],"tradeoffs":"More expensive than DeepSeek/Gemini","docsUrl":"https://docs.anthropic.com/en/docs/about-claude/models/all-models","pricingUrl":"https://www.anthropic.com/pricing"},"openai":{"name":"OpenAI","displayName":"OpenAI (GPT)","tagline":"Most widely used, strong ecosystem","strengths":["GPT-5 series with adaptive computation","Strong reasoning models (o3, o4-mini)","Extensive ecosystem & Microsoft integration","GPT-4.1 optimized for coding (1M context)"],"tradeoffs":"Premium pricing","docsUrl":"https://platform.openai.com/docs/models","pricingUrl":"https://openai.com/api/pricing/"},"google":{"name":"Google","displayName":"Google (Gemini)","tagline":"Long context & Google integration","strengths":["1M token context (2M coming soon)","Gemini 3 Flash now default model","Native Google Workspace integration","Good price-performance ratio"],"tradeoffs":"Less consistent on complex reasoning","docsUrl":"https://ai.google.dev/gemini-api/docs/models/gemini","pricingUrl":"https://ai.google.dev/pricing"},"deepseek":{"name":"DeepSeek","displayName":"DeepSeek","tagline":"Incredible value - 10-30x cheaper","strengths":["V3.2 with hybrid thinking modes","R1 rivals OpenAI o1 on reasoning","Fraction of competitors' cost","Open source (can self-host)"],"tradeoffs":"Chinese company (compliance considerations)","docsUrl":"https://api-docs.deepseek.com/","pricingUrl":"https://api-docs.deepseek.com/quick_start/pricing"},"opensource":{"name":"Open Source","displayName":"Open Source (Llama, Qwen, Mistral)","tagline":"Self-host for privacy & control","strengths":["Llama 4 Scout: 10M token context","Llama 4 Maverick: 400B params, multimodal","Full data privacy - your infrastructure","No per-token API costs"],"tradeoffs":"Requires GPUs & technical expertise","docsUrl":"https://github.com/meta-llama/llama-models","pricingUrl":null}},"models":[{"id":"claude-opus-4.5","name":"Claude Opus 4.5","provider":"anthropic","costTier":"high","contextWindow":200000,"benchmarks":{"sweBenchVerified":80.9},"bestFor":["coding","reasoning","quality"],"description":"Most intelligent Claude, 80.9% SWE-bench"},{"id":"claude-sonnet-4.5","name":"Claude Sonnet 4.5","provider":"anthropic","costTier":"mid","contextWindow":1000000,"benchmarks":{"sweBenchVerified":77.2},"bestFor":["coding","agents","balanced"],"description":"Best for complex agents, 77.2% SWE-bench"},{"id":"claude-haiku-4.5","name":"Claude Haiku 4.5","provider":"anthropic","costTier":"low","contextWindow":200000,"benchmarks":{"sweBenchVerified":73.3},"bestFor":["speed","budget","high-volume"],"description":"Fast & cheap, 73.3% SWE-bench"},{"id":"gpt-5","name":"GPT-5.2","provider":"openai","costTier":"high","contextWindow":196000,"benchmarks":{},"bestFor":["general","reasoning","quality"],"description":"Latest flagship with adaptive computation"},{"id":"gpt-4.1","name":"GPT-4.1","provider":"openai","costTier":"mid","contextWindow":1000000,"benchmarks":{},"bestFor":["coding","instructions","long-context"],"description":"Coding specialist, 1M token context"},{"id":"o3","name":"OpenAI o3","provider":"openai","costTier":"high","contextWindow":200000,"benchmarks":{},"bestFor":["reasoning","math","science"],"description":"Deep reasoning model, thinks before responding"},{"id":"o4-mini","name":"OpenAI o4-mini","provider":"openai","costTier":"mid","contextWindow":128000,"benchmarks":{},"bestFor":["reasoning","math","coding","budget"],"description":"Fast reasoning, best on AIME 2024/2025"},{"id":"gpt-4o","name":"GPT-4o","provider":"openai","costTier":"mid","contextWindow":128000,"benchmarks":{"sweBenchVerified":38.0},"bestFor":["general","multimodal"],"description":"Multimodal flagship (legacy)"},{"id":"gemini-2.5-pro","name":"Gemini 2.5 Pro","provider":"google","costTier":"mid","contextWindow":1000000,"benchmarks":{"sweBenchVerified":63.8},"bestFor":["reasoning","coding","long-context"],"description":"Best for complex tasks, 1M context"},{"id":"gemini-2.5-flash","name":"Gemini 2.5 Flash","provider":"google","costTier":"low","contextWindow":1000000,"benchmarks":{},"bestFor":["speed","budget","multimodal"],"description":"Fast with thinking capabilities"},{"id":"gemini-3-flash","name":"Gemini 3 Flash","provider":"google","costTier":"low","contextWindow":1000000,"benchmarks":{},"bestFor":["speed","general","multimodal"],"description":"New default, PhD-level reasoning"},{"id":"deepseek-v3.2","name":"DeepSeek V3.2","provider":"deepseek","costTier":"low","contextWindow":128000,"benchmarks":{},"bestFor":["general","coding","budget","agents"],"description":"Hybrid thinking, tool-use integrated"},{"id":"deepseek-r1","name":"DeepSeek R1","provider":"deepseek","costTier":"low","contextWindow":128000,"benchmarks":{"aime2024":96.3},"bestFor":["reasoning","math","science"],"description":"Rivals o1, 96.3% AIME 2024"},{"id":"llama-4-maverick","name":"Llama 4 Maverick","provider":"opensource","costTier":"self-hosted","contextWindow":1000000,"benchmarks":{},"bestFor":["multimodal","multilingual","privacy"],"description":"400B params, 200 languages, multimodal"},{"id":"llama-4-scout","name":"Llama 4 Scout","provider":"opensource","costTier":"self-hosted","contextWindow":10000000,"benchmarks":{},"bestFor":["long-context","codebase-analysis","privacy"],"description":"10M token context, single GPU"},{"id":"qwen-3","name":"Qwen 3","provider":"opensource","costTier":"self-hosted","contextWindow":131072,"benchmarks":{},"bestFor":["multilingual","reasoning","coding"],"description":"235B MoE, strong multilingual"},{"id":"mistral-medium-3.1","name":"Mistral Medium 3.1","provider":"opensource","costTier":"low","contextWindow":128000,"benchmarks":{},"bestFor":["coding","multimodal","value"],"description":"90% of Sonnet quality, 8x cheaper"}],"useCases":{"chatbot":{"name":"Customer Support / Chatbots","recommendations":{"quality":{"models":["claude-sonnet-4.5","gpt-5","gemini-2.5-pro"],"topPick":"claude-sonnet-4.5","reason":"Natural conversation, excellent context understanding"},"cost":{"models":["deepseek-v3.2","claude-haiku-4.5","gemini-2.5-flash"],"topPick":"deepseek-v3.2","reason":"10-30x cheaper, handles routine queries well"},"speed":{"models":["claude-haiku-4.5","gemini-3-flash"],"topPick":"claude-haiku-4.5","reason":"Fastest responses"},"privacy":{"models":["llama-4-maverick","qwen-3"],"topPick":"llama-4-maverick","reason":"Run on your own servers"}}},"coding":{"name":"Code Generation & Review","recommendations":{"quality":{"models":["claude-opus-4.5","claude-sonnet-4.5","gpt-4.1"],"topPick":"claude-opus-4.5","reason":"Industry-leading 80.9% SWE-bench score"},"cost":{"models":["deepseek-v3.2","claude-haiku-4.5","mistral-medium-3.1"],"topPick":"deepseek-v3.2","reason":"Excellent coding at fraction of cost"},"speed":{"models":["claude-haiku-4.5","o4-mini"],"topPick":"claude-haiku-4.5","reason":"Fast code generation"},"privacy":{"models":["llama-4-scout","qwen-3"],"topPick":"llama-4-scout","reason":"10M context for entire codebases"}}},"reasoning":{"name":"Complex Reasoning & Analysis","recommendations":{"quality":{"models":["o3","claude-opus-4.5","deepseek-r1"],"topPick":"o3","reason":"Deepest reasoning capabilities"},"cost":{"models":["deepseek-r1","o4-mini"],"topPick":"deepseek-r1","reason":"Rivals o1 at fraction of cost"}}}},"quickDecisions":[{"priority":"Lowest cost","recommendations":["deepseek-v3.2","deepseek-r1","gemini-2.5-flash"]},{"priority":"Highest quality","recommendations":["claude-opus-4.5","o3","gpt-5"]},{"priority":"Best for coding","recommendations":["claude-opus-4.5","claude-sonnet-4.5","gpt-4.1"]},{"priority":"Best for reasoning","recommendations":["o3","deepseek-r1","claude-opus-4.5"]},{"priority":"Fastest responses","recommendations":["claude-haiku-4.5","gemini-3-flash","gemini-2.5-flash"]}],"references":{"claude":[{"name":"Official Model Documentation","url":"https://docs.anthropic.com/en/docs/about-claude/models/all-models"},{"name":"API Pricing","url":"https://www.anthropic.com/pricing"},{"name":"What's New in Claude 4.5","url":"https://docs.claude.com/en/docs/about-claude/models/whats-new-claude-4-5"}],"openai":[{"name":"Official Model Catalog","url":"https://platform.openai.com/docs/models"},{"name":"API Pricing","url":"https://openai.com/api/pricing/"},{"name":"Model Release Notes","url":"https://help.openai.com/en/articles/9624314-model-release-notes"}],"google":[{"name":"Gemini Models","url":"https://ai.google.dev/gemini-api/docs/models"},{"name":"API Pricing","url":"https://ai.google.dev/pricing"}],"deepseek":[{"name":"API Documentation","url":"https://api-docs.deepseek.com/"},{"name":"V3.2 Release Notes","url":"https://api-docs.deepseek.com/news/news251201"}],"opensource":[{"name":"Llama 4 (Meta)","url":"https://github.com/meta-llama/llama-models"},{"name":"Qwen (Alibaba)","url":"https://huggingface.co/Qwen"},{"name":"Mistral AI","url":"https://mistral.ai/"}],"benchmarks":[{"name":"Artificial Analysis Leaderboard","url":"https://artificialanalysis.ai/leaderboards/models"},{"name":"LMArena","url":"https://lmarena.ai/"},{"name":"Vellum LLM Leaderboard","url":"https://www.vellum.ai/llm-leaderboard"}]}};
+    const modelData = {"lastUpdated":"2026-02-05","dataSources":{"benchmarks":"https://artificialanalysis.ai/leaderboards/models","pricing":"Official provider pricing pages","lastVerified":"2026-02-05"},"providers":{"anthropic":{"name":"Anthropic","displayName":"Claude (Anthropic)","tagline":"Best for coding & complex instructions","strengths":["Industry-leading coding (Opus 4.5: 80.9% SWE-bench)","Excellent at complex, detailed instructions","Extended thinking for deep analysis","Natural, human-like conversation"],"tradeoffs":"More expensive than DeepSeek/Gemini","docsUrl":"https://docs.anthropic.com/en/docs/about-claude/models/all-models","pricingUrl":"https://www.anthropic.com/pricing"},"openai":{"name":"OpenAI","displayName":"OpenAI (GPT)","tagline":"Most widely used, strong ecosystem","strengths":["GPT-5 series with adaptive computation","Strong reasoning models (o3, o4-mini)","Extensive ecosystem & Microsoft integration","GPT-4.1 optimized for coding (1M context)"],"tradeoffs":"Premium pricing","docsUrl":"https://platform.openai.com/docs/models","pricingUrl":"https://openai.com/api/pricing/"},"google":{"name":"Google","displayName":"Google (Gemini)","tagline":"Long context & Google integration","strengths":["1M token context window","Gemini 3 Flash as fast default model","Native Google Workspace integration","Good price-performance ratio"],"tradeoffs":"Less consistent on complex reasoning","docsUrl":"https://ai.google.dev/gemini-api/docs/models/gemini","pricingUrl":"https://ai.google.dev/pricing"},"deepseek":{"name":"DeepSeek","displayName":"DeepSeek","tagline":"Incredible value - 10-30x cheaper","strengths":["V3.2 with hybrid thinking modes","R1 rivals OpenAI o1 on reasoning","Fraction of competitors' cost","Open source (can self-host)"],"tradeoffs":"Chinese company (compliance considerations)","docsUrl":"https://api-docs.deepseek.com/","pricingUrl":"https://api-docs.deepseek.com/quick_start/pricing"},"opensource":{"name":"Open Source","displayName":"Open Source (Llama, Qwen, Mistral)","tagline":"Self-host for privacy & control","strengths":["Llama 4 Scout: 10M token context","Llama 4 Maverick: 400B params, multimodal","Full data privacy - your infrastructure","No per-token API costs"],"tradeoffs":"Requires GPUs & technical expertise","docsUrl":"https://github.com/meta-llama/llama-models","pricingUrl":null}},"models":[{"id":"claude-opus-4.5","name":"Claude Opus 4.5","provider":"anthropic","costTier":"high","contextWindow":200000,"maxOutputTokens":32000,"benchmarks":{"sweBenchVerified":80.9,"gpqaDiamond":68.6},"bestFor":["coding","reasoning","quality"],"description":"Most intelligent Claude, 80.9% SWE-bench","overview":"Claude Opus 4.5 is Anthropic's most intelligent model, delivering state-of-the-art performance on software engineering, reasoning, and analysis tasks. It leads the industry on SWE-bench Verified with an 80.9% score. Supports extended thinking mode for step-by-step deliberation on difficult problems.","strengths":["Industry-leading SWE-bench score (80.9%) for real-world coding tasks","Extended thinking mode for multi-step reasoning and deep analysis","Excellent instruction following with nuanced, detailed outputs","Strong at agentic workflows with tool use and multi-turn planning","Natural, human-like writing quality"],"weaknesses":["Most expensive Claude model - significantly higher per-token cost","Slower response latency compared to Sonnet and Haiku","200K context window is smaller than Gemini (1M) or GPT-4.1 (1M)","Not ideal for high-volume or latency-sensitive applications"],"useCaseDetails":[{"name":"Autonomous Coding Agents","explanation":"Best-in-class for multi-file code generation, refactoring, and debugging. Powers tools like Claude Code for end-to-end software engineering."},{"name":"Complex Analysis & Research","explanation":"Extended thinking mode allows deep, structured analysis of business problems, legal documents, and scientific literature."},{"name":"Architecture & System Design","explanation":"Excellent at creating system designs, API specifications, and technical documentation with thorough reasoning."}],"pricing":{"inputPerMillion":15.0,"outputPerMillion":75.0,"currency":"USD","notes":"Extended thinking tokens billed at output rate"},"specs":{"multimodal":true,"multimodalTypes":["image"],"trainingDataCutoff":"Early 2025","releaseDate":"2025-02-24","apiAvailability":"API, Claude.ai, Amazon Bedrock, Google Vertex AI","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":true}},{"id":"claude-sonnet-4.5","name":"Claude Sonnet 4.5","provider":"anthropic","costTier":"mid","contextWindow":200000,"maxOutputTokens":16000,"benchmarks":{"sweBenchVerified":77.2},"bestFor":["coding","agents","balanced"],"description":"Best balance of quality, speed, and cost","overview":"Claude Sonnet 4.5 is Anthropic's balanced model, offering strong performance across coding, analysis, and conversation at a moderate price point. It excels at agentic tasks and complex multi-step workflows while being significantly cheaper than Opus.","strengths":["Strong coding performance (77.2% SWE-bench) at mid-tier pricing","Excellent for building autonomous agents and multi-step workflows","Good balance of quality, speed, and cost for most applications","Supports extended thinking for harder problems","Reliable instruction following and structured output"],"weaknesses":["Not as capable as Opus 4.5 on the hardest reasoning tasks","200K context window (not the largest available)","Slower than Haiku for latency-sensitive applications","Higher cost than DeepSeek or Gemini Flash for budget projects"],"useCaseDetails":[{"name":"Production AI Agents","explanation":"The go-to model for building reliable AI agents that need to handle complex, multi-step tasks with tool use."},{"name":"Code Review & Generation","explanation":"Strong coding ability at reasonable cost - good for CI/CD pipelines, code review bots, and development assistants."},{"name":"Customer-Facing Chatbots","explanation":"Natural conversation quality with good context understanding, suitable for premium customer support."}],"pricing":{"inputPerMillion":3.0,"outputPerMillion":15.0,"currency":"USD","notes":"Extended thinking available at output rate"},"specs":{"multimodal":true,"multimodalTypes":["image"],"trainingDataCutoff":"Early 2025","releaseDate":"2025-10-22","apiAvailability":"API, Claude.ai, Amazon Bedrock, Google Vertex AI","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":true}},{"id":"claude-haiku-4.5","name":"Claude Haiku 4.5","provider":"anthropic","costTier":"low","contextWindow":200000,"maxOutputTokens":8192,"benchmarks":{"sweBenchVerified":73.3},"bestFor":["speed","budget","high-volume"],"description":"Fast & cheap, 73.3% SWE-bench","overview":"Claude Haiku 4.5 is Anthropic's fastest and most affordable model. Despite its low cost, it delivers surprisingly strong performance on coding (73.3% SWE-bench) and general tasks, making it ideal for high-volume applications where latency matters.","strengths":["Fastest Claude model with low latency responses","Very affordable - suitable for high-volume production use","Still achieves 73.3% on SWE-bench (impressive for its price)","Good for classification, extraction, and routine tasks","200K context window even at the budget tier"],"weaknesses":["Less nuanced reasoning compared to Sonnet and Opus","Shorter maximum output (8K tokens)","Can struggle with very complex multi-step instructions","Less creative and detailed in writing tasks"],"useCaseDetails":[{"name":"High-Volume Processing","explanation":"Ideal for processing thousands of documents, emails, or tickets where speed and cost matter more than peak quality."},{"name":"Real-Time Chat Applications","explanation":"Fast response times make it suitable for interactive chatbots where users expect instant replies."},{"name":"Data Classification & Extraction","explanation":"Reliable for structured data extraction, categorization, and routing tasks at scale."}],"pricing":{"inputPerMillion":0.8,"outputPerMillion":4.0,"currency":"USD","notes":null},"specs":{"multimodal":true,"multimodalTypes":["image"],"trainingDataCutoff":"Early 2025","releaseDate":"2025-10-22","apiAvailability":"API, Claude.ai, Amazon Bedrock, Google Vertex AI","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":false}},{"id":"gpt-5","name":"GPT-5","provider":"openai","costTier":"high","contextWindow":128000,"maxOutputTokens":16384,"benchmarks":{},"bestFor":["general","reasoning","quality"],"description":"OpenAI's most capable flagship model","overview":"GPT-5 is OpenAI's latest flagship model featuring adaptive computation that can adjust reasoning depth based on task complexity. It represents a significant step forward in general intelligence, multimodal understanding, and creative tasks.","strengths":["Adaptive computation adjusts reasoning depth to task difficulty","Strong general-purpose performance across diverse tasks","Excellent multimodal capabilities (text, image, audio)","Deep integration with Microsoft ecosystem and Copilot","Good at following complex, multi-part instructions"],"weaknesses":["Premium pricing - one of the most expensive API models","128K context window is smaller than some competitors","Newer model with less community tooling than GPT-4o","Can be verbose in responses compared to Claude"],"useCaseDetails":[{"name":"Enterprise AI Applications","explanation":"Strong choice for enterprise deployments leveraging the Microsoft/Azure ecosystem with comprehensive API support."},{"name":"Multimodal Analysis","explanation":"Handles text, images, and audio natively - useful for applications requiring mixed input types."},{"name":"General Knowledge Work","explanation":"Broad capability across writing, analysis, research, and creative tasks makes it a strong generalist."}],"pricing":{"inputPerMillion":10.0,"outputPerMillion":30.0,"currency":"USD","notes":"Pricing may vary with adaptive computation usage"},"specs":{"multimodal":true,"multimodalTypes":["image","audio"],"trainingDataCutoff":"Mid 2025","releaseDate":"2025-12-01","apiAvailability":"API, ChatGPT, Azure OpenAI","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":false}},{"id":"gpt-4.1","name":"GPT-4.1","provider":"openai","costTier":"mid","contextWindow":1000000,"maxOutputTokens":32768,"benchmarks":{"sweBenchVerified":54.6},"bestFor":["coding","instructions","long-context"],"description":"Coding specialist with 1M token context","overview":"GPT-4.1 is OpenAI's coding-optimized model with a massive 1 million token context window. Purpose-built for software engineering tasks, it excels at understanding large codebases, following detailed coding instructions, and generating high-quality code.","strengths":["1 million token context window for entire codebases","Optimized specifically for coding and instruction following","54.6% SWE-bench Verified - strong coding performance","32K max output tokens for long code generation","Good at understanding and modifying existing code"],"weaknesses":["Narrower capabilities than GPT-5 for general tasks","Not the best for creative writing or conversational tasks","Less capable at complex multi-step reasoning than o3","Image understanding not as strong as GPT-5 or GPT-4o"],"useCaseDetails":[{"name":"Codebase Analysis","explanation":"1M context window means you can feed entire repositories for analysis, refactoring, and migration tasks."},{"name":"Code Generation Pipelines","explanation":"Strong instruction following makes it reliable for automated code generation in CI/CD workflows."},{"name":"Technical Documentation","explanation":"Can read large codebases and generate comprehensive documentation with accurate code references."}],"pricing":{"inputPerMillion":2.0,"outputPerMillion":8.0,"currency":"USD","notes":null},"specs":{"multimodal":true,"multimodalTypes":["image"],"trainingDataCutoff":"Mid 2025","releaseDate":"2025-04-14","apiAvailability":"API, Azure OpenAI","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":false}},{"id":"o3","name":"OpenAI o3","provider":"openai","costTier":"high","contextWindow":200000,"maxOutputTokens":100000,"benchmarks":{"gpqaDiamond":87.7,"aime2024":96.7},"bestFor":["reasoning","math","science"],"description":"Deep reasoning model, thinks before responding","overview":"OpenAI o3 is a reasoning-first model that uses chain-of-thought to \"think\" before producing an answer. It excels at math, science, and complex logical problems. Uses internal reasoning tokens that are not visible but contribute to deeper, more accurate responses.","strengths":["Exceptional mathematical reasoning (96.7% AIME 2024)","87.7% on GPQA Diamond - PhD-level science questions","Deep chain-of-thought reasoning for complex problems","200K context window with up to 100K output tokens","Strong at multi-step logical deduction and proofs"],"weaknesses":["Very expensive due to hidden reasoning token usage","Slow responses - reasoning takes time, not suitable for real-time chat","Internal reasoning tokens add significant cost beyond visible output","Overkill for simple tasks where standard models suffice","Not as strong at creative writing or casual conversation"],"useCaseDetails":[{"name":"Scientific Research","explanation":"PhD-level reasoning makes it ideal for analyzing research papers, designing experiments, and solving complex scientific problems."},{"name":"Mathematical Problem Solving","explanation":"96.7% on AIME competition problems - excellent for math tutoring, proofs, and quantitative analysis."},{"name":"Complex Business Logic","explanation":"Multi-step reasoning helps with financial modeling, legal analysis, and strategic planning that requires rigorous logic."}],"pricing":{"inputPerMillion":10.0,"outputPerMillion":40.0,"currency":"USD","notes":"Internal reasoning tokens billed at output rate; actual cost often 3-5x visible output cost"},"specs":{"multimodal":true,"multimodalTypes":["image"],"trainingDataCutoff":"Mid 2025","releaseDate":"2025-04-16","apiAvailability":"API, ChatGPT Pro, Azure OpenAI","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":true}},{"id":"o4-mini","name":"OpenAI o4-mini","provider":"openai","costTier":"mid","contextWindow":200000,"maxOutputTokens":100000,"benchmarks":{"aime2024":93.4},"bestFor":["reasoning","math","coding","budget"],"description":"Fast reasoning at lower cost","overview":"OpenAI o4-mini is a smaller, faster reasoning model that delivers strong performance on math and coding at a fraction of o3's cost. It's the best choice when you need reasoning capabilities but want to keep costs reasonable.","strengths":["Strong reasoning at much lower cost than o3","93.4% on AIME 2024 - near o3 level on math","Fast enough for interactive use cases","Good coding ability combined with reasoning","200K context window"],"weaknesses":["Not as deep on reasoning as full o3","Still uses reasoning tokens that add hidden cost","Less capable than GPT-5 for general conversational tasks","Weaker on creative and writing tasks"],"useCaseDetails":[{"name":"Code Debugging with Reasoning","explanation":"Combines coding ability with chain-of-thought reasoning - great for finding and fixing complex bugs."},{"name":"Math & Science Tutoring","explanation":"Strong math performance at affordable pricing makes it suitable for educational applications."},{"name":"Automated Quality Assurance","explanation":"Reasoning capability helps catch logical errors in code and business logic that standard models miss."}],"pricing":{"inputPerMillion":1.1,"outputPerMillion":4.4,"currency":"USD","notes":"Internal reasoning tokens billed at output rate"},"specs":{"multimodal":true,"multimodalTypes":["image"],"trainingDataCutoff":"Mid 2025","releaseDate":"2025-04-16","apiAvailability":"API, ChatGPT, Azure OpenAI","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":true}},{"id":"gpt-4o","name":"GPT-4o","provider":"openai","costTier":"mid","contextWindow":128000,"maxOutputTokens":16384,"benchmarks":{"sweBenchVerified":38.0},"bestFor":["general","multimodal"],"description":"Reliable multimodal model, widely adopted","overview":"GPT-4o is OpenAI's widely-adopted multimodal model handling text, images, and audio. While superseded by GPT-5 as the flagship, it remains popular due to extensive tooling, proven reliability, and broad ecosystem support.","strengths":["Extremely well-tested with massive ecosystem of tools and integrations","Native multimodal support (text, image, audio)","Reliable and predictable behavior for production use","Good balance of quality and speed for most tasks","Extensive documentation and community resources"],"weaknesses":["Superseded by GPT-5 for quality and GPT-4.1 for coding","38% SWE-bench is below current top models for coding","128K context is smaller than newer long-context models","Gradually being replaced in favor of newer models"],"useCaseDetails":[{"name":"Production Systems with Proven Track Record","explanation":"Well-tested in thousands of production deployments - a safe choice when reliability and predictability matter."},{"name":"Multimodal Chat Applications","explanation":"Handles text, image, and audio inputs natively - good for apps needing mixed-media understanding."},{"name":"Quick Prototyping","explanation":"Extensive tooling and documentation makes it fast to build and iterate with."}],"pricing":{"inputPerMillion":2.5,"outputPerMillion":10.0,"currency":"USD","notes":null},"specs":{"multimodal":true,"multimodalTypes":["image","audio"],"trainingDataCutoff":"Late 2024","releaseDate":"2024-05-13","apiAvailability":"API, ChatGPT, Azure OpenAI","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":false}},{"id":"gemini-2.5-pro","name":"Gemini 2.5 Pro","provider":"google","costTier":"mid","contextWindow":1000000,"maxOutputTokens":65536,"benchmarks":{"sweBenchVerified":63.8},"bestFor":["reasoning","coding","long-context"],"description":"Strong reasoning with 1M token context","overview":"Gemini 2.5 Pro is Google's most capable model featuring a 1 million token context window and built-in thinking capabilities. It excels at complex reasoning tasks, long document analysis, and coding with strong performance on SWE-bench (63.8%).","strengths":["1 million token context window for massive documents","Built-in thinking mode for complex reasoning","63.8% SWE-bench Verified - competitive coding performance","Strong multimodal understanding (text, image, video, audio)","Native Google Workspace and Cloud integration"],"weaknesses":["Can be inconsistent on complex multi-step instructions","Slower when using thinking mode","Less natural conversation quality than Claude models","Google-centric ecosystem may not suit all deployments"],"useCaseDetails":[{"name":"Long Document Analysis","explanation":"1M context window lets you analyze entire books, legal contracts, or research paper collections in a single prompt."},{"name":"Video & Audio Understanding","explanation":"Native multimodal support including video and audio makes it ideal for media analysis applications."},{"name":"Google Workspace Integration","explanation":"Deep integration with Google Docs, Sheets, and other Workspace tools for enterprise workflows."}],"pricing":{"inputPerMillion":1.25,"outputPerMillion":10.0,"currency":"USD","notes":"Thinking tokens billed separately; free tier available"},"specs":{"multimodal":true,"multimodalTypes":["image","video","audio"],"trainingDataCutoff":"Early 2025","releaseDate":"2025-03-25","apiAvailability":"API, Google AI Studio, Vertex AI","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":true}},{"id":"gemini-2.5-flash","name":"Gemini 2.5 Flash","provider":"google","costTier":"low","contextWindow":1000000,"maxOutputTokens":65536,"benchmarks":{},"bestFor":["speed","budget","multimodal"],"description":"Fast and affordable with 1M context","overview":"Gemini 2.5 Flash is Google's fast, affordable model that still offers a full 1 million token context window and optional thinking mode. Great value for applications that need long context processing without premium pricing.","strengths":["1 million token context at budget pricing","Fast response times for interactive applications","Optional thinking mode for harder problems","Strong multimodal capabilities (image, video, audio)","Very cost-effective for high-volume processing"],"weaknesses":["Less capable than 2.5 Pro on complex reasoning","Quality drops on very difficult or nuanced tasks","Can produce less detailed outputs than premium models","Thinking mode adds latency and cost"],"useCaseDetails":[{"name":"High-Volume Document Processing","explanation":"Process thousands of documents with 1M context at low per-token cost - ideal for bulk analysis."},{"name":"Budget Multimodal Applications","explanation":"Image, video, and audio understanding at a fraction of Pro pricing."},{"name":"Fast Prototyping & Development","explanation":"Quick responses and low cost make it ideal for development and testing before scaling to production."}],"pricing":{"inputPerMillion":0.15,"outputPerMillion":0.6,"currency":"USD","notes":"Thinking tokens: $0.70/$2.80 per million input/output"},"specs":{"multimodal":true,"multimodalTypes":["image","video","audio"],"trainingDataCutoff":"Early 2025","releaseDate":"2025-04-17","apiAvailability":"API, Google AI Studio, Vertex AI","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":true}},{"id":"gemini-3-flash","name":"Gemini 3 Flash","provider":"google","costTier":"low","contextWindow":1000000,"maxOutputTokens":65536,"benchmarks":{},"bestFor":["speed","general","multimodal"],"description":"Latest default model with strong reasoning","overview":"Gemini 3 Flash is Google's newest fast model, now the default in Google AI Studio. It brings improved reasoning capabilities described as 'PhD-level' while maintaining the speed and affordability of the Flash tier.","strengths":["Latest architecture with improved reasoning over 2.5 Flash","1 million token context window","Now the default model in Google AI Studio","Fast responses suitable for real-time applications","Strong multimodal understanding"],"weaknesses":["Newer model with less production track record","Still a Flash-tier model - not as capable as Pro on hard tasks","Limited third-party tooling compared to older models","Quality ceiling lower than Gemini 2.5 Pro for complex work"],"useCaseDetails":[{"name":"Real-Time AI Features","explanation":"Fast enough for real-time features like autocomplete, suggestions, and interactive assistants."},{"name":"General-Purpose AI Applications","explanation":"Improved reasoning makes it a solid default choice for new applications that need good quality at low cost."},{"name":"Multimodal Chatbots","explanation":"Handle text, images, and audio in conversational applications with quick response times."}],"pricing":{"inputPerMillion":0.15,"outputPerMillion":0.6,"currency":"USD","notes":"Pricing similar to Gemini 2.5 Flash"},"specs":{"multimodal":true,"multimodalTypes":["image","video","audio"],"trainingDataCutoff":"Mid 2025","releaseDate":"2025-12-15","apiAvailability":"API, Google AI Studio, Vertex AI","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":true}},{"id":"deepseek-v3.2","name":"DeepSeek V3.2","provider":"deepseek","costTier":"low","contextWindow":128000,"maxOutputTokens":16384,"benchmarks":{},"bestFor":["general","coding","budget","agents"],"description":"Hybrid thinking with tool use at very low cost","overview":"DeepSeek V3.2 is a general-purpose model offering quality that rivals much more expensive competitors at a fraction of the cost. Features hybrid thinking modes and integrated tool use, making it excellent for building budget-conscious AI applications.","strengths":["10-30x cheaper than comparable Claude/OpenAI models","Hybrid thinking modes for flexible reasoning depth","Integrated tool use and function calling","Open source - can be self-hosted for full privacy","Strong coding and general task performance"],"weaknesses":["128K context window - smaller than Gemini or GPT-4.1","Quality gap exists vs top-tier models on hardest tasks","Chinese company - may have compliance implications","API availability can be less reliable than major providers","Less extensive documentation and ecosystem"],"useCaseDetails":[{"name":"Budget AI Applications","explanation":"When you need good quality without the premium price - customer support, content generation, data processing at scale."},{"name":"Self-Hosted Deployments","explanation":"Open-source model that can run on your own infrastructure for data sovereignty and cost control."},{"name":"AI Agent Development","explanation":"Integrated tool use and hybrid thinking make it cost-effective for building autonomous agents."}],"pricing":{"inputPerMillion":0.27,"outputPerMillion":1.1,"currency":"USD","notes":"Cache hits: $0.07/M input. Self-hosting available."},"specs":{"multimodal":false,"multimodalTypes":[],"trainingDataCutoff":"Late 2024","releaseDate":"2025-12-01","apiAvailability":"DeepSeek API, self-hosted, various cloud providers","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":true}},{"id":"deepseek-r1","name":"DeepSeek R1","provider":"deepseek","costTier":"low","contextWindow":128000,"maxOutputTokens":16384,"benchmarks":{"aime2024":96.3},"bestFor":["reasoning","math","science"],"description":"Reasoning model rivaling o1, 96.3% AIME","overview":"DeepSeek R1 is a reasoning-focused model that rivals OpenAI's o1 on mathematical and scientific reasoning at a dramatically lower cost. It achieves 96.3% on AIME 2024 and is fully open source, making it an exceptional value for reasoning-heavy applications.","strengths":["96.3% on AIME 2024 - rivaling top reasoning models","Dramatically cheaper than OpenAI o3 for similar reasoning","Fully open source - can self-host for complete control","Strong at mathematical proofs and scientific reasoning","Transparent chain-of-thought reasoning process"],"weaknesses":["Focused on reasoning - less versatile for general tasks","128K context window limits document analysis","Chinese company - compliance considerations","Can be verbose in reasoning chains","Not as strong on creative or conversational tasks"],"useCaseDetails":[{"name":"Mathematical Problem Solving","explanation":"Near-perfect AIME scores make it ideal for math tutoring, quantitative analysis, and automated problem solving."},{"name":"Scientific Research Assistance","explanation":"Strong reasoning helps with hypothesis generation, data analysis, and scientific paper review."},{"name":"Budget Reasoning Applications","explanation":"Get o1-level reasoning at a fraction of the cost - great for startups and budget-conscious teams."}],"pricing":{"inputPerMillion":0.55,"outputPerMillion":2.19,"currency":"USD","notes":"Thinking tokens included. Self-hosting available."},"specs":{"multimodal":false,"multimodalTypes":[],"trainingDataCutoff":"Late 2024","releaseDate":"2025-01-20","apiAvailability":"DeepSeek API, self-hosted, various cloud providers","supportsFunctionCalling":false,"supportsStreaming":true,"supportsExtendedThinking":true}},{"id":"llama-4-maverick","name":"Llama 4 Maverick","provider":"opensource","costTier":"self-hosted","contextWindow":1000000,"maxOutputTokens":16384,"benchmarks":{},"bestFor":["multimodal","multilingual","privacy"],"description":"400B params, 200 languages, multimodal","overview":"Llama 4 Maverick is Meta's flagship open-source model with 400B total parameters (17B active via mixture-of-experts). It supports 200 languages and native multimodal understanding, making it one of the most capable self-hostable models available.","strengths":["400B total parameters with efficient 17B active MoE architecture","Native support for 200 languages","Multimodal - understands text and images","1 million token context window","Fully open source with permissive license"],"weaknesses":["Requires significant GPU infrastructure to host","400B model needs multi-GPU setup for full performance","No official hosted API - must self-host or use third-party","Less polished than commercial APIs in tool use and function calling","Community support only - no enterprise SLA"],"useCaseDetails":[{"name":"Multilingual Enterprise Applications","explanation":"200-language support makes it ideal for global companies needing AI in many languages without per-API-call costs."},{"name":"On-Premise AI Deployment","explanation":"Self-host on your own servers for complete data sovereignty - critical for regulated industries."},{"name":"Multimodal Document Processing","explanation":"Process documents with images, charts, and text on your own infrastructure."}],"pricing":null,"specs":{"multimodal":true,"multimodalTypes":["image"],"trainingDataCutoff":"Late 2024","releaseDate":"2025-04-05","apiAvailability":"Self-hosted, available via Together AI, Fireworks, etc.","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":false}},{"id":"llama-4-scout","name":"Llama 4 Scout","provider":"opensource","costTier":"self-hosted","contextWindow":10000000,"maxOutputTokens":16384,"benchmarks":{},"bestFor":["long-context","codebase-analysis","privacy"],"description":"10M token context, runs on single GPU","overview":"Llama 4 Scout is a smaller Llama 4 variant optimized for extremely long context processing. With a 10 million token context window and the ability to run on a single GPU, it's ideal for codebase analysis and processing massive documents.","strengths":["10 million token context - largest of any major model","Can run on a single GPU (109B params, 17B active MoE)","Process entire codebases, book collections, or document archives","Fully open source with permissive license","Efficient mixture-of-experts architecture"],"weaknesses":["Less capable than Maverick on general tasks (smaller model)","10M context quality degrades on very long inputs","Requires GPU with sufficient VRAM even for single-GPU setup","No multimodal support - text only","Lower quality than commercial models on complex reasoning"],"useCaseDetails":[{"name":"Full Codebase Analysis","explanation":"Feed an entire codebase into context for comprehensive analysis, refactoring planning, and migration assessment."},{"name":"Large Document Processing","explanation":"Process entire books, legal document sets, or research paper collections in a single pass."},{"name":"Private Long-Context Applications","explanation":"When you need massive context windows with full data privacy on your own infrastructure."}],"pricing":null,"specs":{"multimodal":false,"multimodalTypes":[],"trainingDataCutoff":"Late 2024","releaseDate":"2025-04-05","apiAvailability":"Self-hosted, available via Together AI, Fireworks, etc.","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":false}},{"id":"qwen-3","name":"Qwen 3","provider":"opensource","costTier":"self-hosted","contextWindow":131072,"maxOutputTokens":8192,"benchmarks":{},"bestFor":["multilingual","reasoning","coding"],"description":"235B MoE, strong multilingual & reasoning","overview":"Qwen 3 is Alibaba's flagship open-source model with 235B total parameters using a mixture-of-experts architecture. It has particularly strong multilingual capabilities across 100+ languages and competitive reasoning and coding performance.","strengths":["235B MoE architecture with efficient inference","Strong multilingual support across 100+ languages","Competitive reasoning and coding performance","Fully open source with permissive license","Hybrid thinking mode for flexible reasoning depth"],"weaknesses":["Requires significant GPU resources for full model","Less known in Western markets - smaller community","Documentation primarily in Chinese, though improving","Fewer third-party integrations than Llama models","128K context window - smaller than Llama 4 models"],"useCaseDetails":[{"name":"Multilingual Applications","explanation":"100+ language support with particularly strong Chinese, Japanese, Korean, and European language capabilities."},{"name":"Self-Hosted Reasoning","explanation":"Hybrid thinking mode provides reasoning capabilities in a self-hostable package."},{"name":"Asian Market AI Applications","explanation":"Excellent for applications targeting Chinese-speaking markets with strong cultural and linguistic understanding."}],"pricing":null,"specs":{"multimodal":false,"multimodalTypes":[],"trainingDataCutoff":"Late 2024","releaseDate":"2025-04-28","apiAvailability":"Self-hosted, Alibaba Cloud, DashScope API","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":true}},{"id":"mistral-medium-3.1","name":"Mistral Medium 3.1","provider":"opensource","costTier":"low","contextWindow":128000,"maxOutputTokens":8192,"benchmarks":{},"bestFor":["coding","multimodal","value"],"description":"Near-Sonnet quality at much lower cost","overview":"Mistral Medium 3.1 is Mistral AI's mid-range model offering quality close to Claude Sonnet at a significantly lower price point. It supports multimodal inputs and is available both via API and for self-hosting, making it a strong value proposition.","strengths":["Near-Sonnet quality at roughly 8x lower cost","Strong coding performance for its price tier","Multimodal support (text and images)","Available both as API and for self-hosting","European company - GDPR-friendly option"],"weaknesses":["Not as capable as top-tier models on hardest tasks","128K context is smaller than Gemini or Llama 4","Smaller ecosystem than OpenAI or Anthropic","8K max output can be limiting for long generation","Less community tooling and documentation"],"useCaseDetails":[{"name":"Cost-Effective Production AI","explanation":"Get near-premium quality at budget pricing - ideal for startups and cost-conscious teams building production applications."},{"name":"European Data Compliance","explanation":"French company with EU hosting options makes it attractive for GDPR-sensitive deployments."},{"name":"Multimodal on a Budget","explanation":"Image understanding at low cost - good for applications needing vision capabilities without premium pricing."}],"pricing":{"inputPerMillion":0.4,"outputPerMillion":2.0,"currency":"USD","notes":"Also available for self-hosting"},"specs":{"multimodal":true,"multimodalTypes":["image"],"trainingDataCutoff":"Late 2024","releaseDate":"2025-05-15","apiAvailability":"Mistral API (La Plateforme), self-hosted, AWS Bedrock","supportsFunctionCalling":true,"supportsStreaming":true,"supportsExtendedThinking":false}}],"useCases":{"chatbot":{"name":"Customer Support & Chatbots","recommendations":{"quality":{"models":["claude-sonnet-4.5","gpt-5","gemini-2.5-pro"],"topPick":"claude-sonnet-4.5","reason":"Natural conversation, excellent context understanding"},"cost":{"models":["deepseek-v3.2","claude-haiku-4.5","gemini-2.5-flash"],"topPick":"deepseek-v3.2","reason":"10-30x cheaper, handles routine queries well"},"speed":{"models":["claude-haiku-4.5","gemini-3-flash","gemini-2.5-flash"],"topPick":"claude-haiku-4.5","reason":"Fastest response times for real-time chat"},"privacy":{"models":["llama-4-maverick","qwen-3","mistral-medium-3.1"],"topPick":"llama-4-maverick","reason":"Run on your own servers, full data control"}}},"coding":{"name":"Code Generation & Review","recommendations":{"quality":{"models":["claude-opus-4.5","claude-sonnet-4.5","gpt-4.1"],"topPick":"claude-opus-4.5","reason":"Industry-leading 80.9% SWE-bench score"},"cost":{"models":["deepseek-v3.2","mistral-medium-3.1","claude-haiku-4.5"],"topPick":"deepseek-v3.2","reason":"Excellent coding at fraction of cost"},"speed":{"models":["claude-haiku-4.5","o4-mini","gemini-3-flash"],"topPick":"claude-haiku-4.5","reason":"Fast code completions and reviews"},"privacy":{"models":["llama-4-scout","qwen-3","mistral-medium-3.1"],"topPick":"llama-4-scout","reason":"10M context for entire codebases, self-hosted"}}},"reasoning":{"name":"Complex Reasoning & Analysis","recommendations":{"quality":{"models":["o3","claude-opus-4.5","deepseek-r1"],"topPick":"o3","reason":"Deepest reasoning capabilities, 96.7% AIME"},"cost":{"models":["deepseek-r1","o4-mini","gemini-2.5-flash"],"topPick":"deepseek-r1","reason":"Rivals o1 at fraction of cost"},"speed":{"models":["o4-mini","gemini-2.5-flash","claude-haiku-4.5"],"topPick":"o4-mini","reason":"Fast reasoning with good quality"},"privacy":{"models":["qwen-3","llama-4-maverick"],"topPick":"qwen-3","reason":"Strong reasoning in a self-hostable model"}}},"documents":{"name":"Document Analysis & Summarization","recommendations":{"quality":{"models":["gemini-2.5-pro","claude-sonnet-4.5","gpt-5"],"topPick":"gemini-2.5-pro","reason":"1M token context handles very long documents natively"},"cost":{"models":["gemini-2.5-flash","deepseek-v3.2","claude-haiku-4.5"],"topPick":"gemini-2.5-flash","reason":"1M context at very low cost per token"},"speed":{"models":["gemini-3-flash","claude-haiku-4.5","gemini-2.5-flash"],"topPick":"gemini-3-flash","reason":"Fast processing with long context support"},"privacy":{"models":["llama-4-scout","llama-4-maverick","qwen-3"],"topPick":"llama-4-scout","reason":"10M context for massive document sets on your servers"}}},"content":{"name":"Content Writing & Marketing","recommendations":{"quality":{"models":["claude-opus-4.5","claude-sonnet-4.5","gpt-5"],"topPick":"claude-opus-4.5","reason":"Most natural, human-like writing quality"},"cost":{"models":["deepseek-v3.2","gemini-2.5-flash","claude-haiku-4.5"],"topPick":"deepseek-v3.2","reason":"Good creative output at minimal cost"},"speed":{"models":["claude-haiku-4.5","gemini-3-flash"],"topPick":"claude-haiku-4.5","reason":"Fast iteration for drafts and variants"},"privacy":{"models":["llama-4-maverick","qwen-3","mistral-medium-3.1"],"topPick":"llama-4-maverick","reason":"Keep proprietary content on your infrastructure"}}},"extraction":{"name":"Data Extraction (PDFs, Forms)","recommendations":{"quality":{"models":["gemini-2.5-pro","claude-sonnet-4.5","gpt-4o"],"topPick":"gemini-2.5-pro","reason":"Strong multimodal + long context for complex extraction"},"cost":{"models":["gemini-2.5-flash","deepseek-v3.2","claude-haiku-4.5"],"topPick":"gemini-2.5-flash","reason":"Multimodal at low cost with 1M context"},"speed":{"models":["gemini-3-flash","claude-haiku-4.5"],"topPick":"gemini-3-flash","reason":"Fast structured extraction"},"privacy":{"models":["llama-4-maverick","mistral-medium-3.1"],"topPick":"llama-4-maverick","reason":"Multimodal open-source for sensitive documents"}}},"translation":{"name":"Translation & Multilingual","recommendations":{"quality":{"models":["claude-sonnet-4.5","gpt-5","llama-4-maverick"],"topPick":"claude-sonnet-4.5","reason":"Excellent nuanced translation with context awareness"},"cost":{"models":["deepseek-v3.2","gemini-2.5-flash","mistral-medium-3.1"],"topPick":"deepseek-v3.2","reason":"Strong multilingual at very low cost"},"speed":{"models":["gemini-3-flash","claude-haiku-4.5"],"topPick":"gemini-3-flash","reason":"Fast multilingual processing"},"privacy":{"models":["llama-4-maverick","qwen-3","mistral-medium-3.1"],"topPick":"qwen-3","reason":"235B MoE with strong multilingual across 100+ languages"}}},"vision":{"name":"Image & Vision Tasks","recommendations":{"quality":{"models":["gemini-2.5-pro","gpt-5","claude-sonnet-4.5"],"topPick":"gemini-2.5-pro","reason":"Strong native multimodal with video and audio too"},"cost":{"models":["gemini-2.5-flash","gemini-3-flash","gpt-4o"],"topPick":"gemini-2.5-flash","reason":"Low-cost multimodal with good accuracy"},"speed":{"models":["gemini-3-flash","gpt-4o"],"topPick":"gemini-3-flash","reason":"Fast image processing"},"privacy":{"models":["llama-4-maverick","mistral-medium-3.1"],"topPick":"llama-4-maverick","reason":"Multimodal open-source, fully self-hosted"}}}},"quickDecisions":[{"priority":"Lowest cost","recommendations":["deepseek-v3.2","deepseek-r1","gemini-2.5-flash"]},{"priority":"Highest quality","recommendations":["claude-opus-4.5","o3","gpt-5"]},{"priority":"Best for coding","recommendations":["claude-opus-4.5","claude-sonnet-4.5","gpt-4.1"]},{"priority":"Best for reasoning","recommendations":["o3","deepseek-r1","claude-opus-4.5"]},{"priority":"Fastest responses","recommendations":["claude-haiku-4.5","gemini-3-flash","gemini-2.5-flash"]},{"priority":"Best for documents","recommendations":["gemini-2.5-pro","llama-4-scout","claude-sonnet-4.5"]},{"priority":"Best for privacy","recommendations":["llama-4-maverick","llama-4-scout","qwen-3"]},{"priority":"Best multilingual","recommendations":["llama-4-maverick","qwen-3","deepseek-v3.2"]}],"references":{"claude":[{"name":"Official Model Documentation","url":"https://docs.anthropic.com/en/docs/about-claude/models/all-models"},{"name":"API Pricing","url":"https://www.anthropic.com/pricing"},{"name":"What's New in Claude 4.5","url":"https://docs.claude.com/en/docs/about-claude/models/whats-new-claude-4-5"}],"openai":[{"name":"Official Model Catalog","url":"https://platform.openai.com/docs/models"},{"name":"API Pricing","url":"https://openai.com/api/pricing/"},{"name":"Model Release Notes","url":"https://help.openai.com/en/articles/9624314-model-release-notes"}],"google":[{"name":"Gemini Models","url":"https://ai.google.dev/gemini-api/docs/models"},{"name":"API Pricing","url":"https://ai.google.dev/pricing"}],"deepseek":[{"name":"API Documentation","url":"https://api-docs.deepseek.com/"},{"name":"V3.2 Release Notes","url":"https://api-docs.deepseek.com/news/news251201"}],"opensource":[{"name":"Llama 4 (Meta)","url":"https://github.com/meta-llama/llama-models"},{"name":"Qwen (Alibaba)","url":"https://huggingface.co/Qwen"},{"name":"Mistral AI","url":"https://mistral.ai/"}],"benchmarks":[{"name":"Artificial Analysis Leaderboard","url":"https://artificialanalysis.ai/leaderboards/models"},{"name":"LMArena","url":"https://lmarena.ai/"},{"name":"Vellum LLM Leaderboard","url":"https://www.vellum.ai/llm-leaderboard"}]}};
 
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', initializePage);
+    document.addEventListener('DOMContentLoaded', initializePage);
 
-        function initializePage() {
-            const lastUpdated = modelData.lastUpdated;
-            document.getElementById('lastUpdated').textContent = `Data last updated: ${lastUpdated} | Source: ${modelData.dataSources.benchmarks}`;
-            document.getElementById('footerDate').textContent = lastUpdated;
+    function initializePage() {
+        document.getElementById('lastUpdated').textContent = 'Data last updated: ' + modelData.lastUpdated;
+        document.getElementById('footerDate').textContent = modelData.lastUpdated;
 
-            const useCaseSelect = document.getElementById('useCase');
-            Object.entries(modelData.useCases).forEach(([key, uc]) => {
-                const option = document.createElement('option');
-                option.value = key;
-                option.textContent = uc.name;
-                useCaseSelect.appendChild(option);
+        const useCaseSelect = document.getElementById('useCase');
+        Object.entries(modelData.useCases).forEach(([key, uc]) => {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = uc.name;
+            useCaseSelect.appendChild(option);
+        });
+
+        populateProviders();
+        populateAllModels();
+        populateComparisonTable();
+        populateReferences();
+
+        document.getElementById('useCase').addEventListener('change', updateRecommendations);
+        document.getElementById('priority').addEventListener('change', updateRecommendations);
+        document.getElementById('budget').addEventListener('change', updateRecommendations);
+
+        // Filter chips for All Models
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                populateAllModels(this.dataset.filter);
             });
+        });
 
-            populateProviders();
-            populateComparisonTable();
-            populateReferences();
+        // Modal close handlers
+        document.getElementById('modelModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModelModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModelModal();
+        });
+    }
 
-            document.getElementById('useCase').addEventListener('change', updateRecommendations);
-            document.getElementById('priority').addEventListener('change', updateRecommendations);
-            document.getElementById('budget').addEventListener('change', updateRecommendations);
-        }
+    function getModelById(id) { return modelData.models.find(m => m.id === id); }
+    function getProviderName(providerId) { return modelData.providers[providerId]?.displayName || providerId; }
 
-        function getModelById(id) {
-            return modelData.models.find(m => m.id === id);
-        }
+    function formatTokenCount(n) {
+        if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + 'M';
+        if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
+        return n.toString();
+    }
 
-        function getProviderName(providerId) {
-            return modelData.providers[providerId]?.displayName || providerId;
-        }
+    function getCostLabel(cost) {
+        if (cost === 'self-hosted') return 'Self-hosted';
+        if (cost === 'low') return '$';
+        if (cost === 'mid') return '$$';
+        return '$$$';
+    }
 
-        function populateProviders() {
-            const grid = document.getElementById('providerGrid');
-            const providerOrder = ['openai', 'anthropic', 'google', 'deepseek', 'opensource'];
+    function populateProviders() {
+        const grid = document.getElementById('providerGrid');
+        const providerOrder = ['openai', 'anthropic', 'google', 'deepseek', 'opensource'];
+        providerOrder.forEach(key => {
+            const p = modelData.providers[key];
+            if (!p) return;
+            const models = modelData.models.filter(m => m.provider === key);
+            const modelTags = models.map(m => {
+                const costLabel = m.costTier === 'high' ? '$$$' : m.costTier === 'mid' ? '$$' : '$';
+                return '<span class="model-tag clickable-model" onclick="openModelModal(\'' + m.id + '\')">' + m.name + ' (' + costLabel + ')</span>';
+            }).join('');
+            grid.innerHTML += '<div class="provider-card"><h3>' + p.displayName + '</h3><p class="tagline">' + p.tagline + '</p><ul class="strengths">' + p.strengths.map(s => '<li>' + s + '</li>').join('') + '</ul><div class="tradeoffs">Trade-off: ' + p.tradeoffs + '</div><div class="models">' + modelTags + '</div></div>';
+        });
+    }
 
-            providerOrder.forEach(key => {
-                const p = modelData.providers[key];
-                if (!p) return;
+    function populateAllModels(filterProvider) {
+        filterProvider = filterProvider || 'all';
+        const grid = document.getElementById('allModelsGrid');
+        const models = filterProvider === 'all' ? modelData.models : modelData.models.filter(m => m.provider === filterProvider);
+        grid.innerHTML = models.map(m => {
+            const costClass = m.costTier === 'self-hosted' ? 'low' : m.costTier;
+            const tags = (m.bestFor || []).slice(0, 3).map(t => '<span class="mini-tag">' + t + '</span>').join('');
+            const multimodal = m.specs && m.specs.multimodal ? '<span>Multimodal</span>' : '';
+            return '<div class="model-card" onclick="openModelModal(\'' + m.id + '\')">' +
+                '<div class="model-card-header"><h4>' + m.name + '</h4><span class="cost-badge cost-' + costClass + '">' + getCostLabel(m.costTier) + '</span></div>' +
+                '<p class="model-card-provider">' + getProviderName(m.provider) + '</p>' +
+                '<p class="model-card-desc">' + m.description + '</p>' +
+                '<div class="model-card-meta"><span>' + formatTokenCount(m.contextWindow) + ' context</span>' + multimodal + '</div>' +
+                '<div class="model-card-tags">' + tags + '</div></div>';
+        }).join('');
+    }
 
-                const models = modelData.models.filter(m => m.provider === key);
-                const modelTags = models.map(m => {
-                    const costLabel = m.costTier === 'high' ? '$$$' : m.costTier === 'mid' ? '$$' : '$';
-                    return `<span class="model-tag">${m.name} (${costLabel})</span>`;
-                }).join('');
+    function populateComparisonTable() {
+        const tbody = document.getElementById('comparisonBody');
+        modelData.quickDecisions.forEach(qd => {
+            const cells = qd.recommendations.map((id, idx) => {
+                const model = getModelById(id);
+                const name = model ? model.name : id;
+                const cls = idx === 0 ? ' class="best"' : '';
+                return '<td' + cls + '><span class="clickable-model" onclick="openModelModal(\'' + id + '\')">' + name + '</span></td>';
+            });
+            tbody.innerHTML += '<tr><td>' + qd.priority + '</td>' + cells.join('') + '</tr>';
+        });
+    }
 
-                grid.innerHTML += `
-                    <div class="provider-card">
-                        <h3>${p.displayName}</h3>
-                        <p class="tagline">${p.tagline}</p>
-                        <ul class="strengths">
-                            ${p.strengths.map(s => `<li>${s}</li>`).join('')}
-                        </ul>
-                        <div class="tradeoffs">Trade-off: ${p.tradeoffs}</div>
-                        <div class="models">${modelTags}</div>
-                        <div class="verify-links">
-                            <a href="${p.docsUrl}" target="_blank" class="verify-link">Verify Models →</a>
-                            ${p.pricingUrl ? `<a href="${p.pricingUrl}" target="_blank" class="verify-link">Pricing →</a>` : ''}
-                        </div>
-                    </div>
-                `;
+    function populateReferences() {
+        const grid = document.getElementById('referencesGrid');
+        const categories = {
+            'openai': 'OpenAI (GPT)', 'claude': 'Claude (Anthropic)', 'google': 'Google (Gemini)',
+            'deepseek': 'DeepSeek', 'opensource': 'Open Source Models', 'benchmarks': 'Benchmarks & Comparisons'
+        };
+        Object.entries(modelData.references).forEach(([key, refs]) => {
+            const title = categories[key] || key;
+            const links = refs.map(r => '<li><a href="' + r.url + '" target="_blank">' + r.name + '</a></li>').join('');
+            grid.innerHTML += '<div class="ref-group"><h3>' + title + '</h3><ul>' + links + '</ul></div>';
+        });
+    }
+
+    function updateRecommendations() {
+        const useCase = document.getElementById('useCase').value;
+        const priority = document.getElementById('priority').value;
+        const budget = document.getElementById('budget').value;
+        const container = document.getElementById('recCards');
+        if (!useCase) { container.innerHTML = '<p class="no-results">Select a use case to see recommendations</p>'; return; }
+        const ucData = modelData.useCases[useCase];
+        const effectivePriority = priority || 'quality';
+        const recData = ucData.recommendations[effectivePriority];
+        if (!recData) { container.innerHTML = '<p class="no-results">No recommendations available for this combination</p>'; return; }
+        let recs = recData.models.map((modelId, idx) => {
+            const model = getModelById(modelId);
+            if (!model) return null;
+            return { id: modelId, name: model.name, provider: getProviderName(model.provider), why: idx === 0 ? recData.reason : model.description, cost: model.costTier, top: modelId === recData.topPick };
+        }).filter(Boolean);
+        if (budget) {
+            recs = recs.filter(r => {
+                if (budget === 'low') return r.cost === 'low' || r.cost === 'self-hosted';
+                if (budget === 'mid') return r.cost !== 'high';
+                return true;
             });
         }
+        if (recs.length === 0) { container.innerHTML = '<p class="no-results">No models match your criteria. Try adjusting filters.</p>'; return; }
+        container.innerHTML = recs.map(rec => {
+            const costClass = rec.cost === 'self-hosted' ? 'low' : rec.cost;
+            return '<div class="rec-card ' + (rec.top ? 'top-pick' : '') + ' clickable-model" onclick="openModelModal(\'' + rec.id + '\')">' +
+                '<h4>' + rec.name + (rec.top ? ' <span class="badge">TOP PICK</span>' : '') + '</h4>' +
+                '<div class="provider">' + rec.provider + '</div>' +
+                '<div class="why">' + rec.why + '</div>' +
+                '<span class="cost-badge cost-' + costClass + '">' + getCostLabel(rec.cost) + '</span></div>';
+        }).join('');
+    }
 
-        function populateComparisonTable() {
-            const tbody = document.getElementById('comparisonBody');
-            modelData.quickDecisions.forEach(qd => {
-                const models = qd.recommendations.map(id => getModelById(id)?.name || id);
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${qd.priority}</td>
-                        <td class="best">${models[0] || '-'}</td>
-                        <td>${models[1] || '-'}</td>
-                        <td>${models[2] || '-'}</td>
-                    </tr>
-                `;
-            });
+    function openModelModal(modelId) {
+        const model = getModelById(modelId);
+        if (!model) return;
+        const modal = document.getElementById('modelModal');
+        document.getElementById('modalModelName').textContent = model.name;
+        document.getElementById('modalProvider').textContent = getProviderName(model.provider);
+        const costBadge = document.getElementById('modalCostBadge');
+        costBadge.textContent = getCostLabel(model.costTier);
+        costBadge.className = 'cost-badge cost-' + (model.costTier === 'self-hosted' ? 'low' : model.costTier);
+        document.getElementById('modalOverview').textContent = model.overview || model.description;
+
+        // Specs grid
+        const specs = [
+            { label: 'Context Window', value: formatTokenCount(model.contextWindow) },
+            { label: 'Max Output', value: model.maxOutputTokens ? formatTokenCount(model.maxOutputTokens) : 'N/A' },
+            { label: 'Multimodal', value: model.specs && model.specs.multimodal ? model.specs.multimodalTypes.join(', ') : 'Text only' },
+            { label: 'Released', value: model.specs && model.specs.releaseDate ? model.specs.releaseDate : 'N/A' },
+            { label: 'Training Cutoff', value: model.specs && model.specs.trainingDataCutoff ? model.specs.trainingDataCutoff : 'N/A' },
+            { label: 'Availability', value: model.specs && model.specs.apiAvailability ? model.specs.apiAvailability : 'API' }
+        ];
+        document.getElementById('modalSpecs').innerHTML = specs.map(s =>
+            '<div class="spec-card"><div class="spec-label">' + s.label + '</div><div class="spec-value">' + s.value + '</div></div>'
+        ).join('');
+
+        // Pricing
+        const pricingEl = document.getElementById('modalPricing');
+        if (model.pricing && model.pricing.inputPerMillion != null) {
+            pricingEl.innerHTML =
+                '<div class="pricing-item"><div class="pricing-label">Input / 1M tokens</div><div class="pricing-value">$' + model.pricing.inputPerMillion.toFixed(2) + '</div></div>' +
+                '<div class="pricing-item"><div class="pricing-label">Output / 1M tokens</div><div class="pricing-value">$' + model.pricing.outputPerMillion.toFixed(2) + '</div></div>' +
+                (model.pricing.notes ? '<div class="pricing-item"><div class="pricing-label">Note</div><div style="color:#aaa;font-size:0.85rem">' + model.pricing.notes + '</div></div>' : '');
+            document.getElementById('modalPricingSection').style.display = '';
+        } else {
+            pricingEl.innerHTML = '<div class="pricing-item"><div class="pricing-value" style="color:#aaa;font-size:0.95rem">Self-hosted - cost depends on your infrastructure</div></div>';
+            document.getElementById('modalPricingSection').style.display = '';
         }
 
-        function populateReferences() {
-            const grid = document.getElementById('referencesGrid');
-            const categories = {
-                'openai': 'OpenAI (GPT)',
-                'claude': 'Claude (Anthropic)',
-                'google': 'Google (Gemini)',
-                'deepseek': 'DeepSeek',
-                'opensource': 'Open Source Models',
-                'benchmarks': 'Benchmarks & Comparisons'
-            };
+        // Strengths
+        document.getElementById('modalStrengths').innerHTML = (model.strengths || []).map(s => '<li>' + s + '</li>').join('') || '<li style="color:#888">No detailed data available</li>';
 
-            Object.entries(modelData.references).forEach(([key, refs]) => {
-                const title = categories[key] || key;
-                const links = refs.map(r => `<li><a href="${r.url}" target="_blank">${r.name}</a></li>`).join('');
-                grid.innerHTML += `
-                    <div class="ref-group">
-                        <h3>${title}</h3>
-                        <ul>${links}</ul>
-                    </div>
-                `;
-            });
+        // Weaknesses
+        document.getElementById('modalWeaknesses').innerHTML = (model.weaknesses || []).map(w => '<li>' + w + '</li>').join('') || '<li style="color:#888">No detailed data available</li>';
+
+        // Use cases
+        const ucEl = document.getElementById('modalUseCases');
+        if (model.useCaseDetails && model.useCaseDetails.length > 0) {
+            ucEl.innerHTML = model.useCaseDetails.map(uc =>
+                '<div class="use-case-item"><h4>' + uc.name + '</h4><p>' + uc.explanation + '</p></div>'
+            ).join('');
+            document.getElementById('modalUseCasesSection').style.display = '';
+        } else {
+            ucEl.innerHTML = '<p style="color:#888">Best for: ' + (model.bestFor || []).join(', ') + '</p>';
+            document.getElementById('modalUseCasesSection').style.display = '';
         }
 
-        function updateRecommendations() {
-            const useCase = document.getElementById('useCase').value;
-            const priority = document.getElementById('priority').value;
-            const budget = document.getElementById('budget').value;
-            const container = document.getElementById('recCards');
-
-            if (!useCase) {
-                container.innerHTML = '<p class="no-results">Select a use case to see recommendations</p>';
-                return;
-            }
-
-            const ucData = modelData.useCases[useCase];
-            const effectivePriority = priority || 'quality';
-            const recData = ucData.recommendations[effectivePriority];
-
-            if (!recData) {
-                container.innerHTML = '<p class="no-results">No recommendations available</p>';
-                return;
-            }
-
-            let recs = recData.models.map((modelId, idx) => {
-                const model = getModelById(modelId);
-                if (!model) return null;
-                return {
-                    name: model.name,
-                    provider: getProviderName(model.provider),
-                    why: idx === 0 ? recData.reason : model.description,
-                    cost: model.costTier,
-                    top: modelId === recData.topPick
-                };
-            }).filter(Boolean);
-
-            if (budget) {
-                recs = recs.filter(r => {
-                    if (budget === 'low') return r.cost === 'low' || r.cost === 'self-hosted';
-                    if (budget === 'mid') return r.cost !== 'high';
-                    return true;
-                });
-            }
-
-            if (recs.length === 0) {
-                container.innerHTML = '<p class="no-results">No models match your criteria. Try adjusting filters.</p>';
-                return;
-            }
-
-            container.innerHTML = recs.map(rec => `
-                <div class="rec-card ${rec.top ? 'top-pick' : ''}">
-                    <h4>${rec.name} ${rec.top ? '<span class="badge">TOP PICK</span>' : ''}</h4>
-                    <div class="provider">${rec.provider}</div>
-                    <div class="why">${rec.why}</div>
-                    <span class="cost-badge cost-${rec.cost === 'self-hosted' ? 'low' : rec.cost}">${getCostLabel(rec.cost)}</span>
-                </div>
-            `).join('');
+        // Benchmarks
+        const benchEl = document.getElementById('modalBenchmarks');
+        const benchNames = { sweBenchVerified: 'SWE-bench', mmlu: 'MMLU', gpqaDiamond: 'GPQA Diamond', aime2024: 'AIME 2024', lmarenaElo: 'LMArena Elo' };
+        const benchEntries = Object.entries(model.benchmarks || {}).filter(([k, v]) => v != null);
+        if (benchEntries.length > 0) {
+            benchEl.innerHTML = benchEntries.map(([k, v]) =>
+                '<div class="benchmark-chip"><div class="bench-name">' + (benchNames[k] || k) + '</div><div class="bench-value">' + v + (typeof v === 'number' && v <= 100 && k !== 'lmarenaElo' ? '%' : '') + '</div></div>'
+            ).join('');
+            document.getElementById('modalBenchmarksSection').style.display = '';
+        } else {
+            document.getElementById('modalBenchmarksSection').style.display = 'none';
         }
 
-        function getCostLabel(cost) {
-            if (cost === 'low' || cost === 'self-hosted') return '$';
-            if (cost === 'mid') return '$$';
-            return '$$$';
-        }
+        // Tags
+        document.getElementById('modalTags').innerHTML = (model.bestFor || []).map(t => '<span class="modal-tag">' + t + '</span>').join('');
 
-        // Update panel functions
-        function toggleUpdatePanel() {
-            document.getElementById('updatePanel').classList.toggle('active');
-        }
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
 
-        function openAllSources() {
-            window.open('https://artificialanalysis.ai/leaderboards/models', '_blank');
-            window.open('https://www.vellum.ai/llm-leaderboard', '_blank');
-            window.open('https://lmarena.ai/', '_blank');
-        }
-
-        function runUpdateScript() {
-            alert('To update the data, run this command in your terminal:\n\npython auto_update.py\n\nThis will open an interactive menu where you can:\n- Update benchmark scores\n- Add new models\n- Sync changes to this page');
-        }
-
-        // Merge new models with existing - add new ones, update existing ones
-        function mergeModelData(existingModels, newModels) {
-            const modelMap = new Map();
-
-            // Add all existing models first
-            existingModels.forEach(m => modelMap.set(m.id, m));
-
-            // Merge in new models (update if exists, add if new)
-            let added = 0, updated = 0;
-            newModels.forEach(newModel => {
-                if (modelMap.has(newModel.id)) {
-                    // Update existing model with new data (prefer new benchmarks/specs)
-                    const existing = modelMap.get(newModel.id);
-                    modelMap.set(newModel.id, {
-                        ...existing,
-                        ...newModel,
-                        // Merge benchmarks instead of replacing
-                        benchmarks: { ...existing.benchmarks, ...newModel.benchmarks }
-                    });
-                    updated++;
-                } else {
-                    // Add new model
-                    modelMap.set(newModel.id, newModel);
-                    added++;
-                }
-            });
-
-            return {
-                models: Array.from(modelMap.values()),
-                added,
-                updated
-            };
-        }
-
-        // Fetch latest data from serverless API (when deployed on Vercel)
-        async function fetchLatestData() {
-            const statusEl = document.getElementById('updateStatus');
-            const btnEl = document.getElementById('fetchDataBtn');
-
-            statusEl.textContent = 'Fetching latest data...';
-            statusEl.style.color = '#00d4ff';
-            btnEl.disabled = true;
-
-            try {
-                // Try to fetch from the API endpoint
-                const response = await fetch('/api/update');
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error: ${response.status}`);
-                }
-
-                const result = await response.json();
-
-                if (result.status === 'success' && result.data) {
-                    const currentModels = modelData.models.length;
-                    const newDate = result.data.lastUpdated;
-
-                    // Merge new models with existing (don't replace)
-                    const mergeResult = mergeModelData(modelData.models, result.data.models || []);
-                    modelData.models = mergeResult.models;
-                    modelData.lastUpdated = newDate;
-
-                    // Update data sources info
-                    if (result.data.dataSources) {
-                        modelData.dataSources = { ...modelData.dataSources, ...result.data.dataSources };
-                    }
-
-                    // Refresh the page content
-                    document.getElementById('lastUpdated').textContent =
-                        `Data last updated: ${newDate} | Source: ${modelData.dataSources.benchmarks}`;
-                    document.getElementById('footerDate').textContent = newDate;
-
-                    // Refresh providers and comparison table
-                    document.getElementById('providerGrid').innerHTML = '';
-                    document.getElementById('comparisonBody').innerHTML = '';
-                    document.getElementById('referencesGrid').innerHTML = '';
-                    populateProviders();
-                    populateComparisonTable();
-                    populateReferences();
-                    updateRecommendations();
-
-                    // Show what changed
-                    const totalNow = modelData.models.length;
-                    let statusMsg = '';
-                    if (mergeResult.added > 0) {
-                        statusMsg = `Added ${mergeResult.added} new model(s)! (${totalNow} total)`;
-                    } else if (mergeResult.updated > 0) {
-                        statusMsg = `Updated ${mergeResult.updated} model(s). (${totalNow} total)`;
-                    } else {
-                        statusMsg = `Already up to date (${totalNow} models)`;
-                    }
-
-                    // Display sources if available
-                    const sources = result.data.sources || [];
-                    if (sources.length > 0) {
-                        const sourceLinks = sources.map(s =>
-                            `<a href="${s.url}" target="_blank" style="color: #00d4ff;">${s.name || 'Source'}</a>`
-                        ).join(' · ');
-                        statusEl.innerHTML = `${statusMsg}<br><small style="color: #888;">Sources: ${sourceLinks}</small>`;
-                    } else {
-                        statusEl.textContent = statusMsg;
-                    }
-                    statusEl.style.color = '#22c55e';
-
-                    // Log summary to console
-                    if (result.data.summary) {
-                        console.log('Update summary:', result.data.summary);
-                    }
-                } else {
-                    throw new Error(result.message || 'Invalid response');
-                }
-            } catch (error) {
-                console.error('Fetch error:', error);
-
-                // Check if we're running locally (file:// or localhost without API)
-                if (window.location.protocol === 'file:' || error.message.includes('404')) {
-                    statusEl.innerHTML = 'API not available locally.<br>Deploy to Vercel or run <code>python auto_update.py</code>';
-                    statusEl.style.color = '#f59e0b';
-                } else {
-                    statusEl.textContent = `Error: ${error.message}`;
-                    statusEl.style.color = '#ef4444';
-                }
-            } finally {
-                btnEl.disabled = false;
-            }
-        }
+    function closeModelModal() {
+        document.getElementById('modelModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
     </script>
 </body>
 </html>
