@@ -1,9 +1,9 @@
 {
-  "lastUpdated": "2026-02-05",
+  "lastUpdated": "2026-02-06",
   "dataSources": {
     "benchmarks": "https://artificialanalysis.ai/leaderboards/models",
     "pricing": "Official provider pricing pages",
-    "lastVerified": "2026-02-05"
+    "lastVerified": "2026-02-06"
   },
   "providers": {
     "anthropic": {
@@ -11,8 +11,8 @@
       "displayName": "Claude (Anthropic)",
       "tagline": "Best for coding & complex instructions",
       "strengths": [
-        "Industry-leading coding (Opus 4.5: 80.9% SWE-bench)",
-        "Excellent at complex, detailed instructions",
+        "Industry-leading coding (Opus 4.6: 80.8% SWE-bench Verified)",
+        "Opus 4.6 with 1M token context (beta) and adaptive thinking",
         "Extended thinking for deep analysis",
         "Natural, human-like conversation"
       ],
@@ -25,12 +25,12 @@
       "displayName": "OpenAI (GPT)",
       "tagline": "Most widely used, strong ecosystem",
       "strengths": [
-        "GPT-5 series with adaptive computation",
+        "GPT-5.2 series: Thinking (reasoning) & Pro (enterprise-grade)",
         "Strong reasoning models (o3, o4-mini)",
-        "Extensive ecosystem & Microsoft integration",
-        "GPT-4.1 optimized for coding (1M context)"
+        "GPT-5.2 Pro: 90.5% ARC-AGI-1, 62.3% SWE-bench Pro",
+        "Extensive ecosystem & Microsoft integration"
       ],
-      "tradeoffs": "Premium pricing",
+      "tradeoffs": "Premium pricing, especially for Pro tier",
       "docsUrl": "https://platform.openai.com/docs/models",
       "pricingUrl": "https://openai.com/api/pricing/"
     },
@@ -39,10 +39,10 @@
       "displayName": "Google (Gemini)",
       "tagline": "Long context & Google integration",
       "strengths": [
-        "1M token context window",
+        "Gemini 3 Pro Preview with Computer Use capability",
+        "1M token context window across models",
         "Gemini 3 Flash as fast default model",
-        "Native Google Workspace integration",
-        "Good price-performance ratio"
+        "Native Google Workspace integration"
       ],
       "tradeoffs": "Less consistent on complex reasoning",
       "docsUrl": "https://ai.google.dev/gemini-api/docs/models/gemini",
@@ -68,9 +68,9 @@
       "tagline": "Self-host for privacy & control",
       "strengths": [
         "Llama 4 Scout: 10M token context",
-        "Llama 4 Maverick: 400B params, multimodal",
-        "Full data privacy - your infrastructure",
-        "No per-token API costs"
+        "Mistral Large 3: 675B MoE, rivals GPT-5.2",
+        "Qwen 3: 235B MoE, 119 languages, 92% AIME",
+        "Full data privacy - your infrastructure"
       ],
       "tradeoffs": "Requires GPUs & technical expertise",
       "docsUrl": "https://github.com/meta-llama/llama-models",
@@ -78,6 +78,49 @@
     }
   },
   "models": [
+    {
+      "id": "claude-opus-4.6",
+      "name": "Claude Opus 4.6",
+      "provider": "anthropic",
+      "costTier": "high",
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "benchmarks": {"sweBenchVerified": 80.8, "gpqaDiamond": 70.2, "bigLawBench": 90.2},
+      "bestFor": ["coding", "reasoning", "quality", "agents"],
+      "description": "Most intelligent Claude, 1M context, adaptive thinking",
+      "overview": "Claude Opus 4.6 is Anthropic's most advanced model, released February 2026. It features a massive 1M token context window (in beta) with 128K max output tokens, and introduces adaptive thinking with 4 effort levels (low, medium, high, max) for flexible reasoning depth. Leads on SWE-bench Verified (80.8%) and BigLaw Bench (90.2%).",
+      "strengths": [
+        "1M token context window (beta) - largest of any Claude model",
+        "128K max output tokens for extensive generation",
+        "Adaptive thinking with 4 effort levels for flexible reasoning",
+        "80.8% SWE-bench Verified - industry-leading coding performance",
+        "Agent teams feature for multi-agent orchestration",
+        "90.2% BigLaw Bench - excellent for legal analysis"
+      ],
+      "weaknesses": [
+        "Most expensive Claude model ($5/$25 per M tokens, higher for 200K+ prompts)",
+        "1M context still in beta - may have edge case issues",
+        "Slower response latency due to model size",
+        "Adaptive thinking adds complexity to prompt engineering"
+      ],
+      "useCaseDetails": [
+        {"name": "Autonomous Coding Agents", "explanation": "Industry-leading SWE-bench score powers sophisticated multi-file code generation, refactoring, and autonomous debugging workflows."},
+        {"name": "Massive Document Analysis", "explanation": "1M context window allows processing entire codebases, legal document sets, or research paper collections in a single prompt."},
+        {"name": "Complex Legal & Compliance Work", "explanation": "90.2% BigLaw Bench score makes it ideal for contract analysis, legal research, and regulatory compliance review."},
+        {"name": "Multi-Agent Orchestration", "explanation": "Agent teams feature enables building sophisticated multi-agent systems for complex workflows."}
+      ],
+      "pricing": {"inputPerMillion": 5.00, "outputPerMillion": 25.00, "currency": "USD", "notes": "$10/$37.50 for prompts over 200K tokens; Adaptive thinking tokens billed at output rate"},
+      "specs": {
+        "multimodal": true,
+        "multimodalTypes": ["image"],
+        "trainingDataCutoff": "Early 2026",
+        "releaseDate": "2026-02-05",
+        "apiAvailability": "API, Claude.ai, Amazon Bedrock, Google Vertex AI",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": true
+      }
+    },
     {
       "id": "claude-opus-4.5",
       "name": "Claude Opus 4.5",
@@ -202,41 +245,163 @@
       }
     },
     {
-      "id": "gpt-5",
-      "name": "GPT-5",
+      "id": "gpt-5.1",
+      "name": "GPT-5.1",
       "provider": "openai",
-      "costTier": "high",
-      "contextWindow": 128000,
-      "maxOutputTokens": 16384,
-      "benchmarks": {},
-      "bestFor": ["general", "reasoning", "quality"],
-      "description": "OpenAI's most capable flagship model",
-      "overview": "GPT-5 is OpenAI's latest flagship model featuring adaptive computation that can adjust reasoning depth based on task complexity. It represents a significant step forward in general intelligence, multimodal understanding, and creative tasks.",
+      "costTier": "mid",
+      "contextWindow": 400000,
+      "maxOutputTokens": 128000,
+      "benchmarks": {"gpqaDiamond": 82.5},
+      "bestFor": ["general", "multimodal", "balanced"],
+      "description": "Faster, more efficient GPT-5 with 400K context",
+      "overview": "GPT-5.1 is an optimized version of the original GPT-5, offering faster inference and improved efficiency while maintaining strong capabilities. With 400K context window and 128K max output, it's ideal for general-purpose applications needing good quality without premium costs.",
       "strengths": [
-        "Adaptive computation adjusts reasoning depth to task difficulty",
-        "Strong general-purpose performance across diverse tasks",
-        "Excellent multimodal capabilities (text, image, audio)",
-        "Deep integration with Microsoft ecosystem and Copilot",
-        "Good at following complex, multi-part instructions"
+        "400K token context window for large documents",
+        "128K max output tokens for extended generation",
+        "Faster and more efficient than original GPT-5",
+        "Strong multimodal capabilities (text, image, audio)",
+        "Good balance of quality and cost"
       ],
       "weaknesses": [
-        "Premium pricing - one of the most expensive API models",
-        "128K context window is smaller than some competitors",
-        "Newer model with less community tooling than GPT-4o",
-        "Can be verbose in responses compared to Claude"
+        "Not as powerful as GPT-5.2 series on complex reasoning",
+        "Mid-tier pricing still more expensive than budget options",
+        "Knowledge cutoff in late 2024"
       ],
       "useCaseDetails": [
-        {"name": "Enterprise AI Applications", "explanation": "Strong choice for enterprise deployments leveraging the Microsoft/Azure ecosystem with comprehensive API support."},
-        {"name": "Multimodal Analysis", "explanation": "Handles text, images, and audio natively - useful for applications requiring mixed input types."},
-        {"name": "General Knowledge Work", "explanation": "Broad capability across writing, analysis, research, and creative tasks makes it a strong generalist."}
+        {"name": "General-Purpose AI Applications", "explanation": "Strong all-around model for enterprise apps needing reliability across diverse tasks without premium pricing."},
+        {"name": "Long Document Processing", "explanation": "400K context handles substantial documents, reports, and codebases effectively."},
+        {"name": "Multimodal Workflows", "explanation": "Native support for text, images, and audio makes it versatile for mixed-media applications."}
       ],
-      "pricing": {"inputPerMillion": 10.00, "outputPerMillion": 30.00, "currency": "USD", "notes": "Pricing may vary with adaptive computation usage"},
+      "pricing": {"inputPerMillion": 1.25, "outputPerMillion": 10.00, "currency": "USD", "notes": null},
       "specs": {
         "multimodal": true,
         "multimodalTypes": ["image", "audio"],
-        "trainingDataCutoff": "Mid 2025",
-        "releaseDate": "2025-12-01",
+        "trainingDataCutoff": "Sep 2024",
+        "releaseDate": "2025-09-15",
         "apiAvailability": "API, ChatGPT, Azure OpenAI",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": false
+      }
+    },
+    {
+      "id": "gpt-5.2-thinking",
+      "name": "GPT-5.2 Thinking",
+      "provider": "openai",
+      "costTier": "mid",
+      "contextWindow": 400000,
+      "maxOutputTokens": 128000,
+      "benchmarks": {"sweBenchPro": 55.6, "gpqaDiamond": 93.2, "aime2024": 88.0},
+      "bestFor": ["reasoning", "coding", "quality"],
+      "description": "Complex reasoning model, 93.2% GPQA Diamond",
+      "overview": "GPT-5.2 Thinking is OpenAI's reasoning-focused model from the GPT-5.2 series (Dec 2025). It excels at complex multi-step reasoning, scoring 93.2% on GPQA Diamond and 55.6% on SWE-bench Pro. Ideal for tasks requiring deep analysis and logical problem-solving.",
+      "strengths": [
+        "93.2% GPQA Diamond - excellent PhD-level science reasoning",
+        "55.6% SWE-bench Pro for complex coding tasks",
+        "400K context window with 128K max output",
+        "Strong at multi-step logical reasoning and analysis",
+        "Balanced pricing for reasoning capabilities"
+      ],
+      "weaknesses": [
+        "Slower than GPT-5.1 due to reasoning overhead",
+        "Thinking tokens add to total cost",
+        "Overkill for simple queries where faster models suffice",
+        "Not as cost-effective as DeepSeek for budget reasoning"
+      ],
+      "useCaseDetails": [
+        {"name": "Complex Problem Solving", "explanation": "Deep reasoning capabilities excel at multi-step analysis, strategic planning, and mathematical problem-solving."},
+        {"name": "Code Architecture & Debugging", "explanation": "55.6% SWE-bench Pro score indicates strong ability to handle complex software engineering tasks."},
+        {"name": "Scientific Research", "explanation": "93.2% GPQA Diamond means it can assist with PhD-level scientific questions and research analysis."}
+      ],
+      "pricing": {"inputPerMillion": 1.75, "outputPerMillion": 14.00, "currency": "USD", "notes": "Thinking tokens billed at output rate"},
+      "specs": {
+        "multimodal": true,
+        "multimodalTypes": ["image", "audio"],
+        "trainingDataCutoff": "Late 2024",
+        "releaseDate": "2025-12-20",
+        "apiAvailability": "API, ChatGPT Plus, Azure OpenAI",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": true
+      }
+    },
+    {
+      "id": "gpt-5.2-pro",
+      "name": "GPT-5.2 Pro",
+      "provider": "openai",
+      "costTier": "high",
+      "contextWindow": 400000,
+      "maxOutputTokens": 128000,
+      "benchmarks": {"arcAgi1": 90.5, "gpqaDiamond": 95.1, "sweBenchPro": 62.3},
+      "bestFor": ["quality", "reasoning", "enterprise"],
+      "description": "Enterprise-grade, 90.5% ARC-AGI-1",
+      "overview": "GPT-5.2 Pro is OpenAI's top-tier enterprise model, designed for high-stakes applications requiring maximum capability. With 90.5% ARC-AGI-1 (general intelligence benchmark) and 62.3% SWE-bench Pro, it represents the peak of GPT-5 series capabilities.",
+      "strengths": [
+        "90.5% ARC-AGI-1 - top score on general intelligence benchmark",
+        "62.3% SWE-bench Pro - highest in GPT-5 series for coding",
+        "95.1% GPQA Diamond - near-perfect PhD-level reasoning",
+        "Enterprise-grade reliability and consistency",
+        "400K context with 128K max output"
+      ],
+      "weaknesses": [
+        "Very expensive ($21/$168 per M tokens)",
+        "Overkill for routine tasks",
+        "Premium pricing may not be justified for all use cases",
+        "Latency higher than lighter models"
+      ],
+      "useCaseDetails": [
+        {"name": "High-Stakes Enterprise AI", "explanation": "Mission-critical applications where accuracy is paramount - financial analysis, legal review, medical decision support."},
+        {"name": "Advanced Research & Development", "explanation": "Cutting-edge reasoning for R&D teams pushing the boundaries of AI-assisted discovery."},
+        {"name": "Complex Software Engineering", "explanation": "62.3% SWE-bench Pro makes it suitable for the most challenging architectural and coding decisions."}
+      ],
+      "pricing": {"inputPerMillion": 21.00, "outputPerMillion": 168.00, "currency": "USD", "notes": "Premium enterprise tier"},
+      "specs": {
+        "multimodal": true,
+        "multimodalTypes": ["image", "audio"],
+        "trainingDataCutoff": "Late 2024",
+        "releaseDate": "2025-12-20",
+        "apiAvailability": "API, ChatGPT Pro, Azure OpenAI Enterprise",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": true
+      }
+    },
+    {
+      "id": "gpt-5.2-codex",
+      "name": "GPT-5.2-Codex",
+      "provider": "openai",
+      "costTier": "mid",
+      "contextWindow": 400000,
+      "maxOutputTokens": 128000,
+      "benchmarks": {},
+      "bestFor": ["coding", "agents", "automation"],
+      "description": "Agentic coding specialist for complex software tasks",
+      "overview": "GPT-5.2-Codex is a specialized version of GPT-5.2 optimized for agentic coding tasks. Available via the Responses API, it excels at multi-file code generation, refactoring, and autonomous software development workflows.",
+      "strengths": [
+        "Optimized specifically for agentic coding workflows",
+        "Excellent at multi-file code understanding and generation",
+        "400K context for large codebase analysis",
+        "Strong at autonomous debugging and refactoring",
+        "Available via Responses API"
+      ],
+      "weaknesses": [
+        "Specialized for coding - less versatile for general tasks",
+        "Only available via Responses API (not Chat Completions)",
+        "Higher cost than general-purpose coding models",
+        "Overkill for simple code generation tasks"
+      ],
+      "useCaseDetails": [
+        {"name": "Autonomous Coding Agents", "explanation": "Purpose-built for agents that write, test, and debug code across multiple files with minimal human intervention."},
+        {"name": "Large-Scale Refactoring", "explanation": "400K context and specialized training enable understanding and refactoring large codebases."},
+        {"name": "CI/CD Integration", "explanation": "Designed for integration into automated development pipelines for code review and generation."}
+      ],
+      "pricing": {"inputPerMillion": 2.50, "outputPerMillion": 10.00, "currency": "USD", "notes": "Responses API only"},
+      "specs": {
+        "multimodal": true,
+        "multimodalTypes": ["image"],
+        "trainingDataCutoff": "Late 2024",
+        "releaseDate": "2026-01-15",
+        "apiAvailability": "Responses API",
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": false
@@ -320,6 +485,47 @@
         "trainingDataCutoff": "Mid 2025",
         "releaseDate": "2025-04-16",
         "apiAvailability": "API, ChatGPT Pro, Azure OpenAI",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": true
+      }
+    },
+    {
+      "id": "o3-pro",
+      "name": "OpenAI o3-pro",
+      "provider": "openai",
+      "costTier": "high",
+      "contextWindow": 200000,
+      "maxOutputTokens": 100000,
+      "benchmarks": {},
+      "bestFor": ["reasoning", "quality", "enterprise"],
+      "description": "Enhanced o3 with more compute for harder problems",
+      "overview": "OpenAI o3-pro is an enhanced version of o3 that uses significantly more compute to tackle the hardest problems with better reasoning and consistency. It represents 87% cost reduction compared to o1-pro while delivering improved performance.",
+      "strengths": [
+        "Uses more compute for deeper, more consistent reasoning",
+        "87% cheaper than o1-pro for comparable capability",
+        "Best-in-class for the hardest reasoning challenges",
+        "200K context window with 100K max output",
+        "Ideal for mission-critical analytical tasks"
+      ],
+      "weaknesses": [
+        "Most expensive o-series model ($20/$80 per M tokens)",
+        "Very slow due to extended reasoning process",
+        "Overkill for problems that standard o3 can handle",
+        "Not suitable for real-time or interactive applications"
+      ],
+      "useCaseDetails": [
+        {"name": "High-Stakes Research", "explanation": "When accuracy is paramount - scientific research, legal analysis, financial modeling where errors are costly."},
+        {"name": "Complex Mathematical Proofs", "explanation": "Extended reasoning handles multi-step proofs and derivations that challenge standard models."},
+        {"name": "Enterprise Decision Support", "explanation": "Mission-critical business decisions requiring the highest confidence in AI reasoning."}
+      ],
+      "pricing": {"inputPerMillion": 20.00, "outputPerMillion": 80.00, "currency": "USD", "notes": "87% cheaper than o1-pro; reasoning tokens billed at output rate"},
+      "specs": {
+        "multimodal": true,
+        "multimodalTypes": ["image"],
+        "trainingDataCutoff": "Mid 2025",
+        "releaseDate": "2026-01-20",
+        "apiAvailability": "API, ChatGPT Pro",
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
@@ -490,6 +696,47 @@
       }
     },
     {
+      "id": "gemini-2.5-flash-lite",
+      "name": "Gemini 2.5 Flash-Lite",
+      "provider": "google",
+      "costTier": "low",
+      "contextWindow": 1000000,
+      "maxOutputTokens": 65536,
+      "benchmarks": {},
+      "bestFor": ["speed", "budget", "high-volume"],
+      "description": "Ultra-low cost option for massive scale",
+      "overview": "Gemini 2.5 Flash-Lite is Google's most cost-efficient model, designed for extremely high-volume applications where cost is the primary concern. It maintains the 1M context window while offering even lower pricing than standard Flash.",
+      "strengths": [
+        "Lowest cost option in the Gemini family",
+        "1 million token context window",
+        "Ideal for high-volume batch processing",
+        "Good for classification and simple extraction",
+        "Multimodal capabilities included"
+      ],
+      "weaknesses": [
+        "Lower quality than Flash on complex tasks",
+        "Not suitable for nuanced reasoning",
+        "Limited thinking capabilities",
+        "May produce shorter, less detailed responses"
+      ],
+      "useCaseDetails": [
+        {"name": "Massive Scale Processing", "explanation": "Process millions of documents at minimal cost - ideal for data pipelines and batch operations."},
+        {"name": "Simple Classification", "explanation": "Categorization, sentiment analysis, and basic extraction at rock-bottom pricing."},
+        {"name": "High-Volume Filtering", "explanation": "Initial screening and routing of content before more expensive processing."}
+      ],
+      "pricing": {"inputPerMillion": 0.075, "outputPerMillion": 0.30, "currency": "USD", "notes": "50% cheaper than Flash standard"},
+      "specs": {
+        "multimodal": true,
+        "multimodalTypes": ["image", "video", "audio"],
+        "trainingDataCutoff": "Early 2025",
+        "releaseDate": "2025-06-01",
+        "apiAvailability": "API, Google AI Studio, Vertex AI",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": false
+      }
+    },
+    {
       "id": "gemini-3-flash",
       "name": "Gemini 3 Flash",
       "provider": "google",
@@ -524,6 +771,47 @@
         "multimodalTypes": ["image", "video", "audio"],
         "trainingDataCutoff": "Mid 2025",
         "releaseDate": "2025-12-15",
+        "apiAvailability": "API, Google AI Studio, Vertex AI",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": true
+      }
+    },
+    {
+      "id": "gemini-3-pro",
+      "name": "Gemini 3 Pro Preview",
+      "provider": "google",
+      "costTier": "mid",
+      "contextWindow": 1000000,
+      "maxOutputTokens": 65536,
+      "benchmarks": {},
+      "bestFor": ["reasoning", "agents", "multimodal"],
+      "description": "State-of-the-art reasoning with Computer Use",
+      "overview": "Gemini 3 Pro Preview is Google's most capable model, featuring state-of-the-art reasoning and multimodal understanding. It introduces Computer Use capability allowing AI to control desktop applications, and offers granular control over thinking depth and media resolution.",
+      "strengths": [
+        "Computer Use capability for desktop automation",
+        "State-of-the-art reasoning and multimodal understanding",
+        "1 million token context window",
+        "thinking_level parameter for reasoning depth control",
+        "media_resolution parameter for fine-grained vision"
+      ],
+      "weaknesses": [
+        "Still in preview - may have stability issues",
+        "Higher cost than Flash models",
+        "Computer Use feature requires careful safety implementation",
+        "Limited production track record"
+      ],
+      "useCaseDetails": [
+        {"name": "Desktop Automation", "explanation": "Computer Use capability enables AI to control applications, navigate interfaces, and automate complex desktop workflows."},
+        {"name": "Complex Document Analysis", "explanation": "High media_resolution settings allow reading fine text and identifying small details in documents and images."},
+        {"name": "Advanced Reasoning Tasks", "explanation": "thinking_level parameter allows tuning reasoning depth for complex analytical problems."}
+      ],
+      "pricing": {"inputPerMillion": 1.25, "outputPerMillion": 10.00, "currency": "USD", "notes": "Preview pricing; thinking tokens billed separately"},
+      "specs": {
+        "multimodal": true,
+        "multimodalTypes": ["image", "video", "audio"],
+        "trainingDataCutoff": "Late 2025",
+        "releaseDate": "2026-01-15",
         "apiAvailability": "API, Google AI Studio, Vertex AI",
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
@@ -705,16 +993,16 @@
       "costTier": "self-hosted",
       "contextWindow": 131072,
       "maxOutputTokens": 8192,
-      "benchmarks": {},
+      "benchmarks": {"aime2025": 92.3},
       "bestFor": ["multilingual", "reasoning", "coding"],
-      "description": "235B MoE, strong multilingual & reasoning",
-      "overview": "Qwen 3 is Alibaba's flagship open-source model with 235B total parameters using a mixture-of-experts architecture. It has particularly strong multilingual capabilities across 100+ languages and competitive reasoning and coding performance.",
+      "description": "235B MoE (22B active), 119 languages, 92.3% AIME",
+      "overview": "Qwen 3 is Alibaba's flagship open-source model with 235B total parameters (22B active) via hybrid Mixture-of-Experts architecture. It supports 119 languages and achieves 92.3% on AIME 2025, meeting or beating GPT-4o and DeepSeek-V3 on most benchmarks while using far less compute.",
       "strengths": [
-        "235B MoE architecture with efficient inference",
-        "Strong multilingual support across 100+ languages",
-        "Competitive reasoning and coding performance",
-        "Fully open source with permissive license",
-        "Hybrid thinking mode for flexible reasoning depth"
+        "235B total / 22B active MoE architecture with efficient inference",
+        "119 language support - one of the most multilingual models",
+        "92.3% AIME 2025 - exceptional mathematical reasoning",
+        "Meets or beats GPT-4o/DeepSeek-V3 on most benchmarks",
+        "Fully open source under Apache 2.0 license"
       ],
       "weaknesses": [
         "Requires significant GPU resources for full model",
@@ -724,8 +1012,8 @@
         "128K context window - smaller than Llama 4 models"
       ],
       "useCaseDetails": [
-        {"name": "Multilingual Applications", "explanation": "100+ language support with particularly strong Chinese, Japanese, Korean, and European language capabilities."},
-        {"name": "Self-Hosted Reasoning", "explanation": "Hybrid thinking mode provides reasoning capabilities in a self-hostable package."},
+        {"name": "Multilingual Applications", "explanation": "119 language support with particularly strong Chinese, Japanese, Korean, and European language capabilities."},
+        {"name": "Mathematical Reasoning", "explanation": "92.3% AIME 2025 score makes it excellent for math tutoring, quantitative analysis, and scientific computing."},
         {"name": "Asian Market AI Applications", "explanation": "Excellent for applications targeting Chinese-speaking markets with strong cultural and linguistic understanding."}
       ],
       "pricing": null,
@@ -741,41 +1029,83 @@
       }
     },
     {
-      "id": "mistral-medium-3.1",
-      "name": "Mistral Medium 3.1",
+      "id": "qwen3-omni",
+      "name": "Qwen3-Omni",
+      "provider": "opensource",
+      "costTier": "self-hosted",
+      "contextWindow": 131072,
+      "maxOutputTokens": 8192,
+      "benchmarks": {},
+      "bestFor": ["multimodal", "voice", "real-time"],
+      "description": "True omnimodal: text, audio, image, video + speech output",
+      "overview": "Qwen3-Omni is Alibaba's end-to-end omnimodal model capable of understanding text, audio, images, and video while generating real-time speech output. Released under Apache 2.0, it supports 49 voices and hybrid thinking modes.",
+      "strengths": [
+        "True omnimodal: text, audio, image, video input",
+        "Real-time speech generation (49 voices)",
+        "Hybrid thinking mode (enable_thinking parameter)",
+        "End-to-end architecture - no separate TTS needed",
+        "Fully open source under Apache 2.0"
+      ],
+      "weaknesses": [
+        "8B parameters - smaller than flagship text models",
+        "Speech quality may not match dedicated TTS systems",
+        "Requires specific hardware for real-time speech",
+        "Less mature ecosystem than text-only models",
+        "Documentation primarily in Chinese"
+      ],
+      "useCaseDetails": [
+        {"name": "Voice AI Assistants", "explanation": "Build voice-first applications with native speech understanding and generation - no separate ASR/TTS pipeline needed."},
+        {"name": "Multimodal Content Analysis", "explanation": "Analyze videos, podcasts, and mixed-media content with a single model."},
+        {"name": "Real-Time Translation", "explanation": "Speech-to-speech translation and voice conversion with multiple voice options."}
+      ],
+      "pricing": null,
+      "specs": {
+        "multimodal": true,
+        "multimodalTypes": ["image", "audio", "video"],
+        "trainingDataCutoff": "Mid 2025",
+        "releaseDate": "2025-09-22",
+        "apiAvailability": "Self-hosted, Alibaba Cloud, HuggingFace",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": true
+      }
+    },
+    {
+      "id": "mistral-large-3",
+      "name": "Mistral Large 3",
       "provider": "opensource",
       "costTier": "low",
       "contextWindow": 128000,
-      "maxOutputTokens": 8192,
+      "maxOutputTokens": 16384,
       "benchmarks": {},
-      "bestFor": ["coding", "multimodal", "value"],
-      "description": "Near-Sonnet quality at much lower cost",
-      "overview": "Mistral Medium 3.1 is Mistral AI's mid-range model offering quality close to Claude Sonnet at a significantly lower price point. It supports multimodal inputs and is available both via API and for self-hosting, making it a strong value proposition.",
+      "bestFor": ["coding", "reasoning", "value"],
+      "description": "675B MoE, 92% of GPT-5.2 at 15% cost",
+      "overview": "Mistral Large 3 is Mistral AI's flagship model with 675B total parameters (41B active) using MoE architecture. It delivers approximately 92% of GPT-5.2's performance at roughly 15% of the price, making it one of the best value propositions for high-quality AI.",
       "strengths": [
-        "Near-Sonnet quality at roughly 8x lower cost",
-        "Strong coding performance for its price tier",
-        "Multimodal support (text and images)",
-        "Available both as API and for self-hosting",
+        "675B total parameters with 41B active via MoE",
+        "92% of GPT-5.2 performance at ~15% of the cost",
+        "Strong coding and reasoning capabilities",
+        "Open source under Apache 2.0 license",
         "European company - GDPR-friendly option"
       ],
       "weaknesses": [
-        "Not as capable as top-tier models on hardest tasks",
+        "Requires significant GPU resources for self-hosting",
         "128K context is smaller than Gemini or Llama 4",
         "Smaller ecosystem than OpenAI or Anthropic",
-        "8K max output can be limiting for long generation",
-        "Less community tooling and documentation"
+        "MoE architecture has specific hardware requirements",
+        "Less community tooling than Llama models"
       ],
       "useCaseDetails": [
-        {"name": "Cost-Effective Production AI", "explanation": "Get near-premium quality at budget pricing - ideal for startups and cost-conscious teams building production applications."},
+        {"name": "High-Quality Budget AI", "explanation": "Get near-GPT-5.2 quality at a fraction of the cost - ideal for teams needing premium performance on a budget."},
         {"name": "European Data Compliance", "explanation": "French company with EU hosting options makes it attractive for GDPR-sensitive deployments."},
-        {"name": "Multimodal on a Budget", "explanation": "Image understanding at low cost - good for applications needing vision capabilities without premium pricing."}
+        {"name": "Self-Hosted Enterprise AI", "explanation": "Open-source with Apache 2.0 license allows full self-hosting for sensitive enterprise workloads."}
       ],
-      "pricing": {"inputPerMillion": 0.40, "outputPerMillion": 2.00, "currency": "USD", "notes": "Also available for self-hosting"},
+      "pricing": {"inputPerMillion": 2.00, "outputPerMillion": 6.00, "currency": "USD", "notes": "Open source under Apache 2.0, self-hosting available"},
       "specs": {
-        "multimodal": true,
-        "multimodalTypes": ["image"],
-        "trainingDataCutoff": "Late 2024",
-        "releaseDate": "2025-05-15",
+        "multimodal": false,
+        "multimodalTypes": [],
+        "trainingDataCutoff": "Late 2025",
+        "releaseDate": "2026-01-20",
         "apiAvailability": "Mistral API (La Plateforme), self-hosted, AWS Bedrock",
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
@@ -787,25 +1117,25 @@
     "chatbot": {
       "name": "Customer Support & Chatbots",
       "recommendations": {
-        "quality": {"models": ["claude-sonnet-4.5", "gpt-5", "gemini-2.5-pro"], "topPick": "claude-sonnet-4.5", "reason": "Natural conversation, excellent context understanding"},
+        "quality": {"models": ["claude-sonnet-4.5", "gpt-5.1", "gemini-2.5-pro"], "topPick": "claude-sonnet-4.5", "reason": "Natural conversation, excellent context understanding"},
         "cost": {"models": ["deepseek-v3.2", "claude-haiku-4.5", "gemini-2.5-flash"], "topPick": "deepseek-v3.2", "reason": "10-30x cheaper, handles routine queries well"},
         "speed": {"models": ["claude-haiku-4.5", "gemini-3-flash", "gemini-2.5-flash"], "topPick": "claude-haiku-4.5", "reason": "Fastest response times for real-time chat"},
-        "privacy": {"models": ["llama-4-maverick", "qwen-3", "mistral-medium-3.1"], "topPick": "llama-4-maverick", "reason": "Run on your own servers, full data control"}
+        "privacy": {"models": ["llama-4-maverick", "qwen-3", "mistral-large-3"], "topPick": "llama-4-maverick", "reason": "Run on your own servers, full data control"}
       }
     },
     "coding": {
       "name": "Code Generation & Review",
       "recommendations": {
-        "quality": {"models": ["claude-opus-4.5", "claude-sonnet-4.5", "gpt-4.1"], "topPick": "claude-opus-4.5", "reason": "Industry-leading 80.9% SWE-bench score"},
-        "cost": {"models": ["deepseek-v3.2", "mistral-medium-3.1", "claude-haiku-4.5"], "topPick": "deepseek-v3.2", "reason": "Excellent coding at fraction of cost"},
+        "quality": {"models": ["claude-opus-4.6", "claude-opus-4.5", "gpt-5.2-pro"], "topPick": "claude-opus-4.6", "reason": "80.8% SWE-bench with 1M context for entire codebases"},
+        "cost": {"models": ["deepseek-v3.2", "mistral-large-3", "claude-haiku-4.5"], "topPick": "deepseek-v3.2", "reason": "Excellent coding at fraction of cost"},
         "speed": {"models": ["claude-haiku-4.5", "o4-mini", "gemini-3-flash"], "topPick": "claude-haiku-4.5", "reason": "Fast code completions and reviews"},
-        "privacy": {"models": ["llama-4-scout", "qwen-3", "mistral-medium-3.1"], "topPick": "llama-4-scout", "reason": "10M context for entire codebases, self-hosted"}
+        "privacy": {"models": ["llama-4-scout", "qwen-3", "mistral-large-3"], "topPick": "llama-4-scout", "reason": "10M context for entire codebases, self-hosted"}
       }
     },
     "reasoning": {
       "name": "Complex Reasoning & Analysis",
       "recommendations": {
-        "quality": {"models": ["o3", "claude-opus-4.5", "deepseek-r1"], "topPick": "o3", "reason": "Deepest reasoning capabilities, 96.7% AIME"},
+        "quality": {"models": ["o3-pro", "o3", "gpt-5.2-pro"], "topPick": "o3-pro", "reason": "Enhanced o3 with more compute for hardest problems"},
         "cost": {"models": ["deepseek-r1", "o4-mini", "gemini-2.5-flash"], "topPick": "deepseek-r1", "reason": "Rivals o1 at fraction of cost"},
         "speed": {"models": ["o4-mini", "gemini-2.5-flash", "claude-haiku-4.5"], "topPick": "o4-mini", "reason": "Fast reasoning with good quality"},
         "privacy": {"models": ["qwen-3", "llama-4-maverick"], "topPick": "qwen-3", "reason": "Strong reasoning in a self-hostable model"}
@@ -814,7 +1144,7 @@
     "documents": {
       "name": "Document Analysis & Summarization",
       "recommendations": {
-        "quality": {"models": ["gemini-2.5-pro", "claude-sonnet-4.5", "gpt-5"], "topPick": "gemini-2.5-pro", "reason": "1M token context handles very long documents natively"},
+        "quality": {"models": ["claude-opus-4.6", "gemini-2.5-pro", "gpt-5.1"], "topPick": "claude-opus-4.6", "reason": "1M token context with industry-leading comprehension"},
         "cost": {"models": ["gemini-2.5-flash", "deepseek-v3.2", "claude-haiku-4.5"], "topPick": "gemini-2.5-flash", "reason": "1M context at very low cost per token"},
         "speed": {"models": ["gemini-3-flash", "claude-haiku-4.5", "gemini-2.5-flash"], "topPick": "gemini-3-flash", "reason": "Fast processing with long context support"},
         "privacy": {"models": ["llama-4-scout", "llama-4-maverick", "qwen-3"], "topPick": "llama-4-scout", "reason": "10M context for massive document sets on your servers"}
@@ -823,10 +1153,10 @@
     "content": {
       "name": "Content Writing & Marketing",
       "recommendations": {
-        "quality": {"models": ["claude-opus-4.5", "claude-sonnet-4.5", "gpt-5"], "topPick": "claude-opus-4.5", "reason": "Most natural, human-like writing quality"},
+        "quality": {"models": ["claude-opus-4.6", "claude-sonnet-4.5", "gpt-5.1"], "topPick": "claude-opus-4.6", "reason": "Most natural, human-like writing quality"},
         "cost": {"models": ["deepseek-v3.2", "gemini-2.5-flash", "claude-haiku-4.5"], "topPick": "deepseek-v3.2", "reason": "Good creative output at minimal cost"},
         "speed": {"models": ["claude-haiku-4.5", "gemini-3-flash"], "topPick": "claude-haiku-4.5", "reason": "Fast iteration for drafts and variants"},
-        "privacy": {"models": ["llama-4-maverick", "qwen-3", "mistral-medium-3.1"], "topPick": "llama-4-maverick", "reason": "Keep proprietary content on your infrastructure"}
+        "privacy": {"models": ["llama-4-maverick", "qwen-3", "mistral-large-3"], "topPick": "llama-4-maverick", "reason": "Keep proprietary content on your infrastructure"}
       }
     },
     "extraction": {
@@ -835,37 +1165,37 @@
         "quality": {"models": ["gemini-2.5-pro", "claude-sonnet-4.5", "gpt-4o"], "topPick": "gemini-2.5-pro", "reason": "Strong multimodal + long context for complex extraction"},
         "cost": {"models": ["gemini-2.5-flash", "deepseek-v3.2", "claude-haiku-4.5"], "topPick": "gemini-2.5-flash", "reason": "Multimodal at low cost with 1M context"},
         "speed": {"models": ["gemini-3-flash", "claude-haiku-4.5"], "topPick": "gemini-3-flash", "reason": "Fast structured extraction"},
-        "privacy": {"models": ["llama-4-maverick", "mistral-medium-3.1"], "topPick": "llama-4-maverick", "reason": "Multimodal open-source for sensitive documents"}
+        "privacy": {"models": ["llama-4-maverick", "mistral-large-3"], "topPick": "llama-4-maverick", "reason": "Multimodal open-source for sensitive documents"}
       }
     },
     "translation": {
       "name": "Translation & Multilingual",
       "recommendations": {
-        "quality": {"models": ["claude-sonnet-4.5", "gpt-5", "llama-4-maverick"], "topPick": "claude-sonnet-4.5", "reason": "Excellent nuanced translation with context awareness"},
-        "cost": {"models": ["deepseek-v3.2", "gemini-2.5-flash", "mistral-medium-3.1"], "topPick": "deepseek-v3.2", "reason": "Strong multilingual at very low cost"},
+        "quality": {"models": ["claude-sonnet-4.5", "gpt-5.1", "llama-4-maverick"], "topPick": "claude-sonnet-4.5", "reason": "Excellent nuanced translation with context awareness"},
+        "cost": {"models": ["deepseek-v3.2", "gemini-2.5-flash", "mistral-large-3"], "topPick": "deepseek-v3.2", "reason": "Strong multilingual at very low cost"},
         "speed": {"models": ["gemini-3-flash", "claude-haiku-4.5"], "topPick": "gemini-3-flash", "reason": "Fast multilingual processing"},
-        "privacy": {"models": ["llama-4-maverick", "qwen-3", "mistral-medium-3.1"], "topPick": "qwen-3", "reason": "235B MoE with strong multilingual across 100+ languages"}
+        "privacy": {"models": ["llama-4-maverick", "qwen-3", "mistral-large-3"], "topPick": "qwen-3", "reason": "235B MoE with strong multilingual across 100+ languages"}
       }
     },
     "vision": {
       "name": "Image & Vision Tasks",
       "recommendations": {
-        "quality": {"models": ["gemini-2.5-pro", "gpt-5", "claude-sonnet-4.5"], "topPick": "gemini-2.5-pro", "reason": "Strong native multimodal with video and audio too"},
+        "quality": {"models": ["gemini-2.5-pro", "gpt-5.1", "claude-sonnet-4.5"], "topPick": "gemini-2.5-pro", "reason": "Strong native multimodal with video and audio too"},
         "cost": {"models": ["gemini-2.5-flash", "gemini-3-flash", "gpt-4o"], "topPick": "gemini-2.5-flash", "reason": "Low-cost multimodal with good accuracy"},
         "speed": {"models": ["gemini-3-flash", "gpt-4o"], "topPick": "gemini-3-flash", "reason": "Fast image processing"},
-        "privacy": {"models": ["llama-4-maverick", "mistral-medium-3.1"], "topPick": "llama-4-maverick", "reason": "Multimodal open-source, fully self-hosted"}
+        "privacy": {"models": ["llama-4-maverick", "mistral-large-3"], "topPick": "llama-4-maverick", "reason": "Multimodal open-source, fully self-hosted"}
       }
     }
   },
   "quickDecisions": [
-    {"priority": "Lowest cost", "recommendations": ["deepseek-v3.2", "deepseek-r1", "gemini-2.5-flash"]},
-    {"priority": "Highest quality", "recommendations": ["claude-opus-4.5", "o3", "gpt-5"]},
-    {"priority": "Best for coding", "recommendations": ["claude-opus-4.5", "claude-sonnet-4.5", "gpt-4.1"]},
-    {"priority": "Best for reasoning", "recommendations": ["o3", "deepseek-r1", "claude-opus-4.5"]},
+    {"priority": "Lowest cost", "recommendations": ["deepseek-v3.2", "gemini-2.5-flash-lite", "deepseek-r1"]},
+    {"priority": "Highest quality", "recommendations": ["claude-opus-4.6", "o3-pro", "gpt-5.2-pro"]},
+    {"priority": "Best for coding", "recommendations": ["claude-opus-4.6", "gpt-5.2-codex", "gpt-5.2-pro"]},
+    {"priority": "Best for reasoning", "recommendations": ["o3-pro", "o3", "gpt-5.2-pro"]},
     {"priority": "Fastest responses", "recommendations": ["claude-haiku-4.5", "gemini-3-flash", "gemini-2.5-flash"]},
-    {"priority": "Best for documents", "recommendations": ["gemini-2.5-pro", "llama-4-scout", "claude-sonnet-4.5"]},
+    {"priority": "Best for documents", "recommendations": ["claude-opus-4.6", "gemini-2.5-pro", "llama-4-scout"]},
     {"priority": "Best for privacy", "recommendations": ["llama-4-maverick", "llama-4-scout", "qwen-3"]},
-    {"priority": "Best multilingual", "recommendations": ["llama-4-maverick", "qwen-3", "deepseek-v3.2"]}
+    {"priority": "Best multilingual", "recommendations": ["llama-4-maverick", "qwen-3", "qwen3-omni"]}
   ],
   "references": {
     "claude": [
