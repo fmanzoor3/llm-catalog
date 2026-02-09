@@ -335,6 +335,20 @@
         .all-models-section { margin-bottom: 3rem; }
         .all-models-section h2 { margin-bottom: 0.5rem; font-size: 1.5rem; }
         .section-subtitle { color: #888; margin-bottom: 1.5rem; }
+        .model-controls { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+        .model-search {
+            flex: 1; min-width: 200px; max-width: 300px; padding: 0.6rem 1rem;
+            border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08); color: #fff; font-size: 0.9rem;
+        }
+        .model-search::placeholder { color: #666; }
+        .model-search:focus { outline: none; border-color: #00d4ff; background: rgba(255,255,255,0.1); }
+        .model-sort {
+            padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08); color: #fff; font-size: 0.85rem; cursor: pointer;
+        }
+        .model-sort option { background: #1a1a2e; }
+        .model-count { color: #666; font-size: 0.85rem; margin-left: auto; }
         .model-filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
         .filter-chip {
             padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);
@@ -595,6 +609,17 @@
         <section class="all-models-section">
             <h2>All Models</h2>
             <p class="section-subtitle">Click any model for detailed information</p>
+            <div class="model-controls">
+                <input type="text" class="model-search" id="modelSearch" placeholder="Search models...">
+                <select class="model-sort" id="modelSort">
+                    <option value="release">Newest First</option>
+                    <option value="name">Name (A-Z)</option>
+                    <option value="context">Context Window</option>
+                    <option value="cost-low">Cost (Low to High)</option>
+                    <option value="cost-high">Cost (High to Low)</option>
+                </select>
+                <span class="model-count" id="modelCount">25 models</span>
+            </div>
             <div class="model-filter-bar" id="modelFilterBar">
                 <button class="filter-chip active" data-filter="all">All</button>
                 <button class="filter-chip" data-filter="anthropic">Anthropic</button>
@@ -829,9 +854,13 @@
             chip.addEventListener('click', function() {
                 document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
                 this.classList.add('active');
-                populateAllModels(this.dataset.filter);
+                populateAllModels();
             });
         });
+
+        // Search and sort for All Models
+        document.getElementById('modelSearch').addEventListener('input', debounce(populateAllModels, 200));
+        document.getElementById('modelSort').addEventListener('change', populateAllModels);
 
         // Modal close handlers
         document.getElementById('modelModal').addEventListener('click', function(e) {
@@ -861,11 +890,33 @@
         return '$$$';
     }
 
-    function sortByReleaseDate(models) {
+    function debounce(fn, delay) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => fn.apply(this, args), delay);
+        };
+    }
+
+    function sortModels(models, sortBy) {
         return [...models].sort((a, b) => {
-            const dateA = a.specs?.releaseDate || '1970-01-01';
-            const dateB = b.specs?.releaseDate || '1970-01-01';
-            return dateB.localeCompare(dateA); // newest first
+            switch (sortBy) {
+                case 'name':
+                    return a.name.localeCompare(b.name);
+                case 'context':
+                    return (b.contextWindow || 0) - (a.contextWindow || 0);
+                case 'cost-low':
+                    const costOrderLow = { 'self-hosted': 0, 'low': 1, 'mid': 2, 'high': 3 };
+                    return (costOrderLow[a.costTier] || 4) - (costOrderLow[b.costTier] || 4);
+                case 'cost-high':
+                    const costOrderHigh = { 'high': 0, 'mid': 1, 'low': 2, 'self-hosted': 3 };
+                    return (costOrderHigh[a.costTier] || 4) - (costOrderHigh[b.costTier] || 4);
+                case 'release':
+                default:
+                    const dateA = a.specs?.releaseDate || '1970-01-01';
+                    const dateB = b.specs?.releaseDate || '1970-01-01';
+                    return dateB.localeCompare(dateA);
+            }
         });
     }
 
@@ -875,7 +926,7 @@
         providerOrder.forEach(key => {
             const p = modelData.providers[key];
             if (!p) return;
-            const models = sortByReleaseDate(modelData.models.filter(m => m.provider === key));
+            const models = sortModels(modelData.models.filter(m => m.provider === key), 'release');
             const modelTags = models.map(m => {
                 const costLabel = m.costTier === 'high' ? '$$$' : m.costTier === 'mid' ? '$$' : '$';
                 return '<span class="model-tag clickable-model" onclick="openModelModal(\'' + m.id + '\')">' + m.name + ' (' + costLabel + ')</span>';
@@ -884,11 +935,40 @@
         });
     }
 
-    function populateAllModels(filterProvider) {
-        filterProvider = filterProvider || 'all';
+    function populateAllModels() {
         const grid = document.getElementById('allModelsGrid');
-        const filtered = filterProvider === 'all' ? modelData.models : modelData.models.filter(m => m.provider === filterProvider);
-        const models = sortByReleaseDate(filtered);
+        const countEl = document.getElementById('modelCount');
+        const searchQuery = (document.getElementById('modelSearch').value || '').toLowerCase().trim();
+        const sortBy = document.getElementById('modelSort').value;
+        const filterProvider = document.querySelector('.filter-chip.active')?.dataset.filter || 'all';
+
+        // Filter by provider
+        let filtered = filterProvider === 'all'
+            ? modelData.models
+            : modelData.models.filter(m => m.provider === filterProvider);
+
+        // Filter by search query
+        if (searchQuery) {
+            filtered = filtered.filter(m =>
+                m.name.toLowerCase().includes(searchQuery) ||
+                m.description.toLowerCase().includes(searchQuery) ||
+                (m.bestFor || []).some(t => t.toLowerCase().includes(searchQuery)) ||
+                getProviderName(m.provider).toLowerCase().includes(searchQuery)
+            );
+        }
+
+        // Sort models
+        const models = sortModels(filtered, sortBy);
+
+        // Update count
+        countEl.textContent = models.length + ' model' + (models.length !== 1 ? 's' : '');
+
+        // Render cards
+        if (models.length === 0) {
+            grid.innerHTML = '<p class="no-results">No models match your search</p>';
+            return;
+        }
+
         grid.innerHTML = models.map(m => {
             const costClass = m.costTier === 'self-hosted' ? 'low' : m.costTier;
             const tags = (m.bestFor || []).slice(0, 3).map(t => '<span class="mini-tag">' + t + '</span>').join('');
