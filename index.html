@@ -187,12 +187,14 @@
             border-collapse: collapse;
             background: rgba(255,255,255,0.05);
             border-radius: 12px;
-            overflow: hidden;
+            overflow: visible;
         }
+        .comparison-table thead { position: sticky; top: 0; z-index: 10; }
         .comparison-table th {
             padding: 1rem;
             text-align: left;
-            background: rgba(255,255,255,0.08);
+            background: rgba(30,30,58,0.98);
+            backdrop-filter: blur(8px);
             font-size: 0.85rem;
             color: #888;
             text-transform: uppercase;
@@ -530,11 +532,16 @@
             .provider-grid { grid-template-columns: 1fr; }
             .comparison-table { font-size: 0.8rem; }
             .comparison-table th, .comparison-table td { padding: 0.5rem; }
+            .comparison-table th:nth-child(4) { display: none; } /* Hide Budget Option on mobile */
+            .comparison-table td:nth-child(4) { display: none; }
             .ref-grid { grid-template-columns: 1fr; }
             .modal-specs-grid { grid-template-columns: repeat(2, 1fr); }
             .modal-columns { grid-template-columns: 1fr; }
             .model-modal { padding: 1.5rem; margin: 1rem; }
             .all-models-grid { grid-template-columns: 1fr; }
+            .model-controls { flex-direction: column; align-items: stretch; }
+            .model-search { max-width: none; }
+            .model-count { margin-left: 0; text-align: center; }
             .methodology-modal { padding: 1.5rem; margin: 1rem; }
             .methodology-grid { grid-template-columns: 1fr; }
             .detail-header { flex-direction: column; }
@@ -543,6 +550,17 @@
             .ranking-stats { display: none; }
             .ranking-info .ranking-reason { font-size: 0.75rem; }
         }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed; bottom: 2rem; right: 2rem; width: 48px; height: 48px;
+            border-radius: 50%; background: rgba(0,212,255,0.9); color: #1a1a2e;
+            border: none; cursor: pointer; font-size: 1.5rem; display: none;
+            align-items: center; justify-content: center; z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s;
+        }
+        .back-to-top:hover { transform: scale(1.1); background: #00d4ff; }
+        .back-to-top.visible { display: flex; }
     </style>
 </head>
 <body>
@@ -654,6 +672,9 @@
             <span class="footer-link" onclick="openMethodologyModal()">How We Evaluate Models</span>
         </footer>
     </div>
+
+    <!-- Back to top button -->
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
 
     <!-- Model Detail Modal -->
     <div class="model-modal-overlay" id="modelModal">
@@ -870,6 +891,16 @@
             if (e.key === 'Escape') {
                 closeModelModal();
                 closeMethodologyModal();
+            }
+        });
+
+        // Back to top button
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 500) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
             }
         });
     }
