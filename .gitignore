@@ -9,3 +9,23 @@ __pycache__/
 # IDE
 .vscode/
 .idea/
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Generated files
+screenshots/
+*.pptx
+
+# Backup/test files
+data/backups/
+data/test_old_data.json
+
+# Analysis/verification scripts (dev only)
+analyze-page.js
+verify-*.js
+
+# OS files
+.DS_Store
+Thumbs.db

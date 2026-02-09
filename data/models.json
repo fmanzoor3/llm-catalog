@@ -69,7 +69,7 @@
       "strengths": [
         "Llama 4 Scout: 10M token context",
         "Mistral Large 3: 675B MoE, rivals GPT-5.2",
-        "Qwen 3: 235B MoE, 119 languages, 92% AIME",
+        "Qwen 3: 235B MoE, 119 languages, 86% AIME",
         "Full data privacy - your infrastructure"
       ],
       "tradeoffs": "Requires GPUs & technical expertise",
@@ -119,6 +119,11 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://claude.com/pricing",
+        "docs": "https://docs.anthropic.com/en/docs/about-claude/models/all-models",
+        "announcement": "https://www.anthropic.com/news/claude-opus-4-6"
       }
     },
     {
@@ -150,7 +155,7 @@
         {"name": "Complex Analysis & Research", "explanation": "Extended thinking mode allows deep, structured analysis of business problems, legal documents, and scientific literature."},
         {"name": "Architecture & System Design", "explanation": "Excellent at creating system designs, API specifications, and technical documentation with thorough reasoning."}
       ],
-      "pricing": {"inputPerMillion": 15.00, "outputPerMillion": 75.00, "currency": "USD", "notes": "Extended thinking tokens billed at output rate"},
+      "pricing": {"inputPerMillion": 5.00, "outputPerMillion": 25.00, "currency": "USD", "notes": "Legacy model - same pricing as Opus 4.6; Extended thinking tokens billed at output rate"},
       "specs": {
         "multimodal": true,
         "multimodalTypes": ["image"],
@@ -160,6 +165,11 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://claude.com/pricing",
+        "docs": "https://docs.anthropic.com/en/docs/about-claude/models/all-models",
+        "announcement": "https://www.anthropic.com/news/claude-opus-4-5"
       }
     },
     {
@@ -168,7 +178,7 @@
       "provider": "anthropic",
       "costTier": "mid",
       "contextWindow": 200000,
-      "maxOutputTokens": 16000,
+      "maxOutputTokens": 64000,
       "benchmarks": {"sweBenchVerified": 77.2},
       "bestFor": ["coding", "agents", "balanced"],
       "description": "Best balance of quality, speed, and cost",
@@ -201,6 +211,11 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://claude.com/pricing",
+        "docs": "https://docs.anthropic.com/en/docs/about-claude/models/all-models",
+        "announcement": "https://www.anthropic.com/news/claude-sonnet-4-5"
       }
     },
     {
@@ -209,21 +224,21 @@
       "provider": "anthropic",
       "costTier": "low",
       "contextWindow": 200000,
-      "maxOutputTokens": 8192,
+      "maxOutputTokens": 64000,
       "benchmarks": {"sweBenchVerified": 73.3},
       "bestFor": ["speed", "budget", "high-volume"],
       "description": "Fast & cheap, 73.3% SWE-bench",
-      "overview": "Claude Haiku 4.5 is Anthropic's fastest and most affordable model. Despite its low cost, it delivers surprisingly strong performance on coding (73.3% SWE-bench) and general tasks, making it ideal for high-volume applications where latency matters.",
+      "overview": "Claude Haiku 4.5 is Anthropic's fastest and most affordable model. Despite its low cost, it delivers surprisingly strong performance on coding (73.3% SWE-bench) and general tasks, making it ideal for high-volume applications where latency matters. Now supports extended thinking.",
       "strengths": [
         "Fastest Claude model with low latency responses",
         "Very affordable - suitable for high-volume production use",
         "Still achieves 73.3% on SWE-bench (impressive for its price)",
         "Good for classification, extraction, and routine tasks",
-        "200K context window even at the budget tier"
+        "200K context window even at the budget tier",
+        "Now supports extended thinking for deeper reasoning"
       ],
       "weaknesses": [
         "Less nuanced reasoning compared to Sonnet and Opus",
-        "Shorter maximum output (8K tokens)",
         "Can struggle with very complex multi-step instructions",
         "Less creative and detailed in writing tasks"
       ],
@@ -232,7 +247,7 @@
         {"name": "Real-Time Chat Applications", "explanation": "Fast response times make it suitable for interactive chatbots where users expect instant replies."},
         {"name": "Data Classification & Extraction", "explanation": "Reliable for structured data extraction, categorization, and routing tasks at scale."}
       ],
-      "pricing": {"inputPerMillion": 0.80, "outputPerMillion": 4.00, "currency": "USD", "notes": null},
+      "pricing": {"inputPerMillion": 1.00, "outputPerMillion": 5.00, "currency": "USD", "notes": null},
       "specs": {
         "multimodal": true,
         "multimodalTypes": ["image"],
@@ -241,7 +256,12 @@
         "apiAvailability": "API, Claude.ai, Amazon Bedrock, Google Vertex AI",
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
-        "supportsExtendedThinking": false
+        "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://claude.com/pricing",
+        "docs": "https://docs.anthropic.com/en/docs/about-claude/models/all-models",
+        "announcement": "https://www.anthropic.com/news/claude-3-5-haiku"
       }
     },
     {
@@ -652,6 +672,11 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://ai.google.dev/pricing",
+        "docs": "https://ai.google.dev/gemini-api/docs/models#gemini-2.5-pro",
+        "announcement": "https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/"
       }
     },
     {
@@ -683,7 +708,7 @@
         {"name": "Budget Multimodal Applications", "explanation": "Image, video, and audio understanding at a fraction of Pro pricing."},
         {"name": "Fast Prototyping & Development", "explanation": "Quick responses and low cost make it ideal for development and testing before scaling to production."}
       ],
-      "pricing": {"inputPerMillion": 0.15, "outputPerMillion": 0.60, "currency": "USD", "notes": "Thinking tokens: $0.70/$2.80 per million input/output"},
+      "pricing": {"inputPerMillion": 0.30, "outputPerMillion": 2.50, "currency": "USD", "notes": "Audio input: $1.00/M tokens"},
       "specs": {
         "multimodal": true,
         "multimodalTypes": ["image", "video", "audio"],
@@ -693,6 +718,10 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://ai.google.dev/pricing",
+        "docs": "https://ai.google.dev/gemini-api/docs/models#gemini-2.5-flash"
       }
     },
     {
@@ -724,7 +753,7 @@
         {"name": "Simple Classification", "explanation": "Categorization, sentiment analysis, and basic extraction at rock-bottom pricing."},
         {"name": "High-Volume Filtering", "explanation": "Initial screening and routing of content before more expensive processing."}
       ],
-      "pricing": {"inputPerMillion": 0.075, "outputPerMillion": 0.30, "currency": "USD", "notes": "50% cheaper than Flash standard"},
+      "pricing": {"inputPerMillion": 0.10, "outputPerMillion": 0.40, "currency": "USD", "notes": "Audio input: $0.30/M tokens"},
       "specs": {
         "multimodal": true,
         "multimodalTypes": ["image", "video", "audio"],
@@ -734,6 +763,10 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": false
+      },
+      "sourceUrls": {
+        "pricing": "https://ai.google.dev/pricing",
+        "docs": "https://ai.google.dev/gemini-api/docs/models#gemini-2.5-flash-lite-preview"
       }
     },
     {
@@ -765,16 +798,21 @@
         {"name": "General-Purpose AI Applications", "explanation": "Improved reasoning makes it a solid default choice for new applications that need good quality at low cost."},
         {"name": "Multimodal Chatbots", "explanation": "Handle text, images, and audio in conversational applications with quick response times."}
       ],
-      "pricing": {"inputPerMillion": 0.15, "outputPerMillion": 0.60, "currency": "USD", "notes": "Pricing similar to Gemini 2.5 Flash"},
+      "pricing": {"inputPerMillion": 0.50, "outputPerMillion": 3.00, "currency": "USD", "notes": "Audio input: $1.00/M tokens"},
       "specs": {
         "multimodal": true,
         "multimodalTypes": ["image", "video", "audio"],
-        "trainingDataCutoff": "Mid 2025",
+        "trainingDataCutoff": "January 2025",
         "releaseDate": "2025-12-15",
         "apiAvailability": "API, Google AI Studio, Vertex AI",
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://ai.google.dev/pricing",
+        "docs": "https://ai.google.dev/gemini-api/docs/models#gemini-3-flash-preview",
+        "guide": "https://ai.google.dev/gemini-api/docs/gemini-3"
       }
     },
     {
@@ -786,10 +824,10 @@
       "maxOutputTokens": 65536,
       "benchmarks": {},
       "bestFor": ["reasoning", "agents", "multimodal"],
-      "description": "State-of-the-art reasoning with Computer Use",
-      "overview": "Gemini 3 Pro Preview is Google's most capable model, featuring state-of-the-art reasoning and multimodal understanding. It introduces Computer Use capability allowing AI to control desktop applications, and offers granular control over thinking depth and media resolution.",
+      "description": "State-of-the-art reasoning with Computer Use (coming soon)",
+      "overview": "Gemini 3 Pro Preview is Google's most capable model, featuring state-of-the-art reasoning and multimodal understanding. Computer Use capability is documented but not yet available. Offers granular control over thinking depth via thinking_level parameter and media resolution for fine-grained vision tasks.",
       "strengths": [
-        "Computer Use capability for desktop automation",
+        "Computer Use capability for desktop automation (coming soon)",
         "State-of-the-art reasoning and multimodal understanding",
         "1 million token context window",
         "thinking_level parameter for reasoning depth control",
@@ -797,25 +835,30 @@
       ],
       "weaknesses": [
         "Still in preview - may have stability issues",
-        "Higher cost than Flash models",
-        "Computer Use feature requires careful safety implementation",
+        "Higher cost than Flash models ($2/$12 per M tokens)",
+        "Computer Use not yet available (documented but coming soon)",
         "Limited production track record"
       ],
       "useCaseDetails": [
-        {"name": "Desktop Automation", "explanation": "Computer Use capability enables AI to control applications, navigate interfaces, and automate complex desktop workflows."},
+        {"name": "Desktop Automation", "explanation": "Computer Use capability (coming soon) will enable AI to control applications, navigate interfaces, and automate complex desktop workflows."},
         {"name": "Complex Document Analysis", "explanation": "High media_resolution settings allow reading fine text and identifying small details in documents and images."},
         {"name": "Advanced Reasoning Tasks", "explanation": "thinking_level parameter allows tuning reasoning depth for complex analytical problems."}
       ],
-      "pricing": {"inputPerMillion": 1.25, "outputPerMillion": 10.00, "currency": "USD", "notes": "Preview pricing; thinking tokens billed separately"},
+      "pricing": {"inputPerMillion": 2.00, "outputPerMillion": 12.00, "currency": "USD", "notes": "$4/$18 for prompts over 200K tokens; thinking tokens billed separately"},
       "specs": {
         "multimodal": true,
         "multimodalTypes": ["image", "video", "audio"],
-        "trainingDataCutoff": "Late 2025",
+        "trainingDataCutoff": "January 2025",
         "releaseDate": "2026-01-15",
         "apiAvailability": "API, Google AI Studio, Vertex AI",
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://ai.google.dev/pricing",
+        "docs": "https://ai.google.dev/gemini-api/docs/models#gemini-3-pro-preview",
+        "guide": "https://ai.google.dev/gemini-api/docs/gemini-3"
       }
     },
     {
@@ -848,7 +891,7 @@
         {"name": "Self-Hosted Deployments", "explanation": "Open-source model that can run on your own infrastructure for data sovereignty and cost control."},
         {"name": "AI Agent Development", "explanation": "Integrated tool use and hybrid thinking make it cost-effective for building autonomous agents."}
       ],
-      "pricing": {"inputPerMillion": 0.27, "outputPerMillion": 1.10, "currency": "USD", "notes": "Cache hits: $0.07/M input. Self-hosting available."},
+      "pricing": {"inputPerMillion": 0.28, "outputPerMillion": 0.42, "currency": "USD", "notes": "Cache hits: $0.028/M input. Self-hosting available."},
       "specs": {
         "multimodal": false,
         "multimodalTypes": [],
@@ -858,6 +901,11 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://api-docs.deepseek.com/quick_start/pricing",
+        "docs": "https://api-docs.deepseek.com/",
+        "github": "https://github.com/deepseek-ai/DeepSeek-V3"
       }
     },
     {
@@ -867,12 +915,12 @@
       "costTier": "low",
       "contextWindow": 128000,
       "maxOutputTokens": 16384,
-      "benchmarks": {"aime2024": 96.3},
+      "benchmarks": {"aime2024": 79.8},
       "bestFor": ["reasoning", "math", "science"],
-      "description": "Reasoning model rivaling o1, 96.3% AIME",
-      "overview": "DeepSeek R1 is a reasoning-focused model that rivals OpenAI's o1 on mathematical and scientific reasoning at a dramatically lower cost. It achieves 96.3% on AIME 2024 and is fully open source, making it an exceptional value for reasoning-heavy applications.",
+      "description": "Reasoning model rivaling o1, 79.8% AIME",
+      "overview": "DeepSeek R1 is a reasoning-focused model that rivals OpenAI's o1 on mathematical and scientific reasoning at a dramatically lower cost. It achieves 79.8% on AIME 2024 and is fully open source, making it an exceptional value for reasoning-heavy applications.",
       "strengths": [
-        "96.3% on AIME 2024 - rivaling top reasoning models",
+        "79.8% on AIME 2024 - competitive with top reasoning models",
         "Dramatically cheaper than OpenAI o3 for similar reasoning",
         "Fully open source - can self-host for complete control",
         "Strong at mathematical proofs and scientific reasoning",
@@ -900,6 +948,12 @@
         "supportsFunctionCalling": false,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://api-docs.deepseek.com/quick_start/pricing",
+        "docs": "https://api-docs.deepseek.com/",
+        "github": "https://github.com/deepseek-ai/DeepSeek-R1",
+        "benchmarks": "https://github.com/deepseek-ai/DeepSeek-R1#benchmark-results"
       }
     },
     {
@@ -911,18 +965,17 @@
       "maxOutputTokens": 16384,
       "benchmarks": {},
       "bestFor": ["multimodal", "multilingual", "privacy"],
-      "description": "400B params, 200 languages, multimodal",
-      "overview": "Llama 4 Maverick is Meta's flagship open-source model with 400B total parameters (17B active via mixture-of-experts). It supports 200 languages and native multimodal understanding, making it one of the most capable self-hostable models available.",
+      "description": "17B params with 128 experts MoE, multimodal",
+      "overview": "Llama 4 Maverick is Meta's flagship open-source model with 17B parameters and 128 mixture-of-experts. It supports multimodal understanding with 1M token context, making it one of the most capable self-hostable models available.",
       "strengths": [
-        "400B total parameters with efficient 17B active MoE architecture",
-        "Native support for 200 languages",
-        "Multimodal - understands text and images",
+        "17B parameters with 128-expert MoE architecture for quality",
+        "Native multimodal support - understands text and images",
         "1 million token context window",
-        "Fully open source with permissive license"
+        "Fully open source with permissive license",
+        "Available via third-party providers (Together AI, Fireworks)"
       ],
       "weaknesses": [
-        "Requires significant GPU infrastructure to host",
-        "400B model needs multi-GPU setup for full performance",
+        "Requires multi-GPU setup for full performance",
         "No official hosted API - must self-host or use third-party",
         "Less polished than commercial APIs in tool use and function calling",
         "Community support only - no enterprise SLA"
@@ -942,6 +995,11 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": false
+      },
+      "sourceUrls": {
+        "docs": "https://ai.meta.com/llama/",
+        "github": "https://github.com/meta-llama/llama-models",
+        "announcement": "https://ai.meta.com/blog/llama-4-multimodal-intelligence/"
       }
     },
     {
@@ -953,19 +1011,18 @@
       "maxOutputTokens": 16384,
       "benchmarks": {},
       "bestFor": ["long-context", "codebase-analysis", "privacy"],
-      "description": "10M token context, runs on single GPU",
-      "overview": "Llama 4 Scout is a smaller Llama 4 variant optimized for extremely long context processing. With a 10 million token context window and the ability to run on a single GPU, it's ideal for codebase analysis and processing massive documents.",
+      "description": "17B params with 16 experts, 10M token context",
+      "overview": "Llama 4 Scout is a Llama 4 variant optimized for extremely long context processing. With 17B parameters, 16 mixture-of-experts, and a 10 million token context window, it's ideal for codebase analysis and processing massive documents. Can run on fewer GPUs than Maverick.",
       "strengths": [
         "10 million token context - largest of any major model",
-        "Can run on a single GPU (109B params, 17B active MoE)",
+        "17B params with 16-expert MoE for efficient inference",
+        "Can run on 1-2 GPUs with quantization (FP8 or Int4)",
         "Process entire codebases, book collections, or document archives",
-        "Fully open source with permissive license",
-        "Efficient mixture-of-experts architecture"
+        "Fully open source with permissive license"
       ],
       "weaknesses": [
-        "Less capable than Maverick on general tasks (smaller model)",
-        "10M context quality degrades on very long inputs",
-        "Requires GPU with sufficient VRAM even for single-GPU setup",
+        "Fewer experts than Maverick - less capable on general tasks",
+        "10M context quality may degrade on very long inputs",
         "No multimodal support - text only",
         "Lower quality than commercial models on complex reasoning"
       ],
@@ -984,6 +1041,11 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": false
+      },
+      "sourceUrls": {
+        "docs": "https://ai.meta.com/llama/",
+        "github": "https://github.com/meta-llama/llama-models",
+        "announcement": "https://ai.meta.com/blog/llama-4-multimodal-intelligence/"
       }
     },
     {
@@ -993,14 +1055,14 @@
       "costTier": "self-hosted",
       "contextWindow": 131072,
       "maxOutputTokens": 8192,
-      "benchmarks": {"aime2025": 92.3},
+      "benchmarks": {"aime2024": 85.7},
       "bestFor": ["multilingual", "reasoning", "coding"],
-      "description": "235B MoE (22B active), 119 languages, 92.3% AIME",
-      "overview": "Qwen 3 is Alibaba's flagship open-source model with 235B total parameters (22B active) via hybrid Mixture-of-Experts architecture. It supports 119 languages and achieves 92.3% on AIME 2025, meeting or beating GPT-4o and DeepSeek-V3 on most benchmarks while using far less compute.",
+      "description": "235B MoE (22B active), 119 languages, 85.7% AIME",
+      "overview": "Qwen 3 is Alibaba's flagship open-source model with 235B total parameters (22B active) via hybrid Mixture-of-Experts architecture. It supports 119 languages and achieves 85.7% on AIME 2024, meeting or beating GPT-4o and DeepSeek-V3 on most benchmarks while using far less compute.",
       "strengths": [
         "235B total / 22B active MoE architecture with efficient inference",
         "119 language support - one of the most multilingual models",
-        "92.3% AIME 2025 - exceptional mathematical reasoning",
+        "85.7% AIME 2024 - strong mathematical reasoning",
         "Meets or beats GPT-4o/DeepSeek-V3 on most benchmarks",
         "Fully open source under Apache 2.0 license"
       ],
@@ -1013,7 +1075,7 @@
       ],
       "useCaseDetails": [
         {"name": "Multilingual Applications", "explanation": "119 language support with particularly strong Chinese, Japanese, Korean, and European language capabilities."},
-        {"name": "Mathematical Reasoning", "explanation": "92.3% AIME 2025 score makes it excellent for math tutoring, quantitative analysis, and scientific computing."},
+        {"name": "Mathematical Reasoning", "explanation": "85.7% AIME 2024 score makes it excellent for math tutoring, quantitative analysis, and scientific computing."},
         {"name": "Asian Market AI Applications", "explanation": "Excellent for applications targeting Chinese-speaking markets with strong cultural and linguistic understanding."}
       ],
       "pricing": null,
@@ -1026,6 +1088,11 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "docs": "https://qwenlm.github.io/",
+        "github": "https://github.com/QwenLM/Qwen3",
+        "announcement": "https://qwenlm.github.io/blog/qwen3/"
       }
     },
     {
@@ -1068,6 +1135,11 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "docs": "https://qwenlm.github.io/",
+        "github": "https://github.com/QwenLM/Qwen3-Omni",
+        "huggingface": "https://huggingface.co/Qwen/Qwen3-Omni"
       }
     },
     {
@@ -1110,6 +1182,11 @@
         "supportsFunctionCalling": true,
         "supportsStreaming": true,
         "supportsExtendedThinking": false
+      },
+      "sourceUrls": {
+        "pricing": "https://mistral.ai/products/la-plateforme#pricing",
+        "docs": "https://docs.mistral.ai/getting-started/models/models_overview/",
+        "announcement": "https://mistral.ai/news/mistral-large-3/"
       }
     }
   ],
@@ -1117,73 +1194,353 @@
     "chatbot": {
       "name": "Customer Support & Chatbots",
       "recommendations": {
-        "quality": {"models": ["claude-sonnet-4.5", "gpt-5.1", "gemini-2.5-pro"], "topPick": "claude-sonnet-4.5", "reason": "Natural conversation, excellent context understanding"},
-        "cost": {"models": ["deepseek-v3.2", "claude-haiku-4.5", "gemini-2.5-flash"], "topPick": "deepseek-v3.2", "reason": "10-30x cheaper, handles routine queries well"},
-        "speed": {"models": ["claude-haiku-4.5", "gemini-3-flash", "gemini-2.5-flash"], "topPick": "claude-haiku-4.5", "reason": "Fastest response times for real-time chat"},
-        "privacy": {"models": ["llama-4-maverick", "qwen-3", "mistral-large-3"], "topPick": "llama-4-maverick", "reason": "Run on your own servers, full data control"}
+        "quality": {
+          "topPick": "claude-sonnet-4.5",
+          "models": [
+            {"id": "claude-sonnet-4.5", "reason": "Natural conversation with excellent context understanding and reliable tool use for integrations"},
+            {"id": "gpt-5.1", "reason": "Strong all-around performance with robust ecosystem and Microsoft integrations"},
+            {"id": "gemini-2.5-pro", "reason": "1M context for long conversation history plus native Google Workspace integration"},
+            {"id": "claude-opus-4.6", "reason": "Top-tier quality for complex enterprise support scenarios"},
+            {"id": "gpt-5.2-thinking", "reason": "Advanced reasoning for complex customer inquiries"}
+          ]
+        },
+        "cost": {
+          "topPick": "deepseek-v3.2",
+          "models": [
+            {"id": "deepseek-v3.2", "reason": "10-30x cheaper than competitors, handles routine queries well"},
+            {"id": "claude-haiku-4.5", "reason": "Fast and affordable Claude option with 73% SWE-bench quality"},
+            {"id": "gemini-2.5-flash", "reason": "1M context at very low cost per token"},
+            {"id": "gemini-3-flash", "reason": "Google's fastest model at budget pricing"},
+            {"id": "gpt-4o", "reason": "Mature model with predictable, low-cost performance"}
+          ]
+        },
+        "speed": {
+          "topPick": "claude-haiku-4.5",
+          "models": [
+            {"id": "claude-haiku-4.5", "reason": "Fastest Claude model with sub-second response times for real-time chat"},
+            {"id": "gemini-3-flash", "reason": "Google's speed-optimized model with native streaming"},
+            {"id": "gemini-2.5-flash", "reason": "Good balance of speed and 1M context window"},
+            {"id": "gpt-4o", "reason": "Fast GPT model optimized for real-time interactions"},
+            {"id": "deepseek-v3.2", "reason": "Fast inference with hybrid thinking modes"}
+          ]
+        },
+        "privacy": {
+          "topPick": "llama-4-maverick",
+          "models": [
+            {"id": "llama-4-maverick", "reason": "Multimodal open-source, fully self-hosted on your infrastructure"},
+            {"id": "qwen-3", "reason": "235B MoE with strong multilingual for global support teams"},
+            {"id": "mistral-large-3", "reason": "European-developed, 128K context with strong privacy focus"},
+            {"id": "llama-4-scout", "reason": "10M context for extensive conversation history on-premise"}
+          ]
+        }
       }
     },
     "coding": {
       "name": "Code Generation & Review",
       "recommendations": {
-        "quality": {"models": ["claude-opus-4.6", "claude-opus-4.5", "gpt-5.2-pro"], "topPick": "claude-opus-4.6", "reason": "80.8% SWE-bench with 1M context for entire codebases"},
-        "cost": {"models": ["deepseek-v3.2", "mistral-large-3", "claude-haiku-4.5"], "topPick": "deepseek-v3.2", "reason": "Excellent coding at fraction of cost"},
-        "speed": {"models": ["claude-haiku-4.5", "o4-mini", "gemini-3-flash"], "topPick": "claude-haiku-4.5", "reason": "Fast code completions and reviews"},
-        "privacy": {"models": ["llama-4-scout", "qwen-3", "mistral-large-3"], "topPick": "llama-4-scout", "reason": "10M context for entire codebases, self-hosted"}
+        "quality": {
+          "topPick": "claude-opus-4.6",
+          "models": [
+            {"id": "claude-opus-4.6", "reason": "80.8% SWE-bench with 1M context for entire codebases and adaptive thinking"},
+            {"id": "claude-opus-4.5", "reason": "80.9% SWE-bench, proven track record for complex refactoring"},
+            {"id": "gpt-5.2-pro", "reason": "62.3% SWE-bench Pro, strong for enterprise code quality"},
+            {"id": "gpt-5.2-codex", "reason": "Specialized for code with 3M token context window"},
+            {"id": "claude-sonnet-4.5", "reason": "77.2% SWE-bench at mid-tier pricing, great for agents"}
+          ]
+        },
+        "cost": {
+          "topPick": "deepseek-v3.2",
+          "models": [
+            {"id": "deepseek-v3.2", "reason": "Excellent coding at fraction of cost, rivals GPT-4 class models"},
+            {"id": "mistral-large-3", "reason": "675B MoE rivals premium models at lower cost"},
+            {"id": "claude-haiku-4.5", "reason": "73.3% SWE-bench at budget pricing for routine tasks"},
+            {"id": "gemini-2.5-flash", "reason": "1M context for large codebases at low cost"},
+            {"id": "deepseek-r1", "reason": "Strong reasoning for complex debugging at minimal cost"}
+          ]
+        },
+        "speed": {
+          "topPick": "claude-haiku-4.5",
+          "models": [
+            {"id": "claude-haiku-4.5", "reason": "Fast code completions and reviews with 73% SWE-bench"},
+            {"id": "o4-mini", "reason": "Fast reasoning model for quick code analysis"},
+            {"id": "gemini-3-flash", "reason": "Speed-optimized with good coding capabilities"},
+            {"id": "gpt-4o", "reason": "Fast, reliable code assistance"},
+            {"id": "gemini-2.5-flash", "reason": "Quick responses with 1M context for large files"}
+          ]
+        },
+        "privacy": {
+          "topPick": "llama-4-scout",
+          "models": [
+            {"id": "llama-4-scout", "reason": "10M token context for entire codebases, fully self-hosted"},
+            {"id": "qwen-3", "reason": "235B MoE with strong coding benchmarks, 86% AIME math"},
+            {"id": "mistral-large-3", "reason": "675B European model with 128K context, self-deployable"},
+            {"id": "llama-4-maverick", "reason": "400K context multimodal for code + diagrams"}
+          ]
+        }
       }
     },
     "reasoning": {
       "name": "Complex Reasoning & Analysis",
       "recommendations": {
-        "quality": {"models": ["o3-pro", "o3", "gpt-5.2-pro"], "topPick": "o3-pro", "reason": "Enhanced o3 with more compute for hardest problems"},
-        "cost": {"models": ["deepseek-r1", "o4-mini", "gemini-2.5-flash"], "topPick": "deepseek-r1", "reason": "Rivals o1 at fraction of cost"},
-        "speed": {"models": ["o4-mini", "gemini-2.5-flash", "claude-haiku-4.5"], "topPick": "o4-mini", "reason": "Fast reasoning with good quality"},
-        "privacy": {"models": ["qwen-3", "llama-4-maverick"], "topPick": "qwen-3", "reason": "Strong reasoning in a self-hostable model"}
+        "quality": {
+          "topPick": "o3-pro",
+          "models": [
+            {"id": "o3-pro", "reason": "Enhanced o3 with more compute budget for the hardest reasoning problems"},
+            {"id": "o3", "reason": "Flagship reasoning model with explicit chain-of-thought"},
+            {"id": "gpt-5.2-pro", "reason": "90.5% ARC-AGI-1, enterprise-grade reasoning"},
+            {"id": "claude-opus-4.6", "reason": "Adaptive thinking with 4 effort levels for flexible depth"},
+            {"id": "gpt-5.2-thinking", "reason": "Built-in thinking mode for transparent reasoning"}
+          ]
+        },
+        "cost": {
+          "topPick": "deepseek-r1",
+          "models": [
+            {"id": "deepseek-r1", "reason": "Rivals OpenAI o1 on reasoning benchmarks at fraction of cost"},
+            {"id": "o4-mini", "reason": "Cost-effective reasoning with good quality tradeoffs"},
+            {"id": "gemini-2.5-flash", "reason": "1M context reasoning at budget pricing"},
+            {"id": "deepseek-v3.2", "reason": "Hybrid thinking modes for flexible reasoning cost"},
+            {"id": "claude-haiku-4.5", "reason": "Surprisingly capable reasoning at lowest Claude tier"}
+          ]
+        },
+        "speed": {
+          "topPick": "o4-mini",
+          "models": [
+            {"id": "o4-mini", "reason": "Fast reasoning model optimized for quick analysis"},
+            {"id": "gemini-2.5-flash", "reason": "Fast responses with strong analytical capabilities"},
+            {"id": "claude-haiku-4.5", "reason": "Quick reasoning for simpler analytical tasks"},
+            {"id": "gemini-3-flash", "reason": "Speed-first with decent reasoning"},
+            {"id": "gpt-4o", "reason": "Fast general reasoning without extended thinking overhead"}
+          ]
+        },
+        "privacy": {
+          "topPick": "qwen-3",
+          "models": [
+            {"id": "qwen-3", "reason": "235B MoE with 86% AIME math, strong reasoning self-hosted"},
+            {"id": "llama-4-maverick", "reason": "Open weights for private complex analysis"},
+            {"id": "mistral-large-3", "reason": "European 675B MoE with strong analytical capabilities"},
+            {"id": "llama-4-scout", "reason": "10M context for reasoning over massive datasets"}
+          ]
+        }
       }
     },
     "documents": {
       "name": "Document Analysis & Summarization",
       "recommendations": {
-        "quality": {"models": ["claude-opus-4.6", "gemini-2.5-pro", "gpt-5.1"], "topPick": "claude-opus-4.6", "reason": "1M token context with industry-leading comprehension"},
-        "cost": {"models": ["gemini-2.5-flash", "deepseek-v3.2", "claude-haiku-4.5"], "topPick": "gemini-2.5-flash", "reason": "1M context at very low cost per token"},
-        "speed": {"models": ["gemini-3-flash", "claude-haiku-4.5", "gemini-2.5-flash"], "topPick": "gemini-3-flash", "reason": "Fast processing with long context support"},
-        "privacy": {"models": ["llama-4-scout", "llama-4-maverick", "qwen-3"], "topPick": "llama-4-scout", "reason": "10M context for massive document sets on your servers"}
+        "quality": {
+          "topPick": "claude-opus-4.6",
+          "models": [
+            {"id": "claude-opus-4.6", "reason": "1M token context with industry-leading comprehension and 90.2% BigLaw Bench"},
+            {"id": "gemini-2.5-pro", "reason": "1M context with strong multimodal for scanned documents"},
+            {"id": "gpt-5.1", "reason": "400K context with excellent summarization quality"},
+            {"id": "claude-opus-4.5", "reason": "200K context with superior analytical depth"},
+            {"id": "gpt-5.2-codex", "reason": "3M context for massive document collections"}
+          ]
+        },
+        "cost": {
+          "topPick": "gemini-2.5-flash",
+          "models": [
+            {"id": "gemini-2.5-flash", "reason": "1M context at very low cost per token"},
+            {"id": "deepseek-v3.2", "reason": "128K context with excellent value"},
+            {"id": "claude-haiku-4.5", "reason": "200K context at budget pricing"},
+            {"id": "gemini-3-flash", "reason": "1M context, speed-optimized for batch processing"},
+            {"id": "gpt-4o", "reason": "128K context with reliable extraction"}
+          ]
+        },
+        "speed": {
+          "topPick": "gemini-3-flash",
+          "models": [
+            {"id": "gemini-3-flash", "reason": "Fastest processing with 1M context support"},
+            {"id": "claude-haiku-4.5", "reason": "Quick document processing with 200K context"},
+            {"id": "gemini-2.5-flash", "reason": "Fast 1M context for large document batches"},
+            {"id": "gpt-4o", "reason": "Quick turnaround for standard documents"},
+            {"id": "deepseek-v3.2", "reason": "Fast with hybrid thinking for complex docs"}
+          ]
+        },
+        "privacy": {
+          "topPick": "llama-4-scout",
+          "models": [
+            {"id": "llama-4-scout", "reason": "10M token context for massive document sets on your servers"},
+            {"id": "llama-4-maverick", "reason": "400K multimodal context for scanned documents"},
+            {"id": "qwen-3", "reason": "32K context with strong multilingual document support"},
+            {"id": "mistral-large-3", "reason": "128K European model for GDPR-compliant processing"}
+          ]
+        }
       }
     },
     "content": {
       "name": "Content Writing & Marketing",
       "recommendations": {
-        "quality": {"models": ["claude-opus-4.6", "claude-sonnet-4.5", "gpt-5.1"], "topPick": "claude-opus-4.6", "reason": "Most natural, human-like writing quality"},
-        "cost": {"models": ["deepseek-v3.2", "gemini-2.5-flash", "claude-haiku-4.5"], "topPick": "deepseek-v3.2", "reason": "Good creative output at minimal cost"},
-        "speed": {"models": ["claude-haiku-4.5", "gemini-3-flash"], "topPick": "claude-haiku-4.5", "reason": "Fast iteration for drafts and variants"},
-        "privacy": {"models": ["llama-4-maverick", "qwen-3", "mistral-large-3"], "topPick": "llama-4-maverick", "reason": "Keep proprietary content on your infrastructure"}
+        "quality": {
+          "topPick": "claude-opus-4.6",
+          "models": [
+            {"id": "claude-opus-4.6", "reason": "Most natural, human-like writing quality with nuanced tone control"},
+            {"id": "claude-sonnet-4.5", "reason": "Excellent creative writing at mid-tier cost"},
+            {"id": "gpt-5.1", "reason": "Strong marketing copy with broad style range"},
+            {"id": "claude-opus-4.5", "reason": "Deep creative reasoning for long-form content"},
+            {"id": "gpt-5.2-thinking", "reason": "Thoughtful content strategy with reasoning"}
+          ]
+        },
+        "cost": {
+          "topPick": "deepseek-v3.2",
+          "models": [
+            {"id": "deepseek-v3.2", "reason": "Good creative output at minimal cost"},
+            {"id": "gemini-2.5-flash", "reason": "Solid writing quality at budget pricing"},
+            {"id": "claude-haiku-4.5", "reason": "Quick drafts and variations at low cost"},
+            {"id": "gemini-3-flash", "reason": "Fast content iteration at low cost"},
+            {"id": "gpt-4o", "reason": "Reliable content at predictable pricing"}
+          ]
+        },
+        "speed": {
+          "topPick": "claude-haiku-4.5",
+          "models": [
+            {"id": "claude-haiku-4.5", "reason": "Fast iteration for drafts and variants"},
+            {"id": "gemini-3-flash", "reason": "Quick content generation with streaming"},
+            {"id": "gpt-4o", "reason": "Fast reliable content creation"},
+            {"id": "gemini-2.5-flash", "reason": "Quick turnaround for bulk content"},
+            {"id": "deepseek-v3.2", "reason": "Fast creative output"}
+          ]
+        },
+        "privacy": {
+          "topPick": "llama-4-maverick",
+          "models": [
+            {"id": "llama-4-maverick", "reason": "Keep proprietary content and brand voice on your infrastructure"},
+            {"id": "qwen-3", "reason": "Multilingual content for global campaigns, self-hosted"},
+            {"id": "mistral-large-3", "reason": "European model for GDPR-compliant content ops"},
+            {"id": "llama-4-scout", "reason": "Massive context for brand guideline adherence"}
+          ]
+        }
       }
     },
     "extraction": {
       "name": "Data Extraction (PDFs, Forms)",
       "recommendations": {
-        "quality": {"models": ["gemini-2.5-pro", "claude-sonnet-4.5", "gpt-4o"], "topPick": "gemini-2.5-pro", "reason": "Strong multimodal + long context for complex extraction"},
-        "cost": {"models": ["gemini-2.5-flash", "deepseek-v3.2", "claude-haiku-4.5"], "topPick": "gemini-2.5-flash", "reason": "Multimodal at low cost with 1M context"},
-        "speed": {"models": ["gemini-3-flash", "claude-haiku-4.5"], "topPick": "gemini-3-flash", "reason": "Fast structured extraction"},
-        "privacy": {"models": ["llama-4-maverick", "mistral-large-3"], "topPick": "llama-4-maverick", "reason": "Multimodal open-source for sensitive documents"}
+        "quality": {
+          "topPick": "gemini-2.5-pro",
+          "models": [
+            {"id": "gemini-2.5-pro", "reason": "Strong multimodal + 1M context for complex multi-page extraction"},
+            {"id": "claude-sonnet-4.5", "reason": "Excellent structured output with reliable JSON generation"},
+            {"id": "gpt-4o", "reason": "Strong vision capabilities for form extraction"},
+            {"id": "claude-opus-4.6", "reason": "Best for complex legal/financial document extraction"},
+            {"id": "gpt-5.1", "reason": "Multimodal with audio for diverse document types"}
+          ]
+        },
+        "cost": {
+          "topPick": "gemini-2.5-flash",
+          "models": [
+            {"id": "gemini-2.5-flash", "reason": "Multimodal at low cost with 1M context"},
+            {"id": "deepseek-v3.2", "reason": "Good extraction at minimal cost"},
+            {"id": "claude-haiku-4.5", "reason": "Fast structured extraction at budget pricing"},
+            {"id": "gemini-3-flash", "reason": "Quick extraction at low cost"},
+            {"id": "gpt-4o", "reason": "Reliable extraction with predictable pricing"}
+          ]
+        },
+        "speed": {
+          "topPick": "gemini-3-flash",
+          "models": [
+            {"id": "gemini-3-flash", "reason": "Fastest structured extraction with streaming"},
+            {"id": "claude-haiku-4.5", "reason": "Quick form and table extraction"},
+            {"id": "gemini-2.5-flash", "reason": "Fast with 1M context for multi-doc extraction"},
+            {"id": "gpt-4o", "reason": "Fast vision-based extraction"},
+            {"id": "deepseek-v3.2", "reason": "Quick text extraction"}
+          ]
+        },
+        "privacy": {
+          "topPick": "llama-4-maverick",
+          "models": [
+            {"id": "llama-4-maverick", "reason": "Multimodal open-source for sensitive financial/medical documents"},
+            {"id": "mistral-large-3", "reason": "European model for GDPR-compliant document processing"},
+            {"id": "qwen-3", "reason": "Strong structured output, self-hosted"},
+            {"id": "llama-4-scout", "reason": "10M context for bulk document extraction"}
+          ]
+        }
       }
     },
     "translation": {
       "name": "Translation & Multilingual",
       "recommendations": {
-        "quality": {"models": ["claude-sonnet-4.5", "gpt-5.1", "llama-4-maverick"], "topPick": "claude-sonnet-4.5", "reason": "Excellent nuanced translation with context awareness"},
-        "cost": {"models": ["deepseek-v3.2", "gemini-2.5-flash", "mistral-large-3"], "topPick": "deepseek-v3.2", "reason": "Strong multilingual at very low cost"},
-        "speed": {"models": ["gemini-3-flash", "claude-haiku-4.5"], "topPick": "gemini-3-flash", "reason": "Fast multilingual processing"},
-        "privacy": {"models": ["llama-4-maverick", "qwen-3", "mistral-large-3"], "topPick": "qwen-3", "reason": "235B MoE with strong multilingual across 100+ languages"}
+        "quality": {
+          "topPick": "claude-sonnet-4.5",
+          "models": [
+            {"id": "claude-sonnet-4.5", "reason": "Excellent nuanced translation with context awareness and cultural sensitivity"},
+            {"id": "gpt-5.1", "reason": "Strong multilingual with good idiomatic translation"},
+            {"id": "llama-4-maverick", "reason": "200+ languages with open weights"},
+            {"id": "qwen-3", "reason": "119 languages with strong Asian language support"},
+            {"id": "claude-opus-4.6", "reason": "Best for complex legal/technical translation"}
+          ]
+        },
+        "cost": {
+          "topPick": "deepseek-v3.2",
+          "models": [
+            {"id": "deepseek-v3.2", "reason": "Strong multilingual at very low cost"},
+            {"id": "gemini-2.5-flash", "reason": "Good translation quality at budget pricing"},
+            {"id": "mistral-large-3", "reason": "Multilingual European model at reasonable cost"},
+            {"id": "claude-haiku-4.5", "reason": "Quick translations at low cost"},
+            {"id": "gemini-3-flash", "reason": "Fast translation at budget pricing"}
+          ]
+        },
+        "speed": {
+          "topPick": "gemini-3-flash",
+          "models": [
+            {"id": "gemini-3-flash", "reason": "Fastest multilingual processing"},
+            {"id": "claude-haiku-4.5", "reason": "Quick turnaround for translation batches"},
+            {"id": "gemini-2.5-flash", "reason": "Fast with long context for document translation"},
+            {"id": "gpt-4o", "reason": "Fast reliable translation"},
+            {"id": "deepseek-v3.2", "reason": "Quick multilingual with hybrid modes"}
+          ]
+        },
+        "privacy": {
+          "topPick": "qwen-3",
+          "models": [
+            {"id": "qwen-3", "reason": "235B MoE with 119 languages, strong multilingual self-hosted"},
+            {"id": "llama-4-maverick", "reason": "200+ languages fully on-premise"},
+            {"id": "mistral-large-3", "reason": "European model for GDPR-compliant translation"},
+            {"id": "llama-4-scout", "reason": "10M context for large document translation batches"}
+          ]
+        }
       }
     },
     "vision": {
       "name": "Image & Vision Tasks",
       "recommendations": {
-        "quality": {"models": ["gemini-2.5-pro", "gpt-5.1", "claude-sonnet-4.5"], "topPick": "gemini-2.5-pro", "reason": "Strong native multimodal with video and audio too"},
-        "cost": {"models": ["gemini-2.5-flash", "gemini-3-flash", "gpt-4o"], "topPick": "gemini-2.5-flash", "reason": "Low-cost multimodal with good accuracy"},
-        "speed": {"models": ["gemini-3-flash", "gpt-4o"], "topPick": "gemini-3-flash", "reason": "Fast image processing"},
-        "privacy": {"models": ["llama-4-maverick", "mistral-large-3"], "topPick": "llama-4-maverick", "reason": "Multimodal open-source, fully self-hosted"}
+        "quality": {
+          "topPick": "gemini-2.5-pro",
+          "models": [
+            {"id": "gemini-2.5-pro", "reason": "Strong native multimodal with video and audio understanding"},
+            {"id": "gpt-5.1", "reason": "Excellent image understanding with audio support"},
+            {"id": "claude-sonnet-4.5", "reason": "Strong image analysis with detailed descriptions"},
+            {"id": "gpt-4o", "reason": "Proven vision capabilities, well-documented"},
+            {"id": "claude-opus-4.6", "reason": "Best for complex visual reasoning tasks"}
+          ]
+        },
+        "cost": {
+          "topPick": "gemini-2.5-flash",
+          "models": [
+            {"id": "gemini-2.5-flash", "reason": "Low-cost multimodal with good accuracy"},
+            {"id": "gemini-3-flash", "reason": "Budget vision processing with streaming"},
+            {"id": "gpt-4o", "reason": "Predictable vision pricing, mature API"},
+            {"id": "claude-haiku-4.5", "reason": "Basic image analysis at budget tier"},
+            {"id": "deepseek-v3.2", "reason": "Text-based image description at low cost"}
+          ]
+        },
+        "speed": {
+          "topPick": "gemini-3-flash",
+          "models": [
+            {"id": "gemini-3-flash", "reason": "Fastest image processing with native multimodal"},
+            {"id": "gpt-4o", "reason": "Fast vision responses"},
+            {"id": "gemini-2.5-flash", "reason": "Quick multimodal with 1M context"},
+            {"id": "claude-haiku-4.5", "reason": "Fast basic image analysis"},
+            {"id": "gpt-5.1", "reason": "Quick multimodal with streaming"}
+          ]
+        },
+        "privacy": {
+          "topPick": "llama-4-maverick",
+          "models": [
+            {"id": "llama-4-maverick", "reason": "Multimodal open-source with 400K context, fully self-hosted"},
+            {"id": "mistral-large-3", "reason": "European multimodal for GDPR-compliant image processing"},
+            {"id": "llama-4-scout", "reason": "Vision support with massive 10M context"},
+            {"id": "qwen-3", "reason": "Multimodal variant available for self-hosting"}
+          ]
+        }
       }
     }
   },
