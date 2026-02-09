@@ -1,9 +1,132 @@
 {
-  "lastUpdated": "2026-02-06",
+  "lastUpdated": "2026-02-09",
   "dataSources": {
     "benchmarks": "https://artificialanalysis.ai/leaderboards/models",
     "pricing": "Official provider pricing pages",
-    "lastVerified": "2026-02-06"
+    "lastVerified": "2026-02-09"
+  },
+  "scoringConfig": {
+    "chatbot": {
+      "name": "Customer Support & Chatbots",
+      "weights": {
+        "arenaElo.overall": 0.30,
+        "arenaElo.instructionFollowing": 0.25,
+        "arenaElo.creativeWriting": 0.20,
+        "speedProxy": 0.15,
+        "contextWindow": 0.10
+      },
+      "normRanges": {
+        "arenaElo.overall": [1350, 1500],
+        "arenaElo.instructionFollowing": [1350, 1500],
+        "arenaElo.creativeWriting": [1350, 1500],
+        "contextWindow": "log"
+      }
+    },
+    "coding": {
+      "name": "Code Generation & Review",
+      "weights": {
+        "benchmarks.sweBenchVerified": 0.30,
+        "arenaElo.coding": 0.25,
+        "benchmarks.aiderPolyglot": 0.15,
+        "contextWindow": 0.15,
+        "speedProxy": 0.15
+      },
+      "normRanges": {
+        "benchmarks.sweBenchVerified": [35, 83],
+        "arenaElo.coding": [1350, 1580],
+        "benchmarks.aiderPolyglot": [50, 90],
+        "contextWindow": "log"
+      }
+    },
+    "reasoning": {
+      "name": "Complex Reasoning & Analysis",
+      "weights": {
+        "benchmarks.aime2024": 0.25,
+        "benchmarks.gpqaDiamond": 0.25,
+        "arenaElo.math": 0.20,
+        "arenaElo.overall": 0.15,
+        "contextWindow": 0.15
+      },
+      "normRanges": {
+        "benchmarks.aime2024": [55, 97],
+        "benchmarks.gpqaDiamond": [60, 96],
+        "arenaElo.math": [1350, 1500],
+        "arenaElo.overall": [1350, 1500],
+        "contextWindow": "log"
+      }
+    },
+    "documents": {
+      "name": "Document Analysis & Summarization",
+      "weights": {
+        "contextWindow": 0.30,
+        "arenaElo.longerQuery": 0.25,
+        "arenaElo.overall": 0.20,
+        "speedProxy": 0.15,
+        "multimodal": 0.10
+      },
+      "normRanges": {
+        "contextWindow": "log",
+        "arenaElo.longerQuery": [1350, 1500],
+        "arenaElo.overall": [1350, 1500]
+      }
+    },
+    "content": {
+      "name": "Content Writing & Marketing",
+      "weights": {
+        "arenaElo.creativeWriting": 0.35,
+        "arenaElo.instructionFollowing": 0.25,
+        "arenaElo.overall": 0.25,
+        "arenaElo.longerQuery": 0.15
+      },
+      "normRanges": {
+        "arenaElo.creativeWriting": [1350, 1500],
+        "arenaElo.instructionFollowing": [1350, 1500],
+        "arenaElo.overall": [1350, 1500],
+        "arenaElo.longerQuery": [1350, 1500]
+      }
+    },
+    "extraction": {
+      "name": "Data Extraction (PDFs, Forms)",
+      "weights": {
+        "arenaElo.coding": 0.25,
+        "arenaElo.instructionFollowing": 0.25,
+        "multimodal": 0.20,
+        "speedProxy": 0.15,
+        "contextWindow": 0.15
+      },
+      "normRanges": {
+        "arenaElo.coding": [1350, 1580],
+        "arenaElo.instructionFollowing": [1350, 1500],
+        "contextWindow": "log"
+      }
+    },
+    "translation": {
+      "name": "Translation & Multilingual",
+      "weights": {
+        "benchmarks.mmmlu": 0.40,
+        "arenaElo.overall": 0.25,
+        "arenaElo.instructionFollowing": 0.20,
+        "speedProxy": 0.15
+      },
+      "normRanges": {
+        "benchmarks.mmmlu": [80, 92],
+        "arenaElo.overall": [1350, 1500],
+        "arenaElo.instructionFollowing": [1350, 1500]
+      }
+    },
+    "vision": {
+      "name": "Image & Vision Tasks",
+      "weights": {
+        "arenaElo.overall": 0.30,
+        "multimodal": 0.30,
+        "arenaElo.instructionFollowing": 0.20,
+        "speedProxy": 0.20
+      },
+      "normRanges": {
+        "arenaElo.overall": [1350, 1500],
+        "arenaElo.instructionFollowing": [1350, 1500]
+      }
+    }
   },
   "providers": {
     "anthropic": {
@@ -62,6 +185,34 @@
       "docsUrl": "https://api-docs.deepseek.com/",
       "pricingUrl": "https://api-docs.deepseek.com/quick_start/pricing"
     },
+    "xai": {
+      "name": "xAI",
+      "displayName": "xAI (Grok)",
+      "tagline": "Frontier reasoning with 2M context",
+      "strengths": [
+        "Grok 4: 94% AIME 2025, strong math & reasoning",
+        "Grok 4.1 Fast: 2M token context window (largest available)",
+        "Competitive pricing ($0.20/M for Fast tier)",
+        "Strong tool-calling and agentic capabilities"
+      ],
+      "tradeoffs": "Smaller ecosystem than OpenAI/Anthropic",
+      "docsUrl": "https://docs.x.ai/developers/models",
+      "pricingUrl": "https://docs.x.ai/developers/models"
+    },
+    "moonshot": {
+      "name": "Moonshot",
+      "displayName": "Moonshot (Kimi)",
+      "tagline": "Visual agentic intelligence, open weights",
+      "strengths": [
+        "Kimi K2.5: 96.1% AIME 2025, 76.8% SWE-bench Verified",
+        "Native multimodal: text, image, video input",
+        "Agent Swarm: coordinates up to 100 agents in parallel",
+        "Open weights under permissive license"
+      ],
+      "tradeoffs": "Chinese company, verbose outputs, smaller community",
+      "docsUrl": "https://platform.moonshot.ai/docs",
+      "pricingUrl": "https://platform.moonshot.ai/docs/pricing/chat"
+    },
     "opensource": {
       "name": "Open Source",
       "displayName": "Open Source (Llama, Qwen, Mistral)",
@@ -86,6 +237,7 @@
       "contextWindow": 1000000,
       "maxOutputTokens": 128000,
       "benchmarks": {"sweBenchVerified": 80.8, "gpqaDiamond": 70.2, "bigLawBench": 90.2},
+      "arenaElo": {"overall": 1496, "coding": 1576, "math": null, "creativeWriting": null, "instructionFollowing": 1496, "longerQuery": 1496},
       "bestFor": ["coding", "reasoning", "quality", "agents"],
       "description": "Most intelligent Claude, 1M context, adaptive thinking",
       "overview": "Claude Opus 4.6 is Anthropic's most advanced model, released February 2026. It features a massive 1M token context window (in beta) with 128K max output tokens, and introduces adaptive thinking with 4 effort levels (low, medium, high, max) for flexible reasoning depth. Leads on SWE-bench Verified (80.8%) and BigLaw Bench (90.2%).",
@@ -133,7 +285,8 @@
       "costTier": "high",
       "contextWindow": 200000,
       "maxOutputTokens": 32000,
-      "benchmarks": {"sweBenchVerified": 80.9, "gpqaDiamond": 68.6},
+      "benchmarks": {"sweBenchVerified": 80.9, "gpqaDiamond": 87.0, "aiderPolyglot": 89.4, "mmmlu": 90.8},
+      "arenaElo": {"overall": 1467, "coding": 1470, "math": null, "creativeWriting": 1467, "instructionFollowing": 1467, "longerQuery": 1467},
       "bestFor": ["coding", "reasoning", "quality"],
       "description": "Most intelligent Claude, 80.9% SWE-bench",
       "overview": "Claude Opus 4.5 is Anthropic's most intelligent model, delivering state-of-the-art performance on software engineering, reasoning, and analysis tasks. It leads the industry on SWE-bench Verified with an 80.9% score. Supports extended thinking mode for step-by-step deliberation on difficult problems.",
@@ -179,12 +332,13 @@
       "costTier": "mid",
       "contextWindow": 200000,
       "maxOutputTokens": 64000,
-      "benchmarks": {"sweBenchVerified": 77.2},
+      "benchmarks": {"sweBenchVerified": 82.0, "gpqaDiamond": 83.4, "mmmlu": 89.1},
+      "arenaElo": {"overall": 1451, "coding": null, "math": null, "creativeWriting": 1451, "instructionFollowing": 1451, "longerQuery": 1451},
       "bestFor": ["coding", "agents", "balanced"],
       "description": "Best balance of quality, speed, and cost",
       "overview": "Claude Sonnet 4.5 is Anthropic's balanced model, offering strong performance across coding, analysis, and conversation at a moderate price point. It excels at agentic tasks and complex multi-step workflows while being significantly cheaper than Opus.",
       "strengths": [
-        "Strong coding performance (77.2% SWE-bench) at mid-tier pricing",
+        "Strong coding performance (82% SWE-bench) at mid-tier pricing",
         "Excellent for building autonomous agents and multi-step workflows",
         "Good balance of quality, speed, and cost for most applications",
         "Supports extended thinking for harder problems",
@@ -226,6 +380,7 @@
       "contextWindow": 200000,
       "maxOutputTokens": 64000,
       "benchmarks": {"sweBenchVerified": 73.3},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["speed", "budget", "high-volume"],
       "description": "Fast & cheap, 73.3% SWE-bench",
       "overview": "Claude Haiku 4.5 is Anthropic's fastest and most affordable model. Despite its low cost, it delivers surprisingly strong performance on coding (73.3% SWE-bench) and general tasks, making it ideal for high-volume applications where latency matters. Now supports extended thinking.",
@@ -271,10 +426,11 @@
       "costTier": "mid",
       "contextWindow": 400000,
       "maxOutputTokens": 128000,
-      "benchmarks": {"gpqaDiamond": 82.5},
+      "benchmarks": {"gpqaDiamond": 88.1, "sweBenchVerified": 76.3},
+      "arenaElo": {"overall": 1458, "coding": null, "math": 1440, "creativeWriting": null, "instructionFollowing": 1458, "longerQuery": null},
       "bestFor": ["general", "multimodal", "balanced"],
       "description": "Faster, more efficient GPT-5 with 400K context",
-      "overview": "GPT-5.1 is an optimized version of the original GPT-5, offering faster inference and improved efficiency while maintaining strong capabilities. With 400K context window and 128K max output, it's ideal for general-purpose applications needing good quality without premium costs.",
+      "overview": "GPT-5.1 is an optimized version of the original GPT-5, offering faster inference and improved efficiency while maintaining strong capabilities. Scores 88.1% GPQA Diamond and 76.3% SWE-bench Verified. With 400K context window and 128K max output, it's ideal for general-purpose applications needing good quality without premium costs.",
       "strengths": [
         "400K token context window for large documents",
         "128K max output tokens for extended generation",
@@ -311,13 +467,14 @@
       "costTier": "mid",
       "contextWindow": 400000,
       "maxOutputTokens": 128000,
-      "benchmarks": {"sweBenchPro": 55.6, "gpqaDiamond": 93.2, "aime2024": 88.0},
+      "benchmarks": {"sweBenchVerified": 80.0, "sweBenchPro": 55.6, "gpqaDiamond": 92.4, "aime2024": 88.0},
+      "arenaElo": {"overall": 1425, "coding": 1472, "math": 1455, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["reasoning", "coding", "quality"],
-      "description": "Complex reasoning model, 93.2% GPQA Diamond",
-      "overview": "GPT-5.2 Thinking is OpenAI's reasoning-focused model from the GPT-5.2 series (Dec 2025). It excels at complex multi-step reasoning, scoring 93.2% on GPQA Diamond and 55.6% on SWE-bench Pro. Ideal for tasks requiring deep analysis and logical problem-solving.",
+      "description": "Complex reasoning model, 92.4% GPQA Diamond",
+      "overview": "GPT-5.2 Thinking is OpenAI's reasoning-focused model from the GPT-5.2 series (Dec 2025). It excels at complex multi-step reasoning, scoring 92.4% on GPQA Diamond, 80% SWE-bench Verified, and 55.6% on SWE-bench Pro. Ideal for tasks requiring deep analysis and logical problem-solving.",
       "strengths": [
-        "93.2% GPQA Diamond - excellent PhD-level science reasoning",
-        "55.6% SWE-bench Pro for complex coding tasks",
+        "92.4% GPQA Diamond - excellent PhD-level science reasoning",
+        "80% SWE-bench Verified, 55.6% SWE-bench Pro for complex coding",
         "400K context window with 128K max output",
         "Strong at multi-step logical reasoning and analysis",
         "Balanced pricing for reasoning capabilities"
@@ -331,7 +488,7 @@
       "useCaseDetails": [
         {"name": "Complex Problem Solving", "explanation": "Deep reasoning capabilities excel at multi-step analysis, strategic planning, and mathematical problem-solving."},
         {"name": "Code Architecture & Debugging", "explanation": "55.6% SWE-bench Pro score indicates strong ability to handle complex software engineering tasks."},
-        {"name": "Scientific Research", "explanation": "93.2% GPQA Diamond means it can assist with PhD-level scientific questions and research analysis."}
+        {"name": "Scientific Research", "explanation": "92.4% GPQA Diamond means it can assist with PhD-level scientific questions and research analysis."}
       ],
       "pricing": {"inputPerMillion": 1.75, "outputPerMillion": 14.00, "currency": "USD", "notes": "Thinking tokens billed at output rate"},
       "specs": {
@@ -353,6 +510,7 @@
       "contextWindow": 400000,
       "maxOutputTokens": 128000,
       "benchmarks": {"arcAgi1": 90.5, "gpqaDiamond": 95.1, "sweBenchPro": 62.3},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["quality", "reasoning", "enterprise"],
       "description": "Enterprise-grade, 90.5% ARC-AGI-1",
       "overview": "GPT-5.2 Pro is OpenAI's top-tier enterprise model, designed for high-stakes applications requiring maximum capability. With 90.5% ARC-AGI-1 (general intelligence benchmark) and 62.3% SWE-bench Pro, it represents the peak of GPT-5 series capabilities.",
@@ -394,6 +552,7 @@
       "contextWindow": 400000,
       "maxOutputTokens": 128000,
       "benchmarks": {},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["coding", "agents", "automation"],
       "description": "Agentic coding specialist for complex software tasks",
       "overview": "GPT-5.2-Codex is a specialized version of GPT-5.2 optimized for agentic coding tasks. Available via the Responses API, it excels at multi-file code generation, refactoring, and autonomous software development workflows.",
@@ -435,6 +594,7 @@
       "contextWindow": 1000000,
       "maxOutputTokens": 32768,
       "benchmarks": {"sweBenchVerified": 54.6},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["coding", "instructions", "long-context"],
       "description": "Coding specialist with 1M token context",
       "overview": "GPT-4.1 is OpenAI's coding-optimized model with a massive 1 million token context window. Purpose-built for software engineering tasks, it excels at understanding large codebases, following detailed coding instructions, and generating high-quality code.",
@@ -475,13 +635,14 @@
       "costTier": "high",
       "contextWindow": 200000,
       "maxOutputTokens": 100000,
-      "benchmarks": {"gpqaDiamond": 87.7, "aime2024": 96.7},
+      "benchmarks": {"gpqaDiamond": 83.3, "aime2024": 91.6, "sweBenchVerified": 69.1, "aiderPolyglot": 81.3},
+      "arenaElo": {"overall": 1410, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["reasoning", "math", "science"],
       "description": "Deep reasoning model, thinks before responding",
-      "overview": "OpenAI o3 is a reasoning-first model that uses chain-of-thought to \"think\" before producing an answer. It excels at math, science, and complex logical problems. Uses internal reasoning tokens that are not visible but contribute to deeper, more accurate responses.",
+      "overview": "OpenAI o3 is a reasoning-first model that uses chain-of-thought to \"think\" before producing an answer. It excels at math, science, and complex logical problems with 91.6% AIME and 69.1% SWE-bench. Uses internal reasoning tokens that are not visible but contribute to deeper, more accurate responses.",
       "strengths": [
-        "Exceptional mathematical reasoning (96.7% AIME 2024)",
-        "87.7% on GPQA Diamond - PhD-level science questions",
+        "Exceptional mathematical reasoning (91.6% AIME 2024)",
+        "83.3% on GPQA Diamond - PhD-level science questions",
         "Deep chain-of-thought reasoning for complex problems",
         "200K context window with up to 100K output tokens",
         "Strong at multi-step logical deduction and proofs"
@@ -495,7 +656,7 @@
       ],
       "useCaseDetails": [
         {"name": "Scientific Research", "explanation": "PhD-level reasoning makes it ideal for analyzing research papers, designing experiments, and solving complex scientific problems."},
-        {"name": "Mathematical Problem Solving", "explanation": "96.7% on AIME competition problems - excellent for math tutoring, proofs, and quantitative analysis."},
+        {"name": "Mathematical Problem Solving", "explanation": "91.6% on AIME competition problems - excellent for math tutoring, proofs, and quantitative analysis."},
         {"name": "Complex Business Logic", "explanation": "Multi-step reasoning helps with financial modeling, legal analysis, and strategic planning that requires rigorous logic."}
       ],
       "pricing": {"inputPerMillion": 10.00, "outputPerMillion": 40.00, "currency": "USD", "notes": "Internal reasoning tokens billed at output rate; actual cost often 3-5x visible output cost"},
@@ -518,6 +679,7 @@
       "contextWindow": 200000,
       "maxOutputTokens": 100000,
       "benchmarks": {},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["reasoning", "quality", "enterprise"],
       "description": "Enhanced o3 with more compute for harder problems",
       "overview": "OpenAI o3-pro is an enhanced version of o3 that uses significantly more compute to tackle the hardest problems with better reasoning and consistency. It represents 87% cost reduction compared to o1-pro while delivering improved performance.",
@@ -559,6 +721,7 @@
       "contextWindow": 200000,
       "maxOutputTokens": 100000,
       "benchmarks": {"aime2024": 93.4},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["reasoning", "math", "coding", "budget"],
       "description": "Fast reasoning at lower cost",
       "overview": "OpenAI o4-mini is a smaller, faster reasoning model that delivers strong performance on math and coding at a fraction of o3's cost. It's the best choice when you need reasoning capabilities but want to keep costs reasonable.",
@@ -600,6 +763,7 @@
       "contextWindow": 128000,
       "maxOutputTokens": 16384,
       "benchmarks": {"sweBenchVerified": 38.0},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["general", "multimodal"],
       "description": "Reliable multimodal model, widely adopted",
       "overview": "GPT-4o is OpenAI's widely-adopted multimodal model handling text, images, and audio. While superseded by GPT-5 as the flagship, it remains popular due to extensive tooling, proven reliability, and broad ecosystem support.",
@@ -640,14 +804,15 @@
       "costTier": "mid",
       "contextWindow": 1000000,
       "maxOutputTokens": 65536,
-      "benchmarks": {"sweBenchVerified": 63.8},
+      "benchmarks": {"sweBenchVerified": 59.6, "gpqaDiamond": 86.4, "aime2024": 92.0, "aiderPolyglot": 82.2, "mmmlu": 89.2},
+      "arenaElo": {"overall": 1445, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": 1445, "longerQuery": 1445},
       "bestFor": ["reasoning", "coding", "long-context"],
       "description": "Strong reasoning with 1M token context",
-      "overview": "Gemini 2.5 Pro is Google's most capable model featuring a 1 million token context window and built-in thinking capabilities. It excels at complex reasoning tasks, long document analysis, and coding with strong performance on SWE-bench (63.8%).",
+      "overview": "Gemini 2.5 Pro is Google's most capable model featuring a 1 million token context window and built-in thinking capabilities. It excels at complex reasoning tasks, long document analysis, and coding. Scores 86.4% GPQA Diamond, 92% AIME, and 59.6% SWE-bench Verified.",
       "strengths": [
         "1 million token context window for massive documents",
         "Built-in thinking mode for complex reasoning",
-        "63.8% SWE-bench Verified - competitive coding performance",
+        "59.6% SWE-bench Verified - competitive coding performance",
         "Strong multimodal understanding (text, image, video, audio)",
         "Native Google Workspace and Cloud integration"
       ],
@@ -687,6 +852,7 @@
       "contextWindow": 1000000,
       "maxOutputTokens": 65536,
       "benchmarks": {},
+      "arenaElo": {"overall": 1385, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["speed", "budget", "multimodal"],
       "description": "Fast and affordable with 1M context",
       "overview": "Gemini 2.5 Flash is Google's fast, affordable model that still offers a full 1 million token context window and optional thinking mode. Great value for applications that need long context processing without premium pricing.",
@@ -732,6 +898,7 @@
       "contextWindow": 1000000,
       "maxOutputTokens": 65536,
       "benchmarks": {},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["speed", "budget", "high-volume"],
       "description": "Ultra-low cost option for massive scale",
       "overview": "Gemini 2.5 Flash-Lite is Google's most cost-efficient model, designed for extremely high-volume applications where cost is the primary concern. It maintains the 1M context window while offering even lower pricing than standard Flash.",
@@ -777,6 +944,7 @@
       "contextWindow": 1000000,
       "maxOutputTokens": 65536,
       "benchmarks": {},
+      "arenaElo": {"overall": 1470, "coding": 1440, "math": 1475, "creativeWriting": 1460, "instructionFollowing": 1445, "longerQuery": null},
       "bestFor": ["speed", "general", "multimodal"],
       "description": "Latest default model with strong reasoning",
       "overview": "Gemini 3 Flash is Google's newest fast model, now the default in Google AI Studio. It brings improved reasoning capabilities described as 'PhD-level' while maintaining the speed and affordability of the Flash tier.",
@@ -822,7 +990,8 @@
       "costTier": "mid",
       "contextWindow": 1000000,
       "maxOutputTokens": 65536,
-      "benchmarks": {},
+      "benchmarks": {"gpqaDiamond": 91.9, "sweBenchVerified": 76.2, "mmmlu": 91.8},
+      "arenaElo": {"overall": 1486, "coding": 1460, "math": 1490, "creativeWriting": 1470, "instructionFollowing": 1470, "longerQuery": null},
       "bestFor": ["reasoning", "agents", "multimodal"],
       "description": "State-of-the-art reasoning with Computer Use (coming soon)",
       "overview": "Gemini 3 Pro Preview is Google's most capable model, featuring state-of-the-art reasoning and multimodal understanding. Computer Use capability is documented but not yet available. Offers granular control over thinking depth via thinking_level parameter and media resolution for fine-grained vision tasks.",
@@ -868,7 +1037,8 @@
       "costTier": "low",
       "contextWindow": 128000,
       "maxOutputTokens": 16384,
-      "benchmarks": {},
+      "benchmarks": {"gpqaDiamond": 64.8, "aime2024": 59.4, "math500": 94.0, "sweBenchVerified": 38.8, "aiderPolyglot": 55.1},
+      "arenaElo": {"overall": 1355, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["general", "coding", "budget", "agents"],
       "description": "Hybrid thinking with tool use at very low cost",
       "overview": "DeepSeek V3.2 is a general-purpose model offering quality that rivals much more expensive competitors at a fraction of the cost. Features hybrid thinking modes and integrated tool use, making it excellent for building budget-conscious AI applications.",
@@ -915,7 +1085,8 @@
       "costTier": "low",
       "contextWindow": 128000,
       "maxOutputTokens": 16384,
-      "benchmarks": {"aime2024": 79.8},
+      "benchmarks": {"aime2024": 79.8, "gpqaDiamond": 71.5, "math500": 97.3, "sweBenchVerified": 49.2, "aiderPolyglot": 64.0},
+      "arenaElo": {"overall": 1375, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["reasoning", "math", "science"],
       "description": "Reasoning model rivaling o1, 79.8% AIME",
       "overview": "DeepSeek R1 is a reasoning-focused model that rivals OpenAI's o1 on mathematical and scientific reasoning at a dramatically lower cost. It achieves 79.8% on AIME 2024 and is fully open source, making it an exceptional value for reasoning-heavy applications.",
@@ -964,6 +1135,7 @@
       "contextWindow": 1000000,
       "maxOutputTokens": 16384,
       "benchmarks": {},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["multimodal", "multilingual", "privacy"],
       "description": "17B params with 128 experts MoE, multimodal",
       "overview": "Llama 4 Maverick is Meta's flagship open-source model with 17B parameters and 128 mixture-of-experts. It supports multimodal understanding with 1M token context, making it one of the most capable self-hostable models available.",
@@ -1010,6 +1182,7 @@
       "contextWindow": 10000000,
       "maxOutputTokens": 16384,
       "benchmarks": {},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["long-context", "codebase-analysis", "privacy"],
       "description": "17B params with 16 experts, 10M token context",
       "overview": "Llama 4 Scout is a Llama 4 variant optimized for extremely long context processing. With 17B parameters, 16 mixture-of-experts, and a 10 million token context window, it's ideal for codebase analysis and processing massive documents. Can run on fewer GPUs than Maverick.",
@@ -1056,6 +1229,7 @@
       "contextWindow": 131072,
       "maxOutputTokens": 8192,
       "benchmarks": {"aime2024": 85.7},
+      "arenaElo": {"overall": 1415, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["multilingual", "reasoning", "coding"],
       "description": "235B MoE (22B active), 119 languages, 85.7% AIME",
       "overview": "Qwen 3 is Alibaba's flagship open-source model with 235B total parameters (22B active) via hybrid Mixture-of-Experts architecture. It supports 119 languages and achieves 85.7% on AIME 2024, meeting or beating GPT-4o and DeepSeek-V3 on most benchmarks while using far less compute.",
@@ -1103,6 +1277,7 @@
       "contextWindow": 131072,
       "maxOutputTokens": 8192,
       "benchmarks": {},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["multimodal", "voice", "real-time"],
       "description": "True omnimodal: text, audio, image, video + speech output",
       "overview": "Qwen3-Omni is Alibaba's end-to-end omnimodal model capable of understanding text, audio, images, and video while generating real-time speech output. Released under Apache 2.0, it supports 49 voices and hybrid thinking modes.",
@@ -1150,6 +1325,7 @@
       "contextWindow": 128000,
       "maxOutputTokens": 16384,
       "benchmarks": {},
+      "arenaElo": {"overall": 1390, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
       "bestFor": ["coding", "reasoning", "value"],
       "description": "675B MoE, 92% of GPT-5.2 at 15% cost",
       "overview": "Mistral Large 3 is Mistral AI's flagship model with 675B total parameters (41B active) using MoE architecture. It delivers approximately 92% of GPT-5.2's performance at roughly 15% of the price, making it one of the best value propositions for high-quality AI.",
@@ -1188,6 +1364,196 @@
         "docs": "https://docs.mistral.ai/getting-started/models/models_overview/",
         "announcement": "https://mistral.ai/news/mistral-large-3/"
       }
+    },
+    {
+      "id": "grok-4",
+      "name": "Grok 4",
+      "provider": "xai",
+      "costTier": "mid",
+      "contextWindow": 256000,
+      "maxOutputTokens": 8000,
+      "benchmarks": {"aime2024": 94.0, "gpqaDiamond": 87.5, "math500": 99.0, "sweBenchVerified": 75.0, "aiderPolyglot": 79.6},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
+      "bestFor": ["reasoning", "math", "coding"],
+      "description": "Frontier reasoning model, 94% AIME, 87.5% GPQA",
+      "overview": "Grok 4 is xAI's flagship reasoning model with PhD-level performance across academic disciplines. It scores 94% on AIME 2025 and 87.5% on GPQA Diamond, rivaling o3 in mathematical and scientific reasoning at a lower price point.",
+      "strengths": [
+        "94% AIME 2025 — top-tier mathematical reasoning",
+        "87.5% GPQA Diamond — PhD-level science performance",
+        "79% LiveCodeBench — strong coding capabilities",
+        "Multimodal: text and image input",
+        "Competitive mid-tier pricing at $3/$15 per M tokens"
+      ],
+      "weaknesses": [
+        "256K context smaller than competitors with 1M+",
+        "8K max output tokens is restrictive for long generations",
+        "Smaller ecosystem and tooling than OpenAI/Anthropic",
+        "Image capabilities still maturing"
+      ],
+      "useCaseDetails": [
+        {"name": "Mathematical Problem Solving", "explanation": "94% AIME 2025 makes it one of the strongest models for math tutoring, quantitative analysis, and competition-level problem solving."},
+        {"name": "Scientific Research", "explanation": "87.5% GPQA Diamond demonstrates PhD-level reasoning for hypothesis generation and scientific analysis."},
+        {"name": "Complex Coding Tasks", "explanation": "79% LiveCodeBench shows strong performance on competitive programming and real-world coding challenges."}
+      ],
+      "pricing": {"inputPerMillion": 3.00, "outputPerMillion": 15.00, "currency": "USD", "notes": null},
+      "specs": {
+        "multimodal": true,
+        "multimodalTypes": ["image"],
+        "trainingDataCutoff": "December 2024",
+        "releaseDate": "2025-07-09",
+        "apiAvailability": "xAI API",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://docs.x.ai/developers/models",
+        "docs": "https://docs.x.ai/developers/models",
+        "announcement": "https://x.ai/news/grok-4-1"
+      }
+    },
+    {
+      "id": "grok-4.1-fast",
+      "name": "Grok 4.1 Fast",
+      "provider": "xai",
+      "costTier": "low",
+      "contextWindow": 2000000,
+      "maxOutputTokens": 8000,
+      "benchmarks": {},
+      "arenaElo": {"overall": 1465, "coding": null, "math": null, "creativeWriting": 1455, "instructionFollowing": null, "longerQuery": null},
+      "bestFor": ["speed", "long-context", "agents"],
+      "description": "2M token context, ultra-fast at $0.20/M input",
+      "overview": "Grok 4.1 Fast is xAI's speed-optimized model featuring the largest context window available at 2 million tokens. It comes in reasoning and non-reasoning modes, making it versatile for both quick responses and multi-step planning, all at budget-friendly pricing.",
+      "strengths": [
+        "2M token context window — largest in the industry",
+        "Ultra-low pricing at $0.20/$0.50 per M tokens",
+        "Dual mode: non-reasoning for speed, reasoning for depth",
+        "Strong tool-calling for agentic workflows",
+        "Half the hallucination rate of Grok 4 Fast"
+      ],
+      "weaknesses": [
+        "8K max output tokens limits long-form generation",
+        "Lower intelligence than full Grok 4",
+        "Benchmarks not as strong as frontier reasoning models",
+        "Newer model with less production track record"
+      ],
+      "useCaseDetails": [
+        {"name": "Massive Codebase Analysis", "explanation": "2M token context can hold entire monorepos for codebase-wide understanding and refactoring."},
+        {"name": "Agentic Workflows", "explanation": "Frontier tool-calling performance with dual reasoning modes enables sophisticated multi-step agents."},
+        {"name": "High-Volume Processing", "explanation": "At $0.20/M input, it's one of the cheapest models with strong capabilities — ideal for batch processing."}
+      ],
+      "pricing": {"inputPerMillion": 0.20, "outputPerMillion": 0.50, "currency": "USD", "notes": "Reasoning mode available at same price"},
+      "specs": {
+        "multimodal": true,
+        "multimodalTypes": ["image"],
+        "trainingDataCutoff": "2025",
+        "releaseDate": "2025-11-20",
+        "apiAvailability": "xAI API",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://docs.x.ai/developers/models",
+        "docs": "https://docs.x.ai/developers/models",
+        "announcement": "https://x.ai/news/grok-4-1-fast"
+      }
+    },
+    {
+      "id": "gpt-oss-120b",
+      "name": "GPT-OSS 120B",
+      "provider": "openai",
+      "costTier": "low",
+      "contextWindow": 128000,
+      "maxOutputTokens": 16384,
+      "benchmarks": {},
+      "arenaElo": {"overall": null, "coding": null, "math": null, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
+      "bestFor": ["general", "coding", "budget"],
+      "description": "Open-weight 117B MoE, runs on single H100",
+      "overview": "GPT-OSS 120B is OpenAI's first open-weight model — a 117B parameter Mixture-of-Experts model with only 5.1B active parameters per token. It runs on a single H100 GPU via MXFP4 quantization, offering near-frontier intelligence at open-source pricing under Apache 2.0.",
+      "strengths": [
+        "OpenAI's first open-weight model — Apache 2.0 license",
+        "117B total / 5.1B active params — efficient MoE architecture",
+        "Runs on a single H100 80GB GPU",
+        "Available on 22+ API providers (Together, Groq, DeepInfra, etc.)",
+        "Native reasoning, tool use, and structured output support"
+      ],
+      "weaknesses": [
+        "128K context is modest compared to newer models",
+        "Text-only — no multimodal capabilities",
+        "Very verbose outputs increase effective cost",
+        "Knowledge cutoff May 2024 is relatively old"
+      ],
+      "useCaseDetails": [
+        {"name": "Self-Hosted OpenAI Quality", "explanation": "First chance to run an OpenAI-quality model on your own infrastructure under Apache 2.0 license."},
+        {"name": "Budget API Usage", "explanation": "Available from $0.09/M input on providers like DeepInfra — extreme value for OpenAI-class quality."},
+        {"name": "Fast Inference", "explanation": "329 tokens/sec output speed makes it one of the fastest models available for real-time applications."}
+      ],
+      "pricing": {"inputPerMillion": 0.15, "outputPerMillion": 0.60, "currency": "USD", "notes": "Open weights, Apache 2.0. Pricing varies by provider ($0.09-$0.20 input)"},
+      "specs": {
+        "multimodal": false,
+        "multimodalTypes": [],
+        "trainingDataCutoff": "May 2024",
+        "releaseDate": "2025-08-05",
+        "apiAvailability": "OpenAI API, Together AI, Groq, DeepInfra, Cloudflare, self-hosted",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://openai.com/api/pricing/",
+        "docs": "https://platform.openai.com/docs/models/gpt-oss-120b",
+        "announcement": "https://openai.com/index/introducing-gpt-oss/",
+        "github": "https://github.com/openai/gpt-oss"
+      }
+    },
+    {
+      "id": "kimi-k2.5",
+      "name": "Kimi K2.5",
+      "provider": "moonshot",
+      "costTier": "low",
+      "contextWindow": 256000,
+      "maxOutputTokens": 16384,
+      "benchmarks": {"sweBenchVerified": 76.8, "aime2024": 96.1},
+      "arenaElo": {"overall": 1440, "coding": 1449, "math": 1465, "creativeWriting": null, "instructionFollowing": null, "longerQuery": null},
+      "bestFor": ["reasoning", "coding", "agents"],
+      "description": "96.1% AIME, 76.8% SWE-bench, open weights",
+      "overview": "Kimi K2.5 is Moonshot AI's flagship model — a 1T multimodal MoE achieving 96.1% on AIME 2025 and 76.8% on SWE-bench Verified. It features Agent Swarm technology coordinating up to 100 specialized agents in parallel, and is available as open weights.",
+      "strengths": [
+        "96.1% AIME 2025 — near-perfect mathematical reasoning",
+        "76.8% SWE-bench Verified — strong real-world coding",
+        "Agent Swarm: coordinates up to 100 agents in parallel",
+        "Native multimodal: text, image, and video input",
+        "Open weights with tool-augmented reasoning (+20% with tools)"
+      ],
+      "weaknesses": [
+        "Very verbose outputs (89M tokens in eval vs 13M average)",
+        "Slower than average (39.4 tokens/sec)",
+        "Chinese company — compliance considerations for some enterprises",
+        "Smaller ecosystem and community than major providers"
+      ],
+      "useCaseDetails": [
+        {"name": "Mathematical Problem Solving", "explanation": "96.1% AIME 2025 makes it the strongest math model available — ideal for quantitative finance, research, and education."},
+        {"name": "Agentic Coding", "explanation": "76.8% SWE-bench Verified combined with Agent Swarm technology enables coordinated multi-agent coding workflows."},
+        {"name": "Visual Agent Tasks", "explanation": "Native video and image understanding combined with tool use enables visual agent workflows like UI testing and document processing."}
+      ],
+      "pricing": {"inputPerMillion": 0.60, "outputPerMillion": 2.50, "currency": "USD", "notes": "Cached tokens $0.15/M. Open weights available"},
+      "specs": {
+        "multimodal": true,
+        "multimodalTypes": ["image", "video"],
+        "trainingDataCutoff": "2025",
+        "releaseDate": "2026-01-27",
+        "apiAvailability": "Moonshot API, self-hosted",
+        "supportsFunctionCalling": true,
+        "supportsStreaming": true,
+        "supportsExtendedThinking": true
+      },
+      "sourceUrls": {
+        "pricing": "https://platform.moonshot.ai/docs/pricing/chat",
+        "docs": "https://platform.moonshot.ai/docs",
+        "announcement": "https://www.kimi.com/blog/kimi-k2-5.html",
+        "github": "https://github.com/MoonshotAI/Kimi-K2.5"
+      }
     }
   ],
   "useCases": {
@@ -1208,26 +1574,27 @@
           "topPick": "deepseek-v3.2",
           "models": [
             {"id": "deepseek-v3.2", "reason": "10-30x cheaper than competitors, handles routine queries well"},
+            {"id": "grok-4.1-fast", "reason": "2M context at $0.20/M — excellent for long conversation history"},
+            {"id": "gpt-oss-120b", "reason": "OpenAI-quality open weights at $0.15/M input"},
             {"id": "claude-haiku-4.5", "reason": "Fast and affordable Claude option with 73% SWE-bench quality"},
-            {"id": "gemini-2.5-flash", "reason": "1M context at very low cost per token"},
-            {"id": "gemini-3-flash", "reason": "Google's fastest model at budget pricing"},
-            {"id": "gpt-4o", "reason": "Mature model with predictable, low-cost performance"}
+            {"id": "gemini-2.5-flash", "reason": "1M context at very low cost per token"}
           ]
         },
         "speed": {
           "topPick": "claude-haiku-4.5",
           "models": [
             {"id": "claude-haiku-4.5", "reason": "Fastest Claude model with sub-second response times for real-time chat"},
+            {"id": "grok-4.1-fast", "reason": "329 tok/s output speed with 2M context at $0.20/M"},
             {"id": "gemini-3-flash", "reason": "Google's speed-optimized model with native streaming"},
             {"id": "gemini-2.5-flash", "reason": "Good balance of speed and 1M context window"},
-            {"id": "gpt-4o", "reason": "Fast GPT model optimized for real-time interactions"},
-            {"id": "deepseek-v3.2", "reason": "Fast inference with hybrid thinking modes"}
+            {"id": "gpt-4o", "reason": "Fast GPT model optimized for real-time interactions"}
           ]
         },
         "privacy": {
           "topPick": "llama-4-maverick",
           "models": [
             {"id": "llama-4-maverick", "reason": "Multimodal open-source, fully self-hosted on your infrastructure"},
+            {"id": "gpt-oss-120b", "reason": "OpenAI open weights under Apache 2.0, runs on single H100"},
             {"id": "qwen-3", "reason": "235B MoE with strong multilingual for global support teams"},
             {"id": "mistral-large-3", "reason": "European-developed, 128K context with strong privacy focus"},
             {"id": "llama-4-scout", "reason": "10M context for extensive conversation history on-premise"}
@@ -1243,38 +1610,39 @@
           "models": [
             {"id": "claude-opus-4.6", "reason": "80.8% SWE-bench with 1M context for entire codebases and adaptive thinking"},
             {"id": "claude-opus-4.5", "reason": "80.9% SWE-bench, proven track record for complex refactoring"},
+            {"id": "kimi-k2.5", "reason": "76.8% SWE-bench Verified with Agent Swarm for multi-agent coding"},
             {"id": "gpt-5.2-pro", "reason": "62.3% SWE-bench Pro, strong for enterprise code quality"},
-            {"id": "gpt-5.2-codex", "reason": "Specialized for agentic coding with 400K context window"},
-            {"id": "claude-sonnet-4.5", "reason": "77.2% SWE-bench at mid-tier pricing, great for agents"}
+            {"id": "claude-sonnet-4.5", "reason": "82% SWE-bench at mid-tier pricing, great for agents"}
           ]
         },
         "cost": {
           "topPick": "deepseek-v3.2",
           "models": [
             {"id": "deepseek-v3.2", "reason": "Excellent coding at fraction of cost, rivals GPT-4 class models"},
+            {"id": "kimi-k2.5", "reason": "76.8% SWE-bench at $0.60/M — strongest budget coding model"},
+            {"id": "gpt-oss-120b", "reason": "OpenAI open weights at $0.15/M with native tool use"},
             {"id": "mistral-large-3", "reason": "675B MoE rivals premium models at lower cost"},
-            {"id": "claude-haiku-4.5", "reason": "73.3% SWE-bench at budget pricing for routine tasks"},
-            {"id": "gemini-2.5-flash", "reason": "1M context for large codebases at low cost"},
-            {"id": "deepseek-r1", "reason": "Strong reasoning for complex debugging at minimal cost"}
+            {"id": "claude-haiku-4.5", "reason": "73.3% SWE-bench at budget pricing for routine tasks"}
           ]
         },
         "speed": {
           "topPick": "claude-haiku-4.5",
           "models": [
             {"id": "claude-haiku-4.5", "reason": "Fast code completions and reviews with 73% SWE-bench"},
+            {"id": "gpt-oss-120b", "reason": "329 tok/s output — one of the fastest models available"},
+            {"id": "grok-4.1-fast", "reason": "2M context for entire monorepos at $0.20/M"},
             {"id": "o4-mini", "reason": "Fast reasoning model for quick code analysis"},
-            {"id": "gemini-3-flash", "reason": "Speed-optimized with good coding capabilities"},
-            {"id": "gpt-4o", "reason": "Fast, reliable code assistance"},
-            {"id": "gemini-2.5-flash", "reason": "Quick responses with 1M context for large files"}
+            {"id": "gemini-3-flash", "reason": "Speed-optimized with good coding capabilities"}
           ]
         },
         "privacy": {
           "topPick": "llama-4-scout",
           "models": [
             {"id": "llama-4-scout", "reason": "10M token context for entire codebases, fully self-hosted"},
+            {"id": "gpt-oss-120b", "reason": "OpenAI open weights, Apache 2.0, runs on single H100"},
+            {"id": "kimi-k2.5", "reason": "76.8% SWE-bench open weights with agentic capabilities"},
             {"id": "qwen-3", "reason": "235B MoE with strong coding benchmarks, 86% AIME math"},
-            {"id": "mistral-large-3", "reason": "675B European model with 128K context, self-deployable"},
-            {"id": "llama-4-maverick", "reason": "1M context multimodal for code + diagrams, fully self-hosted"}
+            {"id": "mistral-large-3", "reason": "675B European model with 128K context, self-deployable"}
           ]
         }
       }
@@ -1286,20 +1654,20 @@
           "topPick": "o3-pro",
           "models": [
             {"id": "o3-pro", "reason": "Enhanced o3 with more compute budget for the hardest reasoning problems"},
-            {"id": "o3", "reason": "Flagship reasoning model with explicit chain-of-thought"},
-            {"id": "gpt-5.2-pro", "reason": "90.5% ARC-AGI-1, enterprise-grade reasoning"},
-            {"id": "claude-opus-4.6", "reason": "Adaptive thinking with 4 effort levels for flexible depth"},
-            {"id": "gpt-5.2-thinking", "reason": "Built-in thinking mode for transparent reasoning"}
+            {"id": "kimi-k2.5", "reason": "96.1% AIME 2025 — strongest published math reasoning score"},
+            {"id": "grok-4", "reason": "94% AIME 2025, 87.5% GPQA Diamond — frontier reasoning"},
+            {"id": "o3", "reason": "91.6% AIME 2024 with explicit chain-of-thought"},
+            {"id": "gpt-5.2-pro", "reason": "90.5% ARC-AGI-1, enterprise-grade reasoning"}
           ]
         },
         "cost": {
           "topPick": "deepseek-r1",
           "models": [
             {"id": "deepseek-r1", "reason": "Rivals OpenAI o1 on reasoning benchmarks at fraction of cost"},
+            {"id": "kimi-k2.5", "reason": "96.1% AIME at $0.60/M — best reasoning value available"},
             {"id": "o4-mini", "reason": "Cost-effective reasoning with good quality tradeoffs"},
             {"id": "gemini-2.5-flash", "reason": "1M context reasoning at budget pricing"},
-            {"id": "deepseek-v3.2", "reason": "Hybrid thinking modes for flexible reasoning cost"},
-            {"id": "claude-haiku-4.5", "reason": "Surprisingly capable reasoning at lowest Claude tier"}
+            {"id": "deepseek-v3.2", "reason": "Hybrid thinking modes for flexible reasoning cost"}
           ]
         },
         "speed": {
@@ -1313,12 +1681,13 @@
           ]
         },
         "privacy": {
-          "topPick": "qwen-3",
+          "topPick": "kimi-k2.5",
           "models": [
+            {"id": "kimi-k2.5", "reason": "96.1% AIME open weights — strongest self-hostable reasoning"},
             {"id": "qwen-3", "reason": "235B MoE with 86% AIME math, strong reasoning self-hosted"},
+            {"id": "gpt-oss-120b", "reason": "OpenAI open weights with native reasoning support"},
             {"id": "llama-4-maverick", "reason": "Open weights for private complex analysis"},
-            {"id": "mistral-large-3", "reason": "European 675B MoE with strong analytical capabilities"},
-            {"id": "llama-4-scout", "reason": "10M context for reasoning over massive datasets"}
+            {"id": "mistral-large-3", "reason": "European 675B MoE with strong analytical capabilities"}
           ]
         }
       }
@@ -1330,30 +1699,30 @@
           "topPick": "claude-opus-4.6",
           "models": [
             {"id": "claude-opus-4.6", "reason": "1M token context with industry-leading comprehension and 90.2% BigLaw Bench"},
+            {"id": "grok-4.1-fast", "reason": "2M token context — largest available for massive document collections"},
             {"id": "gemini-2.5-pro", "reason": "1M context with strong multimodal for scanned documents"},
             {"id": "gpt-5.1", "reason": "400K context with excellent summarization quality"},
-            {"id": "claude-opus-4.5", "reason": "200K context with superior analytical depth"},
-            {"id": "gpt-5.2-codex", "reason": "400K context for large document collections"}
+            {"id": "claude-opus-4.5", "reason": "200K context with superior analytical depth"}
           ]
         },
         "cost": {
-          "topPick": "gemini-2.5-flash",
+          "topPick": "grok-4.1-fast",
           "models": [
+            {"id": "grok-4.1-fast", "reason": "2M context at $0.20/M — best context-per-dollar ratio"},
             {"id": "gemini-2.5-flash", "reason": "1M context at very low cost per token"},
+            {"id": "gpt-oss-120b", "reason": "OpenAI quality at $0.15/M input for document processing"},
             {"id": "deepseek-v3.2", "reason": "128K context with excellent value"},
-            {"id": "claude-haiku-4.5", "reason": "200K context at budget pricing"},
-            {"id": "gemini-3-flash", "reason": "1M context, speed-optimized for batch processing"},
-            {"id": "gpt-4o", "reason": "128K context with reliable extraction"}
+            {"id": "claude-haiku-4.5", "reason": "200K context at budget pricing"}
           ]
         },
         "speed": {
           "topPick": "gemini-3-flash",
           "models": [
             {"id": "gemini-3-flash", "reason": "Fastest processing with 1M context support"},
+            {"id": "grok-4.1-fast", "reason": "329 tok/s with 2M context for massive documents"},
             {"id": "claude-haiku-4.5", "reason": "Quick document processing with 200K context"},
             {"id": "gemini-2.5-flash", "reason": "Fast 1M context for large document batches"},
-            {"id": "gpt-4o", "reason": "Quick turnaround for standard documents"},
-            {"id": "deepseek-v3.2", "reason": "Fast with hybrid thinking for complex docs"}
+            {"id": "gpt-4o", "reason": "Quick turnaround for standard documents"}
           ]
         },
         "privacy": {
@@ -1545,13 +1914,13 @@
     }
   },
   "quickDecisions": [
-    {"priority": "Lowest cost", "recommendations": ["deepseek-v3.2", "gemini-2.5-flash-lite", "deepseek-r1"]},
+    {"priority": "Lowest cost", "recommendations": ["gpt-oss-120b", "deepseek-v3.2", "grok-4.1-fast"]},
     {"priority": "Highest quality", "recommendations": ["claude-opus-4.6", "o3-pro", "gpt-5.2-pro"]},
-    {"priority": "Best for coding", "recommendations": ["claude-opus-4.6", "gpt-5.2-codex", "gpt-5.2-pro"]},
-    {"priority": "Best for reasoning", "recommendations": ["o3-pro", "o3", "gpt-5.2-pro"]},
-    {"priority": "Fastest responses", "recommendations": ["claude-haiku-4.5", "gemini-3-flash", "gemini-2.5-flash"]},
-    {"priority": "Best for documents", "recommendations": ["claude-opus-4.6", "gemini-2.5-pro", "llama-4-scout"]},
-    {"priority": "Best for privacy", "recommendations": ["llama-4-maverick", "llama-4-scout", "qwen-3"]},
+    {"priority": "Best for coding", "recommendations": ["claude-opus-4.6", "kimi-k2.5", "claude-opus-4.5"]},
+    {"priority": "Best for reasoning", "recommendations": ["kimi-k2.5", "o3-pro", "grok-4"]},
+    {"priority": "Fastest responses", "recommendations": ["claude-haiku-4.5", "grok-4.1-fast", "gemini-3-flash"]},
+    {"priority": "Best for documents", "recommendations": ["grok-4.1-fast", "claude-opus-4.6", "gemini-2.5-pro"]},
+    {"priority": "Best for privacy", "recommendations": ["gpt-oss-120b", "kimi-k2.5", "llama-4-maverick"]},
     {"priority": "Best multilingual", "recommendations": ["llama-4-maverick", "qwen-3", "qwen3-omni"]}
   ],
   "references": {
@@ -1573,10 +1942,19 @@
       {"name": "API Documentation", "url": "https://api-docs.deepseek.com/"},
       {"name": "V3.2 Release Notes", "url": "https://api-docs.deepseek.com/news/news251201"}
     ],
+    "xai": [
+      {"name": "xAI Model Documentation", "url": "https://docs.x.ai/developers/models"},
+      {"name": "Grok 4.1 Announcement", "url": "https://x.ai/news/grok-4-1"}
+    ],
+    "moonshot": [
+      {"name": "Kimi K2.5 Blog", "url": "https://www.kimi.com/blog/kimi-k2-5.html"},
+      {"name": "Moonshot Platform", "url": "https://platform.moonshot.ai/docs"}
+    ],
     "opensource": [
       {"name": "Llama 4 (Meta)", "url": "https://github.com/meta-llama/llama-models"},
       {"name": "Qwen (Alibaba)", "url": "https://huggingface.co/Qwen"},
-      {"name": "Mistral AI", "url": "https://mistral.ai/"}
+      {"name": "Mistral AI", "url": "https://mistral.ai/"},
+      {"name": "GPT-OSS (OpenAI)", "url": "https://github.com/openai/gpt-oss"}
     ],
     "benchmarks": [
       {"name": "Artificial Analysis Leaderboard", "url": "https://artificialanalysis.ai/leaderboards/models"},
