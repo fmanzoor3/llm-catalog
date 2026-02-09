@@ -934,7 +934,7 @@
         "Not as strong on creative or conversational tasks"
       ],
       "useCaseDetails": [
-        {"name": "Mathematical Problem Solving", "explanation": "Near-perfect AIME scores make it ideal for math tutoring, quantitative analysis, and automated problem solving."},
+        {"name": "Mathematical Problem Solving", "explanation": "79.8% AIME 2024 score at a fraction of competitor cost makes it a strong value for math tutoring, quantitative analysis, and automated problem solving."},
         {"name": "Scientific Research Assistance", "explanation": "Strong reasoning helps with hypothesis generation, data analysis, and scientific paper review."},
         {"name": "Budget Reasoning Applications", "explanation": "Get o1-level reasoning at a fraction of the cost - great for startups and budget-conscious teams."}
       ],
@@ -1244,7 +1244,7 @@
             {"id": "claude-opus-4.6", "reason": "80.8% SWE-bench with 1M context for entire codebases and adaptive thinking"},
             {"id": "claude-opus-4.5", "reason": "80.9% SWE-bench, proven track record for complex refactoring"},
             {"id": "gpt-5.2-pro", "reason": "62.3% SWE-bench Pro, strong for enterprise code quality"},
-            {"id": "gpt-5.2-codex", "reason": "Specialized for code with 3M token context window"},
+            {"id": "gpt-5.2-codex", "reason": "Specialized for agentic coding with 400K context window"},
             {"id": "claude-sonnet-4.5", "reason": "77.2% SWE-bench at mid-tier pricing, great for agents"}
           ]
         },
@@ -1274,7 +1274,7 @@
             {"id": "llama-4-scout", "reason": "10M token context for entire codebases, fully self-hosted"},
             {"id": "qwen-3", "reason": "235B MoE with strong coding benchmarks, 86% AIME math"},
             {"id": "mistral-large-3", "reason": "675B European model with 128K context, self-deployable"},
-            {"id": "llama-4-maverick", "reason": "400K context multimodal for code + diagrams"}
+            {"id": "llama-4-maverick", "reason": "1M context multimodal for code + diagrams, fully self-hosted"}
           ]
         }
       }
@@ -1333,7 +1333,7 @@
             {"id": "gemini-2.5-pro", "reason": "1M context with strong multimodal for scanned documents"},
             {"id": "gpt-5.1", "reason": "400K context with excellent summarization quality"},
             {"id": "claude-opus-4.5", "reason": "200K context with superior analytical depth"},
-            {"id": "gpt-5.2-codex", "reason": "3M context for massive document collections"}
+            {"id": "gpt-5.2-codex", "reason": "400K context for large document collections"}
           ]
         },
         "cost": {
@@ -1360,8 +1360,8 @@
           "topPick": "llama-4-scout",
           "models": [
             {"id": "llama-4-scout", "reason": "10M token context for massive document sets on your servers"},
-            {"id": "llama-4-maverick", "reason": "400K multimodal context for scanned documents"},
-            {"id": "qwen-3", "reason": "32K context with strong multilingual document support"},
+            {"id": "llama-4-maverick", "reason": "1M multimodal context for scanned documents, self-hosted"},
+            {"id": "qwen-3", "reason": "128K context with strong multilingual document support"},
             {"id": "mistral-large-3", "reason": "128K European model for GDPR-compliant processing"}
           ]
         }
@@ -1535,7 +1535,7 @@
         "privacy": {
           "topPick": "llama-4-maverick",
           "models": [
-            {"id": "llama-4-maverick", "reason": "Multimodal open-source with 400K context, fully self-hosted"},
+            {"id": "llama-4-maverick", "reason": "Multimodal open-source with 1M context, fully self-hosted"},
             {"id": "mistral-large-3", "reason": "European multimodal for GDPR-compliant image processing"},
             {"id": "llama-4-scout", "reason": "Vision support with massive 10M context"},
             {"id": "qwen-3", "reason": "Multimodal variant available for self-hosting"}
