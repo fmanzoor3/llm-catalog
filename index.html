@@ -154,12 +154,20 @@
         .score-bar { height: 20px; background: rgba(255,255,255,0.08); border-radius: 10px; position: relative; overflow: hidden; margin-bottom: 4px; }
         .score-bar .score-fill { height: 100%; border-radius: 10px; transition: width 0.5s ease; }
         .score-bar.capability .score-fill { background: linear-gradient(90deg, #00d4ff, #0099cc); }
+        .score-bar.overall .score-fill { background: linear-gradient(90deg, #a78bfa, #7c3aed); }
         .score-bar.value .score-fill { background: linear-gradient(90deg, #22c55e, #16a34a); }
         .score-label { position: absolute; right: 8px; top: 1px; font-size: 0.75rem; font-weight: 600; color: #fff; line-height: 20px; }
         .score-label-left { position: absolute; left: 8px; top: 1px; font-size: 0.7rem; color: rgba(255,255,255,0.7); line-height: 20px; }
         .score-drivers { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
         .driver-chip { font-size: 0.7rem; padding: 2px 6px; background: rgba(255,255,255,0.08); border-radius: 4px; color: #aaa; }
         .score-incomplete { font-size: 0.65rem; color: #666; margin-left: 4px; }
+        .priority-desc { display: block; margin-top: 0.35rem; color: #888; font-size: 0.75rem; line-height: 1.3; }
+        .score-legend { font-size: 0.8rem; color: #888; margin-bottom: 1rem; line-height: 1.6; display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; }
+        .score-legend .legend-item { display: inline-flex; align-items: center; gap: 0.4rem; }
+        .score-legend .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .score-legend .legend-dot.quality { background: #00d4ff; }
+        .score-legend .legend-dot.overall { background: #a78bfa; }
+        .score-legend .legend-dot.efficiency { background: #22c55e; }
 
         .providers-section { margin-bottom: 3rem; }
         .providers-section h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
@@ -608,12 +616,13 @@
                 <div class="filter-group">
                     <label for="priority">What matters most?</label>
                     <select id="priority">
-                        <option value="">Select priority...</option>
+                        <option value="best">Overall Best</option>
                         <option value="quality">Highest Quality</option>
-                        <option value="cost">Lowest Cost</option>
+                        <option value="cost">Best Value</option>
                         <option value="speed">Fastest Response</option>
                         <option value="privacy">Data Privacy (Self-hosted)</option>
                     </select>
+                    <small class="priority-desc" id="priorityDesc">Balanced ranking combining quality and cost efficiency</small>
                 </div>
                 <div class="filter-group">
                     <label for="budget">Budget</label>
@@ -627,6 +636,7 @@
             </div>
             <div class="results" id="results" aria-live="polite">
                 <h3 id="rec-description">Recommendations</h3>
+                <div class="score-legend" id="scoreLegend"></div>
                 <div class="recommendation-cards" id="recCards" role="list">
                     <p class="no-results">Select a use case to see recommendations</p>
                 </div>
@@ -1548,9 +1558,16 @@
             };
         });
 
+        // Compute overall score (blend of capability + value)
+        results.forEach(function(r) {
+            r.overallScore = Math.round(r.capabilityScore * 0.7 + r.valueScore * 0.3);
+        });
+
         // Sort
         if (sortBy === 'cost') {
             results.sort(function(a, b) { return b.valueScore - a.valueScore; });
+        } else if (sortBy === 'best') {
+            results.sort(function(a, b) { return b.overallScore - a.overallScore; });
         } else {
             results.sort(function(a, b) { return b.capabilityScore - a.capabilityScore; });
         }
@@ -1591,10 +1608,21 @@
         var priority = document.getElementById('priority').value;
         var budget = document.getElementById('budget').value;
         var container = document.getElementById('recCards');
+
+        var effectivePriority = priority || 'best';
+        var priorityDescs = {
+            'best': 'Balanced ranking combining quality and cost efficiency',
+            'quality': 'Ranked purely by benchmark performance, regardless of cost',
+            'cost': 'Best quality relative to price \u2014 great models that won\u2019t break the bank',
+            'speed': 'Optimized for low latency and fast token generation',
+            'privacy': 'Open-weight models you can self-host for full data control'
+        };
+        var descEl = document.getElementById('priorityDesc');
+        if (descEl) descEl.textContent = priorityDescs[effectivePriority] || '';
+
         if (!useCase) { container.innerHTML = '<p class="no-results">Select a use case to see recommendations</p>'; return; }
 
-        var effectivePriority = priority || 'quality';
-        var sortBy = (effectivePriority === 'cost') ? 'cost' : 'capability';
+        var sortBy = effectivePriority === 'cost' ? 'cost' : effectivePriority === 'best' ? 'best' : 'capability';
 
         // Use scoring engine to rank all models
         var ranked = rankModelsForUseCase(useCase, sortBy);
@@ -1630,7 +1658,28 @@
         // Filter out models with zero score
         ranked = ranked.filter(function(r) { return r.capabilityScore > 0; });
 
-        if (ranked.length === 0) { container.innerHTML = '<p class="no-results">No models match your criteria. Try adjusting filters.</p>'; return; }
+        if (ranked.length === 0) {
+            container.innerHTML = '<p class="no-results">No models match your criteria. Try adjusting filters.</p>';
+            document.getElementById('scoreLegend').innerHTML = '';
+            return;
+        }
+
+        // Update score legend based on mode
+        var legendEl = document.getElementById('scoreLegend');
+        var ucName = modelData.scoringConfig[useCase] ? modelData.scoringConfig[useCase].name : useCase;
+        if (effectivePriority === 'best') {
+            legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot overall"></span> <strong>Overall</strong> = quality + cost efficiency combined</span>' +
+                '<span class="legend-item"><span class="legend-dot efficiency"></span> <strong>Cost Efficiency</strong> = quality relative to price</span>' +
+                '<span style="color:#666;font-size:0.75rem;">Scores 0\u2013100, based on benchmarks and human preference rankings for ' + ucName + '</span>';
+        } else if (effectivePriority === 'cost') {
+            legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot efficiency"></span> <strong>Cost Efficiency</strong> = quality you get per dollar spent</span>' +
+                '<span class="legend-item"><span class="legend-dot quality"></span> <strong>Quality</strong> = benchmark performance for ' + ucName + '</span>' +
+                '<span style="color:#666;font-size:0.75rem;">Sorted by cost efficiency</span>';
+        } else {
+            legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot quality"></span> <strong>Quality</strong> = benchmark performance for ' + ucName + '</span>' +
+                '<span class="legend-item"><span class="legend-dot efficiency"></span> <strong>Cost Efficiency</strong> = quality relative to price</span>' +
+                '<span style="color:#666;font-size:0.75rem;">Sorted by quality</span>';
+        }
 
         // Top pick is always #1 by score
         var topPickId = ranked[0].model.id;
@@ -1647,14 +1696,23 @@
             var sourceLink = sourceUrl ? '<a href="' + sourceUrl + '" target="_blank" rel="noopener" class="rec-source" onclick="event.stopPropagation()">Source ↗</a>' : '';
             var drivers = getTopDrivers(r.breakdown);
             var driversHtml = drivers.map(function(d) { return '<span class="driver-chip">' + d + '</span>'; }).join('');
-            var incompleteHtml = r.completeness < 0.5 ? '<span class="score-incomplete" title="Limited benchmark data available">*</span>' : '';
+            var incompleteHtml = r.completeness < 0.5 ? '<span class="score-incomplete" title="Limited benchmark data — score may be less accurate">*</span>' : '';
+
+            var overallScore = r.overallScore || Math.round(r.capabilityScore * 0.7 + r.valueScore * 0.3);
+
+            // Build score bars based on mode
+            var topBar, topBarTitle;
+            if (effectivePriority === 'best') {
+                topBar = '<div class="score-bar overall" title="Overall score: combines quality (70%) and cost efficiency (30%)"><span class="score-label-left">Overall</span><div class="score-fill" style="width:' + overallScore + '%"></div><span class="score-label">' + overallScore + incompleteHtml + '</span></div>';
+            } else {
+                topBar = '<div class="score-bar capability" title="Quality: how well this model performs on benchmarks relevant to your use case"><span class="score-label-left">Quality</span><div class="score-fill" style="width:' + r.capabilityScore + '%"></div><span class="score-label">' + r.capabilityScore + incompleteHtml + '</span></div>';
+            }
+            var valueBar = '<div class="score-bar value" title="Cost efficiency: quality you get per dollar spent"><span class="score-label-left">Cost Efficiency</span><div class="score-fill" style="width:' + r.valueScore + '%"></div><span class="score-label">' + r.valueScore + '</span></div>';
 
             return '<div class="rec-card ' + (isTop ? 'top-pick' : '') + ' ' + hiddenClass + ' clickable-model" onclick="openModelModal(\'' + model.id + '\')">' +
                 '<h4>' + model.name + (isTop ? ' <span class="badge">TOP PICK</span>' : '') + '</h4>' +
                 '<div class="provider">' + getProviderName(model.provider) + '</div>' +
-                '<div class="score-section">' +
-                    '<div class="score-bar capability"><span class="score-label-left">Capability</span><div class="score-fill" style="width:' + r.capabilityScore + '%"></div><span class="score-label">' + r.capabilityScore + incompleteHtml + '</span></div>' +
-                    '<div class="score-bar value"><span class="score-label-left">Value</span><div class="score-fill" style="width:' + r.valueScore + '%"></div><span class="score-label">' + r.valueScore + '</span></div>' +
+                '<div class="score-section">' + topBar + valueBar +
                     '<div class="score-drivers">' + driversHtml + '</div>' +
                 '</div>' +
                 '<div class="why">' + model.description + '</div>' +
