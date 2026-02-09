@@ -6,6 +6,11 @@
     <title>LLM Selection Guide</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Focus styles for accessibility */
+        :focus-visible {
+            outline: 2px solid #00d4ff;
+            outline-offset: 2px;
+        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
@@ -13,6 +18,14 @@
             min-height: 100vh;
             line-height: 1.6;
         }
+        /* Skip link for keyboard users */
+        .skip-link {
+            position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+            background: #00d4ff; color: #1a1a2e; padding: 0.75rem 1.5rem;
+            border-radius: 0 0 8px 8px; z-index: 9999; font-weight: 600;
+            text-decoration: none; transition: top 0.2s;
+        }
+        .skip-link:focus { top: 0; }
         .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
         header { text-align: center; margin-bottom: 3rem; padding: 2rem 0; }
         header h1 {
@@ -564,20 +577,21 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div class="container" role="main" id="main-content">
         <header>
             <h1>LLM Selection Guide</h1>
             <p class="subtitle">Find the right AI model for your project</p>
-            <p class="last-updated" id="lastUpdated">Loading...</p>
+            <p class="last-updated" id="lastUpdated" aria-live="polite">Loading...</p>
         </header>
 
         <!-- Finder Section -->
-        <section class="finder-section">
-            <h2>Find Your LLM</h2>
-            <div class="filter-grid">
+        <section class="finder-section" aria-labelledby="finder-heading">
+            <h2 id="finder-heading">Find Your LLM</h2>
+            <div class="filter-grid" role="group" aria-label="Filter options">
                 <div class="filter-group">
                     <label for="useCase">What are you building?</label>
-                    <select id="useCase"><option value="">Select a use case...</option></select>
+                    <select id="useCase" aria-describedby="rec-description"><option value="">Select a use case...</option></select>
                 </div>
                 <div class="filter-group">
                     <label for="priority">What matters most?</label>
@@ -599,9 +613,9 @@
                     </select>
                 </div>
             </div>
-            <div class="results" id="results">
-                <h3>Recommendations</h3>
-                <div class="recommendation-cards" id="recCards">
+            <div class="results" id="results" aria-live="polite">
+                <h3 id="rec-description">Recommendations</h3>
+                <div class="recommendation-cards" id="recCards" role="list">
                     <p class="no-results">Select a use case to see recommendations</p>
                 </div>
             </div>
@@ -638,15 +652,15 @@
                 </select>
                 <span class="model-count" id="modelCount">25 models</span>
             </div>
-            <div class="model-filter-bar" id="modelFilterBar">
-                <button class="filter-chip active" data-filter="all">All</button>
-                <button class="filter-chip" data-filter="anthropic">Anthropic</button>
-                <button class="filter-chip" data-filter="openai">OpenAI</button>
-                <button class="filter-chip" data-filter="google">Google</button>
-                <button class="filter-chip" data-filter="deepseek">DeepSeek</button>
-                <button class="filter-chip" data-filter="opensource">Open Source</button>
+            <div class="model-filter-bar" id="modelFilterBar" role="tablist" aria-label="Filter by provider">
+                <button class="filter-chip active" data-filter="all" role="tab" aria-selected="true">All</button>
+                <button class="filter-chip" data-filter="anthropic" role="tab" aria-selected="false">Anthropic</button>
+                <button class="filter-chip" data-filter="openai" role="tab" aria-selected="false">OpenAI</button>
+                <button class="filter-chip" data-filter="google" role="tab" aria-selected="false">Google</button>
+                <button class="filter-chip" data-filter="deepseek" role="tab" aria-selected="false">DeepSeek</button>
+                <button class="filter-chip" data-filter="opensource" role="tab" aria-selected="false">Open Source</button>
             </div>
-            <div class="all-models-grid" id="allModelsGrid"></div>
+            <div class="all-models-grid" id="allModelsGrid" role="list" aria-live="polite"></div>
         </section>
 
         <!-- External Links -->
@@ -677,9 +691,9 @@
     <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
 
     <!-- Model Detail Modal -->
-    <div class="model-modal-overlay" id="modelModal">
+    <div class="model-modal-overlay" id="modelModal" role="dialog" aria-modal="true" aria-labelledby="modalModelName">
         <div class="model-modal">
-            <button class="modal-close" onclick="closeModelModal()">&times;</button>
+            <button class="modal-close" onclick="closeModelModal()" aria-label="Close modal">&times;</button>
             <div class="modal-title-row">
                 <h2 id="modalModelName"></h2>
                 <span class="cost-badge" id="modalCostBadge"></span>
@@ -873,9 +887,25 @@
         // Filter chips for All Models
         document.querySelectorAll('.filter-chip').forEach(chip => {
             chip.addEventListener('click', function() {
-                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.filter-chip').forEach(c => {
+                    c.classList.remove('active');
+                    c.setAttribute('aria-selected', 'false');
+                });
                 this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
                 populateAllModels();
+            });
+            // Keyboard navigation for filter chips
+            chip.addEventListener('keydown', function(e) {
+                const chips = Array.from(document.querySelectorAll('.filter-chip'));
+                const idx = chips.indexOf(this);
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    chips[(idx + 1) % chips.length].focus();
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    chips[(idx - 1 + chips.length) % chips.length].focus();
+                }
             });
         });
 
@@ -1004,7 +1034,7 @@
             const costClass = m.costTier === 'self-hosted' ? 'low' : m.costTier;
             const tags = (m.bestFor || []).slice(0, 3).map(t => '<span class="mini-tag">' + t + '</span>').join('');
             const multimodal = m.specs && m.specs.multimodal ? '<span>Multimodal</span>' : '';
-            return '<div class="model-card" onclick="openModelModal(\'' + m.id + '\')">' +
+            return '<div class="model-card" role="listitem" tabindex="0" onclick="openModelModal(\'' + m.id + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openModelModal(\'' + m.id + '\')}" aria-label="' + m.name + ' - ' + m.description + '">' +
                 '<div class="model-card-header"><h4>' + m.name + '</h4><span class="cost-badge cost-' + costClass + '">' + getCostLabel(m.costTier) + '</span></div>' +
                 '<p class="model-card-provider">' + getProviderName(m.provider) + '</p>' +
                 '<p class="model-card-desc">' + m.description + '</p>' +
