@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Selection Guide — Providers</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <svg class="brand-icon" viewBox="0 0 32 32" width="28" height="28">
+                    <rect width="32" height="32" rx="8" fill="#e8853b"/>
+                    <path d="M8 16 L14 10 L14 14 L24 14 L24 18 L14 18 L14 22 Z" fill="white" opacity="0.9"/>
+                </svg>
+                <span>LLM Selection Guide</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Find Your LLM</a>
+                <a href="providers.html" class="nav-link active">Providers</a>
+                <a href="compare.html" class="nav-link">Compare</a>
+                <a href="models.html" class="nav-link">All Models</a>
+                <a href="resources.html" class="nav-link">Resources</a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+    <div class="mobile-menu-overlay">
+        <div class="mobile-menu">
+            <a href="index.html" class="mobile-link">Find Your LLM</a>
+            <a href="providers.html" class="mobile-link active">Providers</a>
+            <a href="compare.html" class="mobile-link">Compare</a>
+            <a href="models.html" class="mobile-link">All Models</a>
+            <a href="resources.html" class="mobile-link">Resources</a>
+        </div>
+    </div>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>AI Providers</h1>
+                <p>Strengths, trade-offs, and available models from each major provider.</p>
+            </div>
+        </section>
+        <section class="container">
+            <div class="providers-grid" id="providers-grid">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Model Detail Modal -->
+    <div class="modal-overlay" id="modelModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModelModal()">&times;</button>
+            <div class="modal-title-row">
+                <h2 id="modalModelName"></h2>
+                <span class="cost-badge" id="modalCostBadge"></span>
+            </div>
+            <p class="modal-provider" id="modalProvider"></p>
+            <p class="modal-description" id="modalOverview"></p>
+            <div class="modal-specs-grid" id="modalSpecs"></div>
+            <div class="modal-section" id="modalPricingSection">
+                <h3>Pricing</h3>
+                <div class="modal-pricing" id="modalPricing"></div>
+            </div>
+            <div class="modal-columns">
+                <div class="modal-section">
+                    <h3>Strengths</h3>
+                    <ul class="modal-strengths" id="modalStrengths"></ul>
+                </div>
+                <div class="modal-section">
+                    <h3>Limitations</h3>
+                    <ul class="modal-weaknesses" id="modalWeaknesses"></ul>
+                </div>
+            </div>
+            <div class="modal-section" id="modalUseCasesSection">
+                <h3>Best Use Cases</h3>
+                <div id="modalUseCases"></div>
+            </div>
+            <div class="modal-section" id="modalBenchmarksSection">
+                <h3>Benchmarks</h3>
+                <div class="modal-benchmarks" id="modalBenchmarks"></div>
+            </div>
+            <div class="modal-tags" id="modalTags"></div>
+            <div class="modal-section" id="modalSourcesSection">
+                <h3>Sources</h3>
+                <div class="modal-sources" id="modalSources"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <svg viewBox="0 0 32 32" width="20" height="20"><rect width="32" height="32" rx="8" fill="#e8853b"/><path d="M8 16 L14 10 L14 14 L24 14 L24 18 L14 18 L14 22 Z" fill="white" opacity="0.9"/></svg>
+                <span>LLM Selection Guide</span>
+            </div>
+            <div class="footer-links">
+                <a href="compare.html">Methodology</a>
+                <a href="resources.html">Resources</a>
+            </div>
+            <span class="footer-copy">&copy; 2026 Enterprise AI Team</span>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const grid = document.getElementById("providers-grid");
+        const providers = modelData.providers;
+        const models = modelData.models;
+        const providerKeys = Object.keys(providers);
+
+        function isNew(model) {
+            if (!model.specs?.releaseDate) return false;
+            const released = new Date(model.specs.releaseDate);
+            const threeMonthsAgo = new Date();
+            threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+            return released >= threeMonthsAgo;
+        }
+
+        grid.innerHTML = providerKeys.map(key => {
+            const p = providers[key];
+            const providerModels = models.filter(m => m.provider === key);
+            const provClass = getProviderClass(key);
+            const provAbbrev = getProviderAbbrev(key);
+
+            const modelsHtml = providerModels.map(m => {
+                const newBadge = isNew(m) ? ' <span class="badge badge-new" style="font-size:0.55rem;">NEW</span>' : '';
+                const priceLabel = formatCost(m);
+                const ctxLabel = formatTokenCount(m.contextWindow);
+                return `<div class="provider-model-item" onclick="openModelModal('${m.id}')" style="cursor:pointer;">
+                    <span>${m.name}${newBadge}</span>
+                    <span>${priceLabel} &middot; ${ctxLabel} ctx</span>
+                </div>`;
+            }).join("");
+
+            const strengthsHtml = (p.strengths || []).map(s => `<span class="strength-tag">${s}</span>`).join("");
+
+            const linksHtml = [
+                p.docsUrl ? `<a href="${p.docsUrl}" target="_blank" rel="noopener" style="font-size:0.75rem;color:var(--accent);text-decoration:none;">Docs &#8599;</a>` : '',
+                p.pricingUrl ? `<a href="${p.pricingUrl}" target="_blank" rel="noopener" style="font-size:0.75rem;color:var(--accent);text-decoration:none;">Pricing &#8599;</a>` : ''
+            ].filter(Boolean).join(' &nbsp; ');
+
+            return `
+            <div class="provider-card">
+                <div class="provider-card-header">
+                    <div class="provider-logo ${provClass}">${provAbbrev}</div>
+                    <div>
+                        <div class="provider-name">${p.displayName || p.name}</div>
+                        <div class="provider-tagline">${p.tagline}</div>
+                    </div>
+                </div>
+                <div class="provider-body">
+                    <div class="provider-strengths">
+                        <h4>Strengths</h4>
+                        <div class="strength-tags">${strengthsHtml}</div>
+                    </div>
+                    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:16px;">
+                        <strong style="color:var(--text-secondary);">Trade-offs:</strong> ${p.tradeoffs}
+                    </p>
+                    <div class="provider-models-list">
+                        <h4>Models (${providerModels.length})</h4>
+                        ${modelsHtml}
+                    </div>
+                    ${linksHtml ? `<div style="margin-top:12px;display:flex;gap:12px;">${linksHtml}</div>` : ''}
+                </div>
+            </div>`;
+        }).join("");
+    });
+    </script>
+</body>
+</html>

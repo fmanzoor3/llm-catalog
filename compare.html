@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Selection Guide — Compare</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <svg class="brand-icon" viewBox="0 0 32 32" width="28" height="28">
+                    <rect width="32" height="32" rx="8" fill="#e8853b"/>
+                    <path d="M8 16 L14 10 L14 14 L24 14 L24 18 L14 18 L14 22 Z" fill="white" opacity="0.9"/>
+                </svg>
+                <span>LLM Selection Guide</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Find Your LLM</a>
+                <a href="providers.html" class="nav-link">Providers</a>
+                <a href="compare.html" class="nav-link active">Compare</a>
+                <a href="models.html" class="nav-link">All Models</a>
+                <a href="resources.html" class="nav-link">Resources</a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+    <div class="mobile-menu-overlay">
+        <div class="mobile-menu">
+            <a href="index.html" class="mobile-link">Find Your LLM</a>
+            <a href="providers.html" class="mobile-link">Providers</a>
+            <a href="compare.html" class="mobile-link active">Compare</a>
+            <a href="models.html" class="mobile-link">All Models</a>
+            <a href="resources.html" class="mobile-link">Resources</a>
+        </div>
+    </div>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>Quick Compare</h1>
+                <p>The best model for each need — at a glance.</p>
+            </div>
+        </section>
+
+        <section class="container compare-section">
+            <!-- Quick Picks -->
+            <div class="quick-picks" id="quick-picks"></div>
+
+            <!-- By Use Case -->
+            <div class="category-group">
+                <h3>Best Model by Use Case</h3>
+                <div class="compare-table-wrapper">
+                    <table class="compare-table" id="usecase-table">
+                        <thead>
+                            <tr>
+                                <th>Use Case</th>
+                                <th>Best Model</th>
+                                <th>Provider</th>
+                                <th>Score</th>
+                                <th>Cost</th>
+                                <th>Context</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usecase-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Full Comparison -->
+            <div class="category-group">
+                <h3>All Models — Head to Head</h3>
+                <div class="compare-table-wrapper">
+                    <table class="compare-table" id="full-table">
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>Provider</th>
+                                <th>Coding</th>
+                                <th>Reasoning</th>
+                                <th>Chatbot</th>
+                                <th>Content</th>
+                                <th>Docs</th>
+                                <th>Cost</th>
+                                <th>Context</th>
+                            </tr>
+                        </thead>
+                        <tbody id="full-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Model Detail Modal -->
+    <div class="modal-overlay" id="modelModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModelModal()">&times;</button>
+            <div class="modal-title-row">
+                <h2 id="modalModelName"></h2>
+                <span class="cost-badge" id="modalCostBadge"></span>
+            </div>
+            <p class="modal-provider" id="modalProvider"></p>
+            <p class="modal-description" id="modalOverview"></p>
+            <div class="modal-specs-grid" id="modalSpecs"></div>
+            <div class="modal-section" id="modalPricingSection">
+                <h3>Pricing</h3>
+                <div class="modal-pricing" id="modalPricing"></div>
+            </div>
+            <div class="modal-columns">
+                <div class="modal-section">
+                    <h3>Strengths</h3>
+                    <ul class="modal-strengths" id="modalStrengths"></ul>
+                </div>
+                <div class="modal-section">
+                    <h3>Limitations</h3>
+                    <ul class="modal-weaknesses" id="modalWeaknesses"></ul>
+                </div>
+            </div>
+            <div class="modal-section" id="modalUseCasesSection">
+                <h3>Best Use Cases</h3>
+                <div id="modalUseCases"></div>
+            </div>
+            <div class="modal-section" id="modalBenchmarksSection">
+                <h3>Benchmarks</h3>
+                <div class="modal-benchmarks" id="modalBenchmarks"></div>
+            </div>
+            <div class="modal-tags" id="modalTags"></div>
+            <div class="modal-section" id="modalSourcesSection">
+                <h3>Sources</h3>
+                <div class="modal-sources" id="modalSources"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <svg viewBox="0 0 32 32" width="20" height="20"><rect width="32" height="32" rx="8" fill="#e8853b"/><path d="M8 16 L14 10 L14 14 L24 14 L24 18 L14 18 L14 22 Z" fill="white" opacity="0.9"/></svg>
+                <span>LLM Selection Guide</span>
+            </div>
+            <div class="footer-links">
+                <a href="compare.html">Methodology</a>
+                <a href="resources.html">Resources</a>
+            </div>
+            <span class="footer-copy">&copy; 2026 Enterprise AI Team</span>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const models = modelData.models;
+        const scoringConfig = modelData.scoringConfig;
+
+        // Quick picks using scoring engine
+        const picks = [
+            {
+                label: "Lowest Cost",
+                finder: () => {
+                    const apiModels = models.filter(m => m.pricing);
+                    return apiModels.sort((a, b) => getBlendedCost(a) - getBlendedCost(b))[0];
+                },
+                detail: m => formatCost(m)
+            },
+            {
+                label: "Best for Coding",
+                finder: () => {
+                    const ranked = rankModelsForUseCase("coding", "capability");
+                    return ranked[0]?.model;
+                },
+                detail: m => {
+                    const r = rankModelsForUseCase("coding", "capability")[0];
+                    return `Score: ${r?.capabilityScore || 'N/A'}`;
+                }
+            },
+            {
+                label: "Best Reasoning",
+                finder: () => {
+                    const ranked = rankModelsForUseCase("reasoning", "capability");
+                    return ranked[0]?.model;
+                },
+                detail: m => {
+                    const r = rankModelsForUseCase("reasoning", "capability")[0];
+                    return `Score: ${r?.capabilityScore || 'N/A'}`;
+                }
+            },
+            {
+                label: "Longest Context",
+                finder: () => [...models].sort((a, b) => (b.contextWindow || 0) - (a.contextWindow || 0))[0],
+                detail: m => formatTokenCount(m.contextWindow) + " tokens"
+            },
+            {
+                label: "Best Value",
+                finder: () => {
+                    const ranked = rankModelsForUseCase("coding", "cost");
+                    return ranked[0]?.model;
+                },
+                detail: m => "Quality/cost leader"
+            },
+            {
+                label: "Best All-Round",
+                finder: () => {
+                    const ranked = rankModelsForUseCase("coding", "best");
+                    return ranked[0]?.model;
+                },
+                detail: m => {
+                    const r = rankModelsForUseCase("coding", "best")[0];
+                    return `Overall: ${r?.overallScore || 'N/A'}`;
+                }
+            },
+            {
+                label: "Best Open Source",
+                finder: () => {
+                    const oss = models.filter(m => m.costTier === "self-hosted");
+                    if (oss.length === 0) return models[0];
+                    const ranked = oss.map(m => {
+                        const cap = computeCapabilityScore(m, "coding");
+                        return { model: m, score: cap.score };
+                    }).sort((a, b) => b.score - a.score);
+                    return ranked[0]?.model;
+                },
+                detail: m => m.name
+            },
+            {
+                label: "Best for Documents",
+                finder: () => {
+                    const ranked = rankModelsForUseCase("documents", "capability");
+                    return ranked[0]?.model;
+                },
+                detail: m => {
+                    const r = rankModelsForUseCase("documents", "capability")[0];
+                    return `Score: ${r?.capabilityScore || 'N/A'}`;
+                }
+            }
+        ];
+
+        const picksEl = document.getElementById("quick-picks");
+        picksEl.innerHTML = picks.map(p => {
+            const m = p.finder();
+            if (!m) return '';
+            return `
+            <div class="quick-pick-card" onclick="openModelModal('${m.id}')">
+                <div class="quick-pick-label">${p.label}</div>
+                <div class="quick-pick-model">${m.name}</div>
+                <div class="quick-pick-detail">${p.detail(m)}</div>
+            </div>`;
+        }).join("");
+
+        // Use-case table using scoring engine
+        const usecases = Object.keys(scoringConfig);
+        const ucTbody = document.getElementById("usecase-tbody");
+        ucTbody.innerHTML = usecases.map(uc => {
+            const ranked = rankModelsForUseCase(uc, "capability");
+            if (ranked.length === 0) return '';
+            const best = ranked[0];
+            const m = best.model;
+            const costClass = m.costTier === 'self-hosted' ? 'low' : m.costTier;
+            return `<tr onclick="openModelModal('${m.id}')" style="cursor:pointer;">
+                <td style="font-weight:600;">${scoringConfig[uc].name}</td>
+                <td class="model-name-cell">${m.name}</td>
+                <td>${getProviderName(m.provider)}</td>
+                <td class="winner-cell">${best.capabilityScore}</td>
+                <td><span class="cost-badge cost-${costClass}" style="font-size:0.7rem;">${getCostLabel(m.costTier)}</span></td>
+                <td>${formatTokenCount(m.contextWindow)}</td>
+            </tr>`;
+        }).join("");
+
+        // Full comparison table
+        const fullTbody = document.getElementById("full-tbody");
+        const ucKeys = ["coding", "reasoning", "chatbot", "content", "documents"];
+
+        // Compute average score across all use cases for each model
+        const modelScores = models.map(m => {
+            const scores = {};
+            let total = 0;
+            ucKeys.forEach(uc => {
+                const cap = computeCapabilityScore(m, uc);
+                scores[uc] = cap.score;
+                total += cap.score;
+            });
+            return { model: m, scores, avg: total / ucKeys.length };
+        }).sort((a, b) => b.avg - a.avg);
+
+        fullTbody.innerHTML = modelScores.map(item => {
+            const m = item.model;
+            const costClass = m.costTier === 'self-hosted' ? 'low' : m.costTier;
+            return `<tr onclick="openModelModal('${m.id}')" style="cursor:pointer;">
+                <td class="model-name-cell">${m.name}</td>
+                <td>${getProviderName(m.provider)}</td>
+                ${ucKeys.map(uc => `<td>${item.scores[uc] || '—'}</td>`).join('')}
+                <td><span class="cost-badge cost-${costClass}" style="font-size:0.7rem;">${getCostLabel(m.costTier)}</span></td>
+                <td>${formatTokenCount(m.contextWindow)}</td>
+            </tr>`;
+        }).join("");
+
+        // Scroll indicator
+        document.querySelectorAll(".compare-table-wrapper").forEach(wrapper => {
+            const check = () => {
+                wrapper.classList.toggle("has-scroll", wrapper.scrollWidth > wrapper.clientWidth && wrapper.scrollLeft < wrapper.scrollWidth - wrapper.clientWidth - 10);
+            };
+            check();
+            wrapper.addEventListener("scroll", check);
+            window.addEventListener("resize", check);
+        });
+    });
+    </script>
+</body>
+</html>
