@@ -26,6 +26,46 @@ For each provider, I used targeted searches combining:
 - Specific model names when known
 - "pricing" + "documentation" to verify commercial availability
 
+### 4. Cross-Referencing Strategy: Using Comparison Sites as Discovery Sources
+
+**The idea:** Rather than only checking each provider's blog for new releases, we cross-reference popular LLM comparison/aggregator websites to see which models they track. If a model appears on multiple comparison sites but is missing from our catalog, it's a signal we should evaluate it for inclusion.
+
+**Why this works:**
+- Comparison sites are incentivized to track every relevant model — their value depends on completeness
+- They often pick up new models faster than we can monitor every provider individually
+- Seeing which models multiple independent sites agree on helps filter signal from noise
+- It catches models from providers we might not be actively monitoring (e.g., xAI/Grok, Zhipu/GLM)
+
+**Reference sites for cross-referencing:**
+
+| Site | URL | What It Tracks | Update Frequency |
+|------|-----|----------------|------------------|
+| **Artificial Analysis** | [artificialanalysis.ai](https://artificialanalysis.ai/leaderboards/models) | 100+ models with pricing, benchmarks, speed metrics | Every 72 hours |
+| **Arena.ai** (formerly LMArena) | [arena.ai/leaderboard](https://arena.ai/leaderboard) | Human preference rankings via blind voting | Continuous |
+| **llm-stats.com** | [llm-stats.com](https://llm-stats.com) | Model comparisons, multiple benchmark leaderboards | Regularly |
+
+**How to use this strategy:**
+
+1. **Periodically visit** the comparison sites above (monthly or when doing updates)
+2. **Compare their model lists** against our `data/models.json`
+3. **Identify gaps** — models they track that we don't have
+4. **Evaluate each gap** against our inclusion criteria (API available, production ready, enterprise viable, not deprecated)
+5. **Add qualifying models** to our catalog with proper verification from official sources
+6. **Document excluded models** in the "Models NOT to Add" section with reasoning
+
+**Example findings (Feb 2026):**
+Cross-referencing revealed these models appear on multiple comparison sites but are absent from our catalog:
+- **Grok 4 / 4.1** (xAI) — Arena.ai #3, Artificial Analysis, llm-stats
+- **GPT-OSS 120B / 20B** (OpenAI) — Artificial Analysis, llm-stats
+- **GLM-4.6** (Zhipu AI) — llm-stats
+- **Gemma 3** (Google) — Artificial Analysis
+- **Amazon Nova** series (AWS) — Artificial Analysis
+- **Magistral Medium** (Mistral) — Artificial Analysis
+
+Each should be evaluated against our inclusion criteria before adding.
+
+**Key principle:** These sites are discovery tools, not sources of truth. Always verify model details (pricing, specs, benchmarks) against official provider documentation before adding to our catalog.
+
 ---
 
 ## Research Findings by Provider

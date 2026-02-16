@@ -91,7 +91,13 @@ python auto_update.py
 - [ ] [Vellum LLM Leaderboard](https://www.vellum.ai/llm-leaderboard) - Check benchmark scores
 - [ ] [LMArena](https://lmarena.ai/) - Check human preference rankings
 
-#### 2. Check for New Model Releases
+#### 2. Cross-Reference Comparison Sites for New Models
+- [ ] [Artificial Analysis](https://artificialanalysis.ai/leaderboards/models) - Compare their model list against ours
+- [ ] [Arena.ai Leaderboard](https://arena.ai/leaderboard) - Check for new models in rankings
+- [ ] [llm-stats.com](https://llm-stats.com) - Check for models we're missing
+- Evaluate any gaps against our inclusion criteria (see RESEARCH_NOTES.md §4)
+
+#### 3. Check Provider Blogs for New Releases
 - [ ] [OpenAI Blog](https://openai.com/blog/) - New GPT models?
 - [ ] [Anthropic News](https://www.anthropic.com/news) - New Claude models?
 - [ ] [Google AI Blog](https://blog.google/technology/ai/) - New Gemini models?

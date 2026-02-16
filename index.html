@@ -8,179 +8,147 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         /* Focus styles for accessibility */
         :focus-visible {
-            outline: 2px solid #00d4ff;
+            outline: 2px solid #60a5fa;
             outline-offset: 2px;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
-            color: #e0e0e0;
+            background: #111827;
+            color: #d1d5db;
             min-height: 100vh;
             line-height: 1.6;
         }
         /* Skip link for keyboard users */
         .skip-link {
             position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
-            background: #00d4ff; color: #1a1a2e; padding: 0.75rem 1.5rem;
+            background: #60a5fa; color: #111827; padding: 0.75rem 1.5rem;
             border-radius: 0 0 8px 8px; z-index: 9999; font-weight: 600;
             text-decoration: none; transition: top 0.2s;
         }
         .skip-link:focus { top: 0; }
         .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-        header { text-align: center; margin-bottom: 3rem; padding: 2rem 0; }
+        header {
+            display: flex; align-items: baseline; gap: 1rem; margin-bottom: 0; padding: 0.75rem 0 0 0; flex-wrap: wrap;
+        }
         header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #f9fafb;
+            margin-bottom: 0;
+            white-space: nowrap;
+            letter-spacing: -0.01em;
         }
-        .subtitle { color: #888; font-size: 1.1rem; margin-bottom: 0.5rem; }
-        .last-updated { color: #666; font-size: 0.85rem; }
+        .subtitle { color: #6b7280; font-size: 0.85rem; margin-bottom: 0; }
+        .last-updated { color: #4b5563; font-size: 0.75rem; margin-left: auto; }
         .finder-section {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 0;
         }
-        .finder-section h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
-        .filter-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
+        .filter-area {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 1.5rem;
             margin-bottom: 1.5rem;
         }
+        .filter-row-primary { margin-bottom: 1rem; }
+        .filter-row-secondary { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .filter-group label {
             display: block;
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 0.5rem;
+            font-size: 0.7rem;
+            color: #6b7280;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         .filter-group select {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.7rem 0.85rem;
             border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-            font-size: 0.95rem;
-            cursor: pointer;
-        }
-        .filter-group select option { background: #1a1a2e; color: #fff; }
-        .results { margin-top: 1.5rem; }
-        .results h3 { margin-bottom: 1rem; font-size: 1.2rem; color: #00d4ff; }
-        .recommendation-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1rem;
-        }
-        .rec-card {
-            background: rgba(255,255,255,0.06);
-            border-radius: 12px;
-            padding: 1.5rem;
             border: 1px solid rgba(255,255,255,0.08);
-            transition: transform 0.2s;
-        }
-        .rec-card:hover { transform: translateY(-2px); }
-        .rec-card.top-pick { border-color: #00d4ff; box-shadow: 0 0 20px rgba(0,212,255,0.1); }
-        .rec-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-        .badge {
-            background: #00d4ff;
-            color: #1a1a2e;
-            font-size: 0.65rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-weight: 700;
-            vertical-align: middle;
-        }
-        .rec-card .provider { color: #888; font-size: 0.85rem; margin-bottom: 0.5rem; }
-        .rec-card .why { font-size: 0.9rem; color: #aaa; margin-bottom: 0.75rem; line-height: 1.5; }
-        .cost-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        .cost-low { background: rgba(34,197,94,0.2); color: #22c55e; }
-        .cost-mid { background: rgba(234,179,8,0.2); color: #eab308; }
-        .cost-high { background: rgba(239,68,68,0.2); color: #ef4444; }
-
-        /* Enhanced recommendation cards */
-        .rec-card .rec-source {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            font-size: 0.75rem;
-            color: #00d4ff;
-            text-decoration: none;
-            margin-left: 0.75rem;
-            opacity: 0.8;
-            transition: opacity 0.2s;
-        }
-        .rec-card .rec-source:hover { opacity: 1; text-decoration: underline; }
-        .rec-card .rec-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        .show-more-btn {
-            display: block;
-            width: 100%;
-            padding: 0.75rem 1rem;
-            margin-top: 1rem;
-            background: rgba(0,212,255,0.1);
-            border: 1px solid rgba(0,212,255,0.3);
-            border-radius: 8px;
-            color: #00d4ff;
+            background: rgba(255,255,255,0.04);
+            color: #e5e7eb;
             font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.2s;
+            font-family: inherit;
         }
-        .show-more-btn:hover {
-            background: rgba(0,212,255,0.2);
-            border-color: rgba(0,212,255,0.5);
+        .filter-group select option { background: #1f2937; color: #e5e7eb; }
+        .results { margin-top: 0; min-height: 400px; }
+        .results-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+        .results h3 { font-size: 0.9rem; color: #d1d5db; font-weight: 600; margin: 0; }
+        /* Recommendation table */
+        .rec-table { width: 100%; border-collapse: collapse; }
+        .rec-table th {
+            text-align: left; padding: 0.5rem 0.75rem; font-size: 0.7rem; color: #6b7280;
+            text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
-        .rec-card.hidden-rec { display: none; }
-        .rec-card.hidden-rec.show { display: block; }
+        .rec-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem; }
+        .rec-table tr { cursor: pointer; transition: background 0.15s; }
+        .rec-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+        .rec-table .rank-cell { width: 2rem; text-align: center; color: #6b7280; font-weight: 600; font-size: 0.8rem; }
+        .rec-table .rank-cell.top { color: #60a5fa; }
+        .rec-table .model-cell { font-weight: 600; color: #f9fafb; }
+        .rec-table .model-cell .provider-sub { font-weight: 400; color: #6b7280; font-size: 0.75rem; }
+        .rec-table .score-cell { width: 5rem; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+        .rec-table .score-cell .score-val { font-size: 0.9rem; }
+        .rec-table .score-cell .score-bar-mini { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; margin-top: 3px; }
+        .rec-table .score-cell .score-bar-mini .fill { height: 100%; border-radius: 2px; }
+        .rec-table .score-cell .fill.quality { background: #60a5fa; }
+        .rec-table .score-cell .fill.overall { background: #a78bfa; }
+        .rec-table .score-cell .fill.efficiency { background: #34d399; }
+        .rec-table .cost-cell { width: 3rem; text-align: center; }
+        .rec-table .drivers-cell { color: #9ca3af; font-size: 0.75rem; }
+        .badge {
+            background: #60a5fa; color: #111827; font-size: 0.6rem; padding: 0.1rem 0.4rem;
+            border-radius: 3px; font-weight: 600; vertical-align: middle; margin-left: 0.5rem;
+        }
+        .cost-badge {
+            display: inline-block; padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.7rem; font-weight: 600;
+        }
+        .cost-low { background: rgba(34,197,94,0.15); color: #22c55e; }
+        .cost-mid { background: rgba(234,179,8,0.15); color: #eab308; }
+        .cost-high { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .show-more-btn {
+            display: block; width: 100%; padding: 0.6rem; margin-top: 0.5rem;
+            background: none; border: 1px solid rgba(255,255,255,0.06); border-radius: 6px;
+            color: #6b7280; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+        }
+        .show-more-btn:hover { color: #d1d5db; border-color: rgba(255,255,255,0.15); }
+        .rec-table .hidden-rec { display: none; }
+        .rec-table .hidden-rec.show { display: table-row; }
 
         /* Score display in recommendation cards */
         .score-section { margin: 0.75rem 0; }
         .score-bar { height: 20px; background: rgba(255,255,255,0.08); border-radius: 10px; position: relative; overflow: hidden; margin-bottom: 4px; }
         .score-bar .score-fill { height: 100%; border-radius: 10px; transition: width 0.5s ease; }
-        .score-bar.capability .score-fill { background: linear-gradient(90deg, #00d4ff, #0099cc); }
-        .score-bar.overall .score-fill { background: linear-gradient(90deg, #a78bfa, #7c3aed); }
-        .score-bar.value .score-fill { background: linear-gradient(90deg, #22c55e, #16a34a); }
+        .score-bar.capability .score-fill { background: #60a5fa; }
+        .score-bar.overall .score-fill { background: #a78bfa; }
+        .score-bar.value .score-fill { background: #34d399; }
         .score-label { position: absolute; right: 8px; top: 1px; font-size: 0.75rem; font-weight: 600; color: #fff; line-height: 20px; }
         .score-label-left { position: absolute; left: 8px; top: 1px; font-size: 0.7rem; color: rgba(255,255,255,0.7); line-height: 20px; }
         .score-drivers { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
         .driver-chip { font-size: 0.7rem; padding: 2px 6px; background: rgba(255,255,255,0.08); border-radius: 4px; color: #aaa; }
         .score-incomplete { font-size: 0.65rem; color: #666; margin-left: 4px; }
         .priority-desc { display: block; margin-top: 0.35rem; color: #888; font-size: 0.75rem; line-height: 1.3; }
-        .score-legend { font-size: 0.8rem; color: #888; margin-bottom: 1rem; line-height: 1.6; display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; }
+        .score-legend { font-size: 0.75rem; color: #6b7280; margin: 0; line-height: 1.4; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
         .score-legend .legend-item { display: inline-flex; align-items: center; gap: 0.4rem; }
         .score-legend .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-        .score-legend .legend-dot.quality { background: #00d4ff; }
+        .score-legend .legend-dot.quality { background: #60a5fa; }
         .score-legend .legend-dot.overall { background: #a78bfa; }
-        .score-legend .legend-dot.efficiency { background: #22c55e; }
+        .score-legend .legend-dot.efficiency { background: #34d399; }
 
-        .providers-section { margin-bottom: 3rem; }
-        .providers-section h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
+        .providers-section { margin-bottom: 0; }
         .provider-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
         }
         .provider-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 1.5rem;
-            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid rgba(255,255,255,0.06);
         }
         .provider-card h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
         .tagline { color: #888; font-size: 0.85rem; margin-bottom: 1rem; }
@@ -207,43 +175,42 @@
         }
         .models { display: flex; flex-wrap: wrap; gap: 0.5rem; }
         .model-tag {
-            font-size: 0.8rem;
-            padding: 0.3rem 0.6rem;
-            border-radius: 6px;
-            background: rgba(0,212,255,0.15);
-            color: #00d4ff;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            background: rgba(96,165,250,0.1);
+            color: #93bbfd;
         }
-        .comparison-section { margin-bottom: 3rem; }
-        .comparison-section h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
+        .comparison-section { margin-bottom: 0; }
         .comparison-table {
             width: 100%;
             border-collapse: collapse;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
             overflow: visible;
         }
         .comparison-table thead { position: sticky; top: 0; z-index: 10; }
         .comparison-table th {
-            padding: 1rem;
+            padding: 0.85rem 1rem;
             text-align: left;
-            background: rgba(30,30,58,0.98);
-            backdrop-filter: blur(8px);
-            font-size: 0.85rem;
-            color: #888;
+            background: rgba(17,24,39,0.95);
+            font-size: 0.75rem;
+            color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            font-weight: 500;
         }
         .comparison-table td {
             padding: 0.75rem 1rem;
             border-top: 1px solid rgba(255,255,255,0.06);
             font-size: 0.9rem;
         }
-        .comparison-table td.best { color: #00d4ff; font-weight: 600; }
+        .comparison-table td.best { color: #60a5fa; font-weight: 600; }
         .comparison-row { cursor: pointer; transition: background 0.2s; }
         .comparison-row:hover { background: rgba(255,255,255,0.03); }
         .comparison-row td:first-child { position: relative; padding-left: 2rem; }
         .comparison-row td:first-child::before {
-            content: "+"; position: absolute; left: 0.75rem; color: #00d4ff;
+            content: "+"; position: absolute; left: 0.75rem; color: #60a5fa;
             font-weight: bold; font-size: 1.1rem; transition: transform 0.2s;
         }
         .comparison-row.expanded td:first-child::before { content: "−"; }
@@ -260,14 +227,14 @@
             margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;
         }
         .detail-header h4 {
-            font-size: 1.1rem; color: #00d4ff; margin: 0;
+            font-size: 1.1rem; color: #60a5fa; margin: 0;
         }
         .detail-header p { color: #888; font-size: 0.85rem; margin: 0.25rem 0 0 0; max-width: 500px; }
         .benchmark-explainer {
-            background: rgba(0,212,255,0.08); border-radius: 8px; padding: 0.75rem 1rem;
-            font-size: 0.8rem; color: #aaa; border-left: 3px solid #00d4ff;
+            background: rgba(96,165,250,0.08); border-radius: 8px; padding: 0.75rem 1rem;
+            font-size: 0.8rem; color: #aaa; border-left: 3px solid #60a5fa;
         }
-        .benchmark-explainer strong { color: #00d4ff; }
+        .benchmark-explainer strong { color: #60a5fa; }
         .ranking-list { list-style: none; padding: 0; margin: 0; }
         .ranking-item {
             display: grid; grid-template-columns: 2.5rem 1fr auto;
@@ -275,15 +242,15 @@
             border-radius: 10px; margin-bottom: 0.75rem; align-items: center;
             cursor: pointer; transition: all 0.2s; border: 1px solid transparent;
         }
-        .ranking-item:hover { border-color: rgba(0,212,255,0.3); transform: translateX(4px); }
+        .ranking-item:hover { border-color: rgba(96,165,250,0.3); transform: translateX(4px); }
         .ranking-number {
             width: 2.5rem; height: 2.5rem; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-weight: 700; font-size: 1rem;
         }
-        .ranking-number.gold { background: linear-gradient(135deg, #ffd700, #b8860b); color: #1a1a2e; }
-        .ranking-number.silver { background: linear-gradient(135deg, #c0c0c0, #808080); color: #1a1a2e; }
-        .ranking-number.bronze { background: linear-gradient(135deg, #cd7f32, #8b4513); color: #1a1a2e; }
+        .ranking-number.gold { background: linear-gradient(135deg, #ffd700, #b8860b); color: #111827; }
+        .ranking-number.silver { background: linear-gradient(135deg, #c0c0c0, #808080); color: #111827; }
+        .ranking-number.bronze { background: linear-gradient(135deg, #cd7f32, #8b4513); color: #111827; }
         .ranking-number.other { background: rgba(255,255,255,0.1); color: #888; }
         .ranking-info h5 { font-size: 0.95rem; color: #fff; margin: 0 0 0.25rem 0; }
         .ranking-info .provider-tag { font-size: 0.75rem; color: #888; }
@@ -295,7 +262,7 @@
         }
         .stat-chip .stat-label { font-size: 0.6rem; color: #666; text-transform: uppercase; }
         .stat-chip .stat-value { font-size: 0.85rem; font-weight: 600; color: #fff; }
-        .stat-chip .stat-value.highlight { color: #00d4ff; }
+        .stat-chip .stat-value.highlight { color: #60a5fa; }
         /* Clickable stat chips with source links */
         a.stat-chip-link {
             text-decoration: none; display: block;
@@ -303,35 +270,36 @@
             cursor: pointer;
         }
         a.stat-chip-link:hover {
-            background: rgba(0,212,255,0.15); border-color: rgba(0,212,255,0.4);
+            background: rgba(96,165,250,0.15); border-color: rgba(96,165,250,0.4);
             transform: translateY(-2px);
         }
         a.stat-chip-link .source-icon {
             font-size: 0.5rem; opacity: 0.5; margin-left: 2px;
             transition: opacity 0.2s;
         }
-        a.stat-chip-link:hover .source-icon { opacity: 1; color: #00d4ff; }
+        a.stat-chip-link:hover .source-icon { opacity: 1; color: #60a5fa; }
         .links-section {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             padding: 2rem;
             background: rgba(255,255,255,0.03);
             border-radius: 16px;
         }
-        .links-section h2 { margin-bottom: 0.5rem; }
+        .links-section h2 { margin-bottom: 0.5rem; font-size: 1.3rem; }
         .links-section p { color: #888; margin-bottom: 1.5rem; }
         .link-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
         .link-btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.6rem 1.25rem;
             border-radius: 8px;
-            background: rgba(0,212,255,0.15);
-            color: #00d4ff;
+            background: rgba(96,165,250,0.08);
+            color: #93bbfd;
             text-decoration: none;
             transition: all 0.2s;
-            border: 1px solid rgba(0,212,255,0.3);
+            border: 1px solid rgba(96,165,250,0.15);
+            font-size: 0.9rem;
         }
-        .link-btn:hover { background: rgba(0,212,255,0.25); transform: translateY(-1px); }
-        .references-section { margin-bottom: 3rem; }
+        .link-btn:hover { background: rgba(96,165,250,0.15); border-color: rgba(96,165,250,0.3); }
+        .references-section { margin-bottom: 0; }
         .references-section h2 { margin-bottom: 1.5rem; font-size: 1.5rem; }
         .ref-grid {
             display: grid;
@@ -339,11 +307,12 @@
             gap: 1.5rem;
         }
         .ref-group {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
             padding: 1.25rem;
+            border: 1px solid rgba(255,255,255,0.06);
         }
-        .ref-group h3 { font-size: 1rem; margin-bottom: 0.75rem; color: #00d4ff; }
+        .ref-group h3 { font-size: 1rem; margin-bottom: 0.75rem; color: #60a5fa; }
         .ref-group ul { list-style: none; }
         .ref-group li { margin-bottom: 0.5rem; }
         .ref-group a {
@@ -352,24 +321,24 @@
             font-size: 0.85rem;
             transition: color 0.2s;
         }
-        .ref-group a:hover { color: #00d4ff; }
+        .ref-group a:hover { color: #60a5fa; }
         footer {
             text-align: center;
-            padding: 2rem;
-            color: #666;
-            font-size: 0.85rem;
+            padding: 1.5rem;
+            color: #4b5563;
+            font-size: 0.8rem;
             border-top: 1px solid rgba(255,255,255,0.06);
+            margin-top: 2rem;
         }
         .no-results { color: #666; font-style: italic; text-align: center; padding: 2rem; }
 
         /* Clickable model styling */
         .clickable-model { cursor: pointer; transition: color 0.2s; }
-        .clickable-model:hover { color: #00d4ff; }
+        .clickable-model:hover { color: #60a5fa; }
 
         /* All Models Section */
-        .all-models-section { margin-bottom: 3rem; }
-        .all-models-section h2 { margin-bottom: 0.5rem; font-size: 1.5rem; }
-        .section-subtitle { color: #888; margin-bottom: 1.5rem; }
+        .all-models-section { margin-bottom: 0; }
+        .section-subtitle { color: #888; margin-bottom: 1.5rem; font-size: 0.9rem; }
         .model-controls { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
         .model-search {
             flex: 1; min-width: 200px; max-width: 300px; padding: 0.6rem 1rem;
@@ -377,12 +346,12 @@
             background: rgba(255,255,255,0.08); color: #fff; font-size: 0.9rem;
         }
         .model-search::placeholder { color: #666; }
-        .model-search:focus { outline: none; border-color: #00d4ff; background: rgba(255,255,255,0.1); }
+        .model-search:focus { outline: none; border-color: #60a5fa; background: rgba(255,255,255,0.1); }
         .model-sort {
             padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
             background: rgba(255,255,255,0.08); color: #fff; font-size: 0.85rem; cursor: pointer;
         }
-        .model-sort option { background: #1a1a2e; }
+        .model-sort option { background: #111827; }
         .model-count { color: #666; font-size: 0.85rem; margin-left: auto; }
         .model-filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
         .filter-chip {
@@ -390,22 +359,22 @@
             background: transparent; color: #888; cursor: pointer; font-size: 0.85rem;
             transition: all 0.2s;
         }
-        .filter-chip:hover { border-color: #00d4ff; color: #00d4ff; }
-        .filter-chip.active { background: #00d4ff; color: #1a1a2e; border-color: #00d4ff; font-weight: 600; }
+        .filter-chip:hover { border-color: #60a5fa; color: #60a5fa; }
+        .filter-chip.active { background: #60a5fa; color: #111827; border-color: #60a5fa; font-weight: 600; }
         .all-models-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
         .model-card {
-            background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1.25rem;
-            border: 1px solid rgba(255,255,255,0.08); cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            background: rgba(255,255,255,0.03); border-radius: 10px; padding: 1.25rem;
+            border: 1px solid rgba(255,255,255,0.06); cursor: pointer;
+            transition: border-color 0.2s;
         }
-        .model-card:hover { transform: translateY(-2px); border-color: rgba(0,212,255,0.3); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .model-card:hover { border-color: rgba(255,255,255,0.15); }
         .model-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
         .model-card-header h4 { font-size: 1.05rem; color: #fff; }
         .model-card-provider { font-size: 0.8rem; color: #888; margin-bottom: 0.5rem; }
         .model-card-desc { font-size: 0.85rem; color: #aaa; margin-bottom: 0.75rem; line-height: 1.4; }
         .model-card-meta { display: flex; gap: 0.75rem; font-size: 0.75rem; color: #666; margin-bottom: 0.75rem; }
         .model-card-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-        .mini-tag { font-size: 0.7rem; padding: 0.15rem 0.45rem; border-radius: 4px; background: rgba(0,212,255,0.1); color: #00d4ff; }
+        .mini-tag { font-size: 0.7rem; padding: 0.15rem 0.45rem; border-radius: 4px; background: rgba(96,165,250,0.1); color: #60a5fa; }
 
         /* Modal */
         .model-modal-overlay {
@@ -415,7 +384,7 @@
         }
         .model-modal-overlay.active { display: flex; }
         .model-modal {
-            background: linear-gradient(135deg, #1e1e3a 0%, #1a2040 100%);
+            background: #1f2937;
             border: 1px solid rgba(255,255,255,0.12); border-radius: 20px;
             max-width: 800px; width: 100%; padding: 2.5rem; position: relative;
             margin: 2rem auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
@@ -430,8 +399,7 @@
         .modal-close:hover { color: #fff; }
         .modal-title-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.25rem; flex-wrap: wrap; }
         .modal-title-row h2 {
-            font-size: 1.8rem; background: linear-gradient(90deg, #00d4ff, #7b2cbf);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            font-size: 1.5rem; color: #f9fafb; font-weight: 600;
         }
         .modal-provider { color: #888; font-size: 0.95rem; margin-bottom: 1rem; }
         .modal-description { color: #ccc; font-size: 1rem; line-height: 1.7; margin-bottom: 1.5rem; }
@@ -445,7 +413,7 @@
         .modal-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1.5rem; }
         .modal-section { margin-bottom: 1.5rem; }
         .modal-section h3 {
-            font-size: 1.05rem; color: #00d4ff; margin-bottom: 0.75rem;
+            font-size: 1.05rem; color: #60a5fa; margin-bottom: 0.75rem;
             padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);
         }
         .modal-strengths, .modal-weaknesses { list-style: none; padding: 0; }
@@ -480,19 +448,19 @@
         }
         .modal-tag {
             font-size: 0.8rem; padding: 0.3rem 0.7rem; border-radius: 6px;
-            background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3);
+            background: rgba(96,165,250,0.15); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3);
         }
         .modal-sources-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08); }
         .modal-sources { display: flex; flex-wrap: wrap; gap: 0.75rem; }
         .source-link {
             display: inline-flex; align-items: center; gap: 0.4rem;
             font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 8px;
-            background: rgba(255,255,255,0.06); color: #00d4ff;
+            background: rgba(255,255,255,0.06); color: #60a5fa;
             text-decoration: none; border: 1px solid transparent;
             transition: all 0.2s ease;
         }
         .source-link:hover {
-            background: rgba(0,212,255,0.15); border-color: rgba(0,212,255,0.4);
+            background: rgba(96,165,250,0.15); border-color: rgba(96,165,250,0.4);
             transform: translateY(-2px);
         }
         .source-link .source-icon { font-size: 0.75rem; opacity: 0.7; }
@@ -505,21 +473,19 @@
         }
         .methodology-modal-overlay.active { display: flex; }
         .methodology-modal {
-            background: linear-gradient(135deg, #1e1e3a 0%, #1a2040 100%);
+            background: #1f2937;
             border: 1px solid rgba(255,255,255,0.12); border-radius: 20px;
             max-width: 900px; width: 100%; padding: 2.5rem; position: relative;
             margin: 2rem auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             animation: modalSlideIn 0.25s ease-out; max-height: 90vh; overflow-y: auto;
         }
         .methodology-modal h2 {
-            font-size: 1.8rem; margin-bottom: 0.5rem;
-            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            font-size: 1.5rem; margin-bottom: 0.5rem; color: #f9fafb; font-weight: 600;
         }
         .methodology-modal .modal-subtitle { color: #888; margin-bottom: 2rem; }
         .methodology-section { margin-bottom: 2rem; }
         .methodology-section h3 {
-            font-size: 1.15rem; color: #00d4ff; margin-bottom: 1rem;
+            font-size: 1.15rem; color: #60a5fa; margin-bottom: 1rem;
             padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         .methodology-section p { color: #ccc; line-height: 1.7; margin-bottom: 0.75rem; }
@@ -550,18 +516,21 @@
         .methodology-table td {
             padding: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); color: #ccc;
         }
-        .methodology-table td:first-child { color: #00d4ff; font-weight: 500; }
+        .methodology-table td:first-child { color: #60a5fa; font-weight: 500; }
         .footer-link {
             color: #888; cursor: pointer; text-decoration: underline;
             text-underline-offset: 3px; transition: color 0.2s;
         }
-        .footer-link:hover { color: #00d4ff; }
+        .footer-link:hover { color: #60a5fa; }
 
         @media (max-width: 768px) {
             .container { padding: 1rem; }
-            header h1 { font-size: 1.8rem; }
-            .filter-grid { grid-template-columns: 1fr; }
-            .recommendation-cards { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.2rem; }
+            header { gap: 0.5rem; }
+            .subtitle { display: none; }
+            .filter-row-secondary { grid-template-columns: 1fr; }
+            .rec-table .drivers-cell { display: none; }
+            .rec-table th, .rec-table td { padding: 0.4rem 0.5rem; font-size: 0.8rem; }
             .provider-grid { grid-template-columns: 1fr; }
             .comparison-table { font-size: 0.8rem; }
             .comparison-table th, .comparison-table td { padding: 0.5rem; }
@@ -582,18 +551,16 @@
             .ranking-item { grid-template-columns: 2rem 1fr; gap: 0.75rem; padding: 0.75rem; }
             .ranking-stats { display: none; }
             .ranking-info .ranking-reason { font-size: 0.75rem; }
+            .tab-btn { padding: 0.6rem 1rem; font-size: 0.85rem; }
         }
 
-        /* Back to top button */
-        .back-to-top {
-            position: fixed; bottom: 2rem; right: 2rem; width: 48px; height: 48px;
-            border-radius: 50%; background: rgba(0,212,255,0.9); color: #1a1a2e;
-            border: none; cursor: pointer; font-size: 1.5rem; display: none;
-            align-items: center; justify-content: center; z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s;
-        }
-        .back-to-top:hover { transform: scale(1.1); background: #00d4ff; }
-        .back-to-top.visible { display: flex; }
+        /* Tab navigation */
+        .tab-nav { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.08); margin: 0.5rem 0 1.5rem 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .tab-btn { background: none; border: none; color: #6b7280; padding: 0.7rem 1.25rem; font-size: 0.9rem; font-family: inherit; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; transition: color 0.2s, border-color 0.2s; }
+        .tab-btn:hover { color: #d1d5db; }
+        .tab-btn.active { color: #f9fafb; border-bottom-color: #60a5fa; font-weight: 500; }
+        [data-tab-panel] { display: none; }
+        [data-tab-panel].active { display: block; }
     </style>
 </head>
 <body>
@@ -605,53 +572,64 @@
             <p class="last-updated" id="lastUpdated" aria-live="polite">Loading...</p>
         </header>
 
+        <nav class="tab-nav" role="tablist" aria-label="Main sections">
+            <button class="tab-btn active" data-tab="finder" role="tab" aria-selected="true">Find Your LLM</button>
+            <button class="tab-btn" data-tab="providers" role="tab" aria-selected="false">Providers</button>
+            <button class="tab-btn" data-tab="compare" role="tab" aria-selected="false">Compare</button>
+            <button class="tab-btn" data-tab="models" role="tab" aria-selected="false">All Models</button>
+            <button class="tab-btn" data-tab="resources" role="tab" aria-selected="false">Resources</button>
+        </nav>
+
         <!-- Finder Section -->
-        <section class="finder-section" aria-labelledby="finder-heading">
-            <h2 id="finder-heading">Find Your LLM</h2>
-            <div class="filter-grid" role="group" aria-label="Filter options">
-                <div class="filter-group">
-                    <label for="useCase">What are you building?</label>
-                    <select id="useCase" aria-describedby="rec-description"><option value="">Select a use case...</option></select>
+        <section class="finder-section active" data-tab-panel="finder" aria-labelledby="finder-heading">
+            <div class="filter-area" role="group" aria-label="Filter options">
+                <div class="filter-row-primary">
+                    <div class="filter-group">
+                        <label for="useCase">Project Use Case</label>
+                        <select id="useCase" aria-describedby="rec-description"><option value="">Select Use Case</option></select>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label for="priority">What matters most?</label>
-                    <select id="priority">
-                        <option value="best">Overall Best</option>
-                        <option value="quality">Highest Quality</option>
-                        <option value="cost">Best Value</option>
-                        <option value="speed">Fastest Response</option>
-                        <option value="privacy">Data Privacy (Self-hosted)</option>
-                    </select>
-                    <small class="priority-desc" id="priorityDesc">Balanced ranking combining quality and cost efficiency</small>
-                </div>
-                <div class="filter-group">
-                    <label for="budget">Budget</label>
-                    <select id="budget">
-                        <option value="">Any budget</option>
-                        <option value="low">Budget-conscious ($)</option>
-                        <option value="mid">Mid-range ($$)</option>
-                        <option value="high">Premium ($$$)</option>
-                    </select>
+                <div class="filter-row-secondary">
+                    <div class="filter-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority">
+                            <option value="best">Overall Best</option>
+                            <option value="quality">Highest Quality</option>
+                            <option value="cost">Best Value</option>
+                            <option value="speed">Fastest Response</option>
+                            <option value="privacy">Data Privacy (Self-hosted)</option>
+                        </select>
+                        <small class="priority-desc" id="priorityDesc">Balanced ranking combining quality and cost efficiency</small>
+                    </div>
+                    <div class="filter-group">
+                        <label for="budget">Budget</label>
+                        <select id="budget">
+                            <option value="">Any budget</option>
+                            <option value="low">Budget-conscious ($)</option>
+                            <option value="mid">Mid-range ($$)</option>
+                            <option value="high">Premium ($$$)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="results" id="results" aria-live="polite">
-                <h3 id="rec-description">Recommendations</h3>
-                <div class="score-legend" id="scoreLegend"></div>
-                <div class="recommendation-cards" id="recCards" role="list">
+                <div class="results-header">
+                    <h3 id="rec-description">Top Recommendations</h3>
+                    <div class="score-legend" id="scoreLegend"></div>
+                </div>
+                <div id="recCards">
                     <p class="no-results">Select a use case to see recommendations</p>
                 </div>
             </div>
         </section>
 
         <!-- Provider Overview -->
-        <section class="providers-section">
-            <h2>Provider Overview</h2>
+        <section class="providers-section" data-tab-panel="providers">
             <div class="provider-grid" id="providerGrid"></div>
         </section>
 
         <!-- Quick Comparison -->
-        <section class="comparison-section">
-            <h2>Quick Comparison: Best For Each Need</h2>
+        <section class="comparison-section" data-tab-panel="compare">
             <p class="section-subtitle">Click any row to see the full ranking with explanations</p>
             <table class="comparison-table" id="comparisonTable">
                 <thead><tr><th>Need</th><th>Best Choice</th><th>Runner Up</th><th>Budget Option</th></tr></thead>
@@ -660,8 +638,7 @@
         </section>
 
         <!-- All Models -->
-        <section class="all-models-section">
-            <h2>All Models</h2>
+        <section class="all-models-section" data-tab-panel="models">
             <p class="section-subtitle">Click any model for detailed information</p>
             <div class="model-controls">
                 <input type="text" class="model-search" id="modelSearch" placeholder="Search models...">
@@ -687,22 +664,23 @@
             <div class="all-models-grid" id="allModelsGrid" role="list" aria-live="polite"></div>
         </section>
 
-        <!-- External Links -->
-        <section class="links-section">
-            <h2>Want More Details?</h2>
-            <p>These sites provide real-time pricing, benchmarks, and let you test models yourself</p>
-            <div class="link-buttons">
-                <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" class="link-btn">Artificial Analysis - Pricing, Speed &amp; Benchmarks</a>
-                <a href="https://arena.ai/leaderboard" target="_blank" class="link-btn">Arena.ai - Human Preference Rankings</a>
-                <a href="https://llm-stats.com/models/compare" target="_blank" class="link-btn">LLM Stats - Model Comparisons</a>
-            </div>
-        </section>
+        <!-- Resources (External Links + References) -->
+        <div data-tab-panel="resources">
+            <section class="links-section">
+                <h2>Want More Details?</h2>
+                <p>These sites provide real-time pricing, benchmarks, and let you test models yourself</p>
+                <div class="link-buttons">
+                    <a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" class="link-btn">Artificial Analysis - Pricing, Speed &amp; Benchmarks</a>
+                    <a href="https://arena.ai/leaderboard" target="_blank" class="link-btn">Arena.ai - Human Preference Rankings</a>
+                    <a href="https://llm-stats.com/models/compare" target="_blank" class="link-btn">LLM Stats - Model Comparisons</a>
+                </div>
+            </section>
 
-        <!-- References Section -->
-        <section class="references-section">
-            <h2>References &amp; Sources</h2>
-            <div class="ref-grid" id="referencesGrid"></div>
-        </section>
+            <section class="references-section">
+                <h2>References &amp; Sources</h2>
+                <div class="ref-grid" id="referencesGrid"></div>
+            </section>
+        </div>
 
         <footer id="footer">
             Last updated: <span id="footerDate">Loading...</span>
@@ -710,9 +688,6 @@
             <span class="footer-link" onclick="openMethodologyModal()">How We Evaluate Models</span>
         </footer>
     </div>
-
-    <!-- Back to top button -->
-    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
 
     <!-- Model Detail Modal -->
     <div class="model-modal-overlay" id="modelModal" role="dialog" aria-modal="true" aria-labelledby="modalModelName">
@@ -948,14 +923,21 @@
             }
         });
 
-        // Back to top button
-        const backToTop = document.getElementById('backToTop');
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 500) {
-                backToTop.classList.add('visible');
-            } else {
-                backToTop.classList.remove('visible');
-            }
+        // Tab navigation
+        document.querySelectorAll('.tab-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+                btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+                document.querySelectorAll('[data-tab-panel]').forEach(function(p) { p.classList.remove('active'); });
+                document.querySelector('[data-tab-panel="' + btn.dataset.tab + '"]').classList.add('active');
+                window.scrollTo({ top: 0 });
+            });
+            btn.addEventListener('keydown', function(e) {
+                var tabs = Array.from(document.querySelectorAll('.tab-btn'));
+                var idx = tabs.indexOf(this);
+                if (e.key === 'ArrowRight') { e.preventDefault(); tabs[(idx + 1) % tabs.length].focus(); }
+                if (e.key === 'ArrowLeft') { e.preventDefault(); tabs[(idx - 1 + tabs.length) % tabs.length].focus(); }
+            });
         });
     }
 
@@ -1595,8 +1577,12 @@
             if (label === 'Arena instructionFollowing') label = 'Arena IF';
             if (label === 'Arena longerQuery') label = 'Arena LQ';
 
-            var displayVal = typeof d.raw === 'number' ?
-                (d.raw > 1000 ? Math.round(d.raw) : d.raw + (d.metric.indexOf('arenaElo') >= 0 ? '' : '%')) : d.raw;
+            if (d.metric === 'contextWindow' || d.metric === 'speedProxy' || d.metric === 'multimodal') {
+                return label;
+            }
+            var displayVal = d.metric.indexOf('arenaElo') >= 0 ?
+                Math.round(d.raw) :
+                (Math.round(d.raw * 10) / 10) + '%';
             return label + ' ' + displayVal;
         });
     }
@@ -1681,46 +1667,45 @@
                 '<span style="color:#666;font-size:0.75rem;">Sorted by quality</span>';
         }
 
-        // Top pick is always #1 by score
-        var topPickId = ranked[0].model.id;
-
-        var initialShow = 5;
+        var initialShow = 10;
         var hasMore = ranked.length > initialShow;
 
-        var html = ranked.map(function(r, idx) {
+        // Determine columns based on mode
+        var primaryLabel = effectivePriority === 'best' ? 'Overall' : 'Quality';
+        var primaryClass = effectivePriority === 'best' ? 'overall' : 'quality';
+
+        var html = '<table class="rec-table"><thead><tr>' +
+            '<th>#</th><th>Model</th><th style="text-align:right">' + primaryLabel + '</th>' +
+            '<th style="text-align:right">Value</th><th>Cost</th><th>Key Strengths</th>' +
+            '</tr></thead><tbody>';
+
+        html += ranked.map(function(r, idx) {
             var model = r.model;
             var costClass = model.costTier === 'self-hosted' ? 'low' : model.costTier;
             var hiddenClass = idx >= initialShow ? 'hidden-rec' : '';
-            var isTop = model.id === topPickId;
-            var sourceUrl = model.sourceUrls ? (model.sourceUrls.docs || model.sourceUrls.pricing || model.sourceUrls.announcement) : null;
-            var sourceLink = sourceUrl ? '<a href="' + sourceUrl + '" target="_blank" rel="noopener" class="rec-source" onclick="event.stopPropagation()">Source ↗</a>' : '';
-            var drivers = getTopDrivers(r.breakdown);
-            var driversHtml = drivers.map(function(d) { return '<span class="driver-chip">' + d + '</span>'; }).join('');
-            var incompleteHtml = r.completeness < 0.5 ? '<span class="score-incomplete" title="Limited benchmark data — score may be less accurate">*</span>' : '';
-
+            var isTop = idx === 0;
             var overallScore = r.overallScore || Math.round(r.capabilityScore * 0.7 + r.valueScore * 0.3);
+            var primaryScore = effectivePriority === 'best' ? overallScore : r.capabilityScore;
+            var drivers = getTopDrivers(r.breakdown, 2);
+            var incomplete = r.completeness < 0.5 ? '*' : '';
 
-            // Build score bars based on mode
-            var topBar, topBarTitle;
-            if (effectivePriority === 'best') {
-                topBar = '<div class="score-bar overall" title="Overall score: combines quality (70%) and cost efficiency (30%)"><span class="score-label-left">Overall</span><div class="score-fill" style="width:' + overallScore + '%"></div><span class="score-label">' + overallScore + incompleteHtml + '</span></div>';
-            } else {
-                topBar = '<div class="score-bar capability" title="Quality: how well this model performs on benchmarks relevant to your use case"><span class="score-label-left">Quality</span><div class="score-fill" style="width:' + r.capabilityScore + '%"></div><span class="score-label">' + r.capabilityScore + incompleteHtml + '</span></div>';
-            }
-            var valueBar = '<div class="score-bar value" title="Cost efficiency: quality you get per dollar spent"><span class="score-label-left">Cost Efficiency</span><div class="score-fill" style="width:' + r.valueScore + '%"></div><span class="score-label">' + r.valueScore + '</span></div>';
-
-            return '<div class="rec-card ' + (isTop ? 'top-pick' : '') + ' ' + hiddenClass + ' clickable-model" onclick="openModelModal(\'' + model.id + '\')">' +
-                '<h4>' + model.name + (isTop ? ' <span class="badge">TOP PICK</span>' : '') + '</h4>' +
-                '<div class="provider">' + getProviderName(model.provider) + '</div>' +
-                '<div class="score-section">' + topBar + valueBar +
-                    '<div class="score-drivers">' + driversHtml + '</div>' +
-                '</div>' +
-                '<div class="why">' + model.description + '</div>' +
-                '<div class="rec-footer"><span class="cost-badge cost-' + costClass + '">' + getCostLabel(model.costTier) + '</span>' + sourceLink + '</div></div>';
+            return '<tr class="' + hiddenClass + '" onclick="openModelModal(\'' + model.id + '\')">' +
+                '<td class="rank-cell ' + (isTop ? 'top' : '') + '">' + (idx + 1) + '</td>' +
+                '<td class="model-cell">' + model.name + (isTop ? '<span class="badge">TOP PICK</span>' : '') +
+                    '<div class="provider-sub">' + getProviderName(model.provider) + '</div></td>' +
+                '<td class="score-cell"><span class="score-val">' + primaryScore + incomplete + '</span>' +
+                    '<div class="score-bar-mini"><div class="fill ' + primaryClass + '" style="width:' + primaryScore + '%"></div></div></td>' +
+                '<td class="score-cell"><span class="score-val">' + r.valueScore + '</span>' +
+                    '<div class="score-bar-mini"><div class="fill efficiency" style="width:' + r.valueScore + '%"></div></div></td>' +
+                '<td class="cost-cell"><span class="cost-badge cost-' + costClass + '">' + getCostLabel(model.costTier) + '</span></td>' +
+                '<td class="drivers-cell">' + drivers.join(' · ') + '</td>' +
+                '</tr>';
         }).join('');
 
+        html += '</tbody></table>';
+
         if (hasMore) {
-            html += '<button class="show-more-btn" onclick="toggleMoreRecs(this)">Show ' + (ranked.length - initialShow) + ' more options</button>';
+            html += '<button class="show-more-btn" onclick="toggleMoreRecs(this)">Show ' + (ranked.length - initialShow) + ' more</button>';
         }
 
         container.innerHTML = html;
@@ -1740,10 +1725,10 @@
         });
 
         if (isExpanded) {
-            btn.textContent = 'Show ' + hiddenCards.length + ' more options';
+            btn.textContent = 'Show ' + hiddenCards.length + ' more';
             btn.dataset.expanded = 'false';
         } else {
-            btn.textContent = 'Show fewer options';
+            btn.textContent = 'Show fewer';
             btn.dataset.expanded = 'true';
         }
     }
