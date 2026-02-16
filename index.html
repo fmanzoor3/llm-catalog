@@ -51,57 +51,14 @@
                 <h1>What are you building today?</h1>
                 <p class="hero-subtitle">Select a use case and we'll rank models using real benchmark data.</p>
 
-                <!-- Use Case Cards -->
-                <div class="usecase-grid">
-                    <button class="usecase-card active" data-usecase="coding">
-                        <div class="usecase-icon">
-                            <svg viewBox="0 0 40 40" width="36" height="36"><rect x="4" y="8" width="32" height="24" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12,16 16,20 12,24" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="24" x2="28" y2="24" stroke="currentColor" stroke-width="2"/></svg>
-                        </div>
-                        <span class="usecase-label">Coding</span>
-                    </button>
-                    <button class="usecase-card" data-usecase="reasoning">
-                        <div class="usecase-icon">
-                            <svg viewBox="0 0 40 40" width="36" height="36"><circle cx="20" cy="18" r="12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16 Q16 12 20 12 Q24 12 24 16 Q24 18 22 19 L22 22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="22" cy="25" r="1" fill="currentColor"/></svg>
-                        </div>
-                        <span class="usecase-label">Reasoning</span>
-                    </button>
-                    <button class="usecase-card" data-usecase="chatbot">
-                        <div class="usecase-icon">
-                            <svg viewBox="0 0 40 40" width="36" height="36"><rect x="6" y="8" width="28" height="20" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="14,28 20,28 16,34" fill="currentColor" opacity="0.6"/><circle cx="14" cy="18" r="1.5" fill="currentColor"/><circle cx="20" cy="18" r="1.5" fill="currentColor"/><circle cx="26" cy="18" r="1.5" fill="currentColor"/></svg>
-                        </div>
-                        <span class="usecase-label">Chatbot</span>
-                    </button>
-                    <button class="usecase-card" data-usecase="documents">
-                        <div class="usecase-icon">
-                            <svg viewBox="0 0 40 40" width="36" height="36"><rect x="8" y="6" width="24" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/><line x1="12" y1="17" x2="28" y2="17" stroke="currentColor" stroke-width="2"/><line x1="12" y1="22" x2="22" y2="22" stroke="currentColor" stroke-width="2"/></svg>
-                        </div>
-                        <span class="usecase-label">Documents</span>
-                    </button>
-                    <button class="usecase-card" data-usecase="content">
-                        <div class="usecase-icon">
-                            <svg viewBox="0 0 40 40" width="36" height="36"><path d="M20 6 L22 14 L30 14 L24 19 L26 27 L20 22 L14 27 L16 19 L10 14 L18 14 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                        </div>
-                        <span class="usecase-label">Content</span>
-                    </button>
-                    <button class="usecase-card" data-usecase="extraction">
-                        <div class="usecase-icon">
-                            <svg viewBox="0 0 40 40" width="36" height="36"><ellipse cx="20" cy="12" rx="12" ry="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12 v6 c0 2.2 5.4 4 12 4 s12-1.8 12-4 v-6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 18 v6 c0 2.2 5.4 4 12 4 s12-1.8 12-4 v-6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                        </div>
-                        <span class="usecase-label">Extraction</span>
-                    </button>
-                    <button class="usecase-card" data-usecase="translation">
-                        <div class="usecase-icon">
-                            <svg viewBox="0 0 40 40" width="36" height="36"><circle cx="20" cy="20" r="12" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="20" cy="20" rx="6" ry="12" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="1.5"/></svg>
-                        </div>
-                        <span class="usecase-label">Translation</span>
-                    </button>
-                    <button class="usecase-card" data-usecase="vision">
-                        <div class="usecase-icon">
-                            <svg viewBox="0 0 40 40" width="36" height="36"><path d="M4 20 Q20 8 36 20 Q20 32 4 20Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="20" r="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="20" r="2" fill="currentColor"/></svg>
-                        </div>
-                        <span class="usecase-label">Vision</span>
-                    </button>
+                <!-- Use Case Set Toggle -->
+                <div class="usecase-set-toggle">
+                    <button class="set-toggle-btn active" data-set="generic">Generic</button>
+                    <button class="set-toggle-btn" data-set="enerjisa">Enerjisa</button>
                 </div>
+
+                <!-- Use Case Cards (dynamic) -->
+                <div class="usecase-grid" id="usecase-grid"></div>
             </div>
         </section>
 
@@ -223,19 +180,79 @@
         const updatedEl = document.getElementById('lastUpdated');
         if (updatedEl && modelData.lastUpdated) updatedEl.textContent = modelData.lastUpdated;
 
+        let currentSet = "generic";
         let currentUsecase = "coding";
         let currentPriority = "best";
 
         const resultsList = document.getElementById("results-list");
         if (!resultsList) return;
 
-        // Use-case cards
-        const usecaseCards = document.querySelectorAll(".usecase-card");
-        usecaseCards.forEach(card => {
-            card.addEventListener("click", () => {
-                usecaseCards.forEach(c => c.classList.remove("active"));
-                card.classList.add("active");
-                currentUsecase = card.dataset.usecase;
+        // Icon SVGs for each use case key
+        const usecaseIcons = {
+            coding: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="4" y="8" width="32" height="24" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12,16 16,20 12,24" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="24" x2="28" y2="24" stroke="currentColor" stroke-width="2"/></svg>',
+            reasoning: '<svg viewBox="0 0 40 40" width="36" height="36"><circle cx="20" cy="18" r="12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16 Q16 12 20 12 Q24 12 24 16 Q24 18 22 19 L22 22" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="22" cy="25" r="1" fill="currentColor"/></svg>',
+            chatbot: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="6" y="8" width="28" height="20" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="14,28 20,28 16,34" fill="currentColor" opacity="0.6"/><circle cx="14" cy="18" r="1.5" fill="currentColor"/><circle cx="20" cy="18" r="1.5" fill="currentColor"/><circle cx="26" cy="18" r="1.5" fill="currentColor"/></svg>',
+            documents: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="8" y="6" width="24" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="12" x2="28" y2="12" stroke="currentColor" stroke-width="2"/><line x1="12" y1="17" x2="28" y2="17" stroke="currentColor" stroke-width="2"/><line x1="12" y1="22" x2="22" y2="22" stroke="currentColor" stroke-width="2"/></svg>',
+            content: '<svg viewBox="0 0 40 40" width="36" height="36"><path d="M20 6 L22 14 L30 14 L24 19 L26 27 L20 22 L14 27 L16 19 L10 14 L18 14 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+            extraction: '<svg viewBox="0 0 40 40" width="36" height="36"><ellipse cx="20" cy="12" rx="12" ry="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12 v6 c0 2.2 5.4 4 12 4 s12-1.8 12-4 v-6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 18 v6 c0 2.2 5.4 4 12 4 s12-1.8 12-4 v-6" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+            translation: '<svg viewBox="0 0 40 40" width="36" height="36"><circle cx="20" cy="20" r="12" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="20" cy="20" rx="6" ry="12" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="1.5"/></svg>',
+            vision: '<svg viewBox="0 0 40 40" width="36" height="36"><path d="M4 20 Q20 8 36 20 Q20 32 4 20Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="20" r="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="20" r="2" fill="currentColor"/></svg>',
+            // Enerjisa-specific icons
+            internal_chatbot: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="6" y="8" width="28" height="20" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="14,28 20,28 16,34" fill="currentColor" opacity="0.6"/><circle cx="14" cy="18" r="1.5" fill="currentColor"/><circle cx="20" cy="18" r="1.5" fill="currentColor"/><circle cx="26" cy="18" r="1.5" fill="currentColor"/></svg>',
+            dev_tools: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="4" y="8" width="32" height="24" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12,16 16,20 12,24" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="24" x2="28" y2="24" stroke="currentColor" stroke-width="2"/></svg>',
+            report_analysis: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="8" y="6" width="24" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12,24 16,18 20,22 24,14 28,16" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+            regulatory: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="8" y="4" width="24" height="32" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 14 L18 18 L26 10" fill="none" stroke="currentColor" stroke-width="2.5"/><line x1="12" y1="24" x2="28" y2="24" stroke="currentColor" stroke-width="1.5"/><line x1="12" y1="28" x2="22" y2="28" stroke="currentColor" stroke-width="1.5"/></svg>',
+            customer_comms: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="4" y="10" width="32" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="4,12 20,22 36,12" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+            data_analytics: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="6" y="22" width="6" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="17" y="14" width="6" height="20" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="28" y="6" width="6" height="28" rx="1" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+            knowledge_base: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="6" y="8" width="28" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="6" y1="14" x2="34" y2="14" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="24" r="4" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="20" x2="20" y2="22" stroke="currentColor" stroke-width="1.5"/></svg>',
+            multilingual: '<svg viewBox="0 0 40 40" width="36" height="36"><circle cx="20" cy="20" r="12" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="20" cy="20" rx="6" ry="12" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="1.5"/></svg>'
+        };
+
+        // Short labels for cards
+        const usecaseLabels = {
+            coding: "Coding", reasoning: "Reasoning", chatbot: "Chatbot",
+            documents: "Documents", content: "Content", extraction: "Extraction",
+            translation: "Translation", vision: "Vision",
+            internal_chatbot: "Chatbot", dev_tools: "Dev Tools",
+            report_analysis: "Reports", regulatory: "Compliance",
+            customer_comms: "Comms", data_analytics: "Analytics",
+            knowledge_base: "Knowledge", multilingual: "Multilingual"
+        };
+
+        // Render use case cards for current set
+        function renderUsecaseCards() {
+            const setConfig = modelData.useCaseSets[currentSet];
+            const grid = document.getElementById("usecase-grid");
+            const useCases = setConfig.useCases;
+            currentUsecase = useCases[0]; // reset to first
+
+            grid.innerHTML = useCases.map((uc, i) => {
+                const icon = usecaseIcons[uc] || usecaseIcons.chatbot;
+                const label = usecaseLabels[uc] || uc;
+                return `<button class="usecase-card ${i === 0 ? 'active' : ''}" data-usecase="${uc}">
+                    <div class="usecase-icon">${icon}</div>
+                    <span class="usecase-label">${label}</span>
+                </button>`;
+            }).join('');
+
+            // Bind click events
+            grid.querySelectorAll(".usecase-card").forEach(card => {
+                card.addEventListener("click", () => {
+                    grid.querySelectorAll(".usecase-card").forEach(c => c.classList.remove("active"));
+                    card.classList.add("active");
+                    currentUsecase = card.dataset.usecase;
+                    render();
+                });
+            });
+        }
+
+        // Set toggle buttons
+        document.querySelectorAll(".set-toggle-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".set-toggle-btn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                currentSet = btn.dataset.set;
+                renderUsecaseCards();
                 render();
             });
         });
@@ -250,6 +267,9 @@
 
         // Budget filter
         document.getElementById("budget-filter").addEventListener("change", render);
+
+        // Initial render of cards
+        renderUsecaseCards();
 
         function render() {
             const budget = document.getElementById("budget-filter").value;

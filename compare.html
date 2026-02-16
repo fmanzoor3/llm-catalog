@@ -51,9 +51,15 @@
             <!-- Quick Picks -->
             <div class="quick-picks" id="quick-picks"></div>
 
-            <!-- By Use Case -->
+            <!-- Use Case Set Toggle -->
             <div class="category-group">
-                <h3>Best Model by Use Case</h3>
+                <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+                    <h3 style="margin:0;">Best Model by Use Case</h3>
+                    <div class="usecase-set-toggle" style="margin-bottom:0;">
+                        <button class="set-toggle-btn active" data-set="generic">Generic</button>
+                        <button class="set-toggle-btn" data-set="enerjisa">Enerjisa</button>
+                    </div>
+                </div>
                 <div class="compare-table-wrapper">
                     <table class="compare-table" id="usecase-table">
                         <thead>
@@ -76,19 +82,7 @@
                 <h3>All Models — Head to Head</h3>
                 <div class="compare-table-wrapper">
                     <table class="compare-table" id="full-table">
-                        <thead>
-                            <tr>
-                                <th>Model</th>
-                                <th>Provider</th>
-                                <th>Coding</th>
-                                <th>Reasoning</th>
-                                <th>Chatbot</th>
-                                <th>Content</th>
-                                <th>Docs</th>
-                                <th>Cost</th>
-                                <th>Context</th>
-                            </tr>
-                        </thead>
+                        <thead id="full-thead"></thead>
                         <tbody id="full-tbody"></tbody>
                     </table>
                 </div>
@@ -157,147 +151,103 @@
     document.addEventListener("DOMContentLoaded", () => {
         const models = modelData.models;
         const scoringConfig = modelData.scoringConfig;
+        let currentSet = "generic";
 
-        // Quick picks using scoring engine
+        // Short column labels
+        const shortLabels = {
+            coding: "Coding", reasoning: "Reason", chatbot: "Chat", content: "Content",
+            documents: "Docs", extraction: "Extract", translation: "Translate", vision: "Vision",
+            internal_chatbot: "Chat", dev_tools: "Dev", report_analysis: "Reports",
+            regulatory: "Comply", customer_comms: "Comms", data_analytics: "Analytics",
+            knowledge_base: "Knowledge", multilingual: "Multi"
+        };
+
+        // Quick picks (these don't change with toggle)
         const picks = [
-            {
-                label: "Lowest Cost",
-                finder: () => {
-                    const apiModels = models.filter(m => m.pricing);
-                    return apiModels.sort((a, b) => getBlendedCost(a) - getBlendedCost(b))[0];
-                },
-                detail: m => formatCost(m)
-            },
-            {
-                label: "Best for Coding",
-                finder: () => {
-                    const ranked = rankModelsForUseCase("coding", "capability");
-                    return ranked[0]?.model;
-                },
-                detail: m => {
-                    const r = rankModelsForUseCase("coding", "capability")[0];
-                    return `Score: ${r?.capabilityScore || 'N/A'}`;
-                }
-            },
-            {
-                label: "Best Reasoning",
-                finder: () => {
-                    const ranked = rankModelsForUseCase("reasoning", "capability");
-                    return ranked[0]?.model;
-                },
-                detail: m => {
-                    const r = rankModelsForUseCase("reasoning", "capability")[0];
-                    return `Score: ${r?.capabilityScore || 'N/A'}`;
-                }
-            },
-            {
-                label: "Longest Context",
-                finder: () => [...models].sort((a, b) => (b.contextWindow || 0) - (a.contextWindow || 0))[0],
-                detail: m => formatTokenCount(m.contextWindow) + " tokens"
-            },
-            {
-                label: "Best Value",
-                finder: () => {
-                    const ranked = rankModelsForUseCase("coding", "cost");
-                    return ranked[0]?.model;
-                },
-                detail: m => "Quality/cost leader"
-            },
-            {
-                label: "Best All-Round",
-                finder: () => {
-                    const ranked = rankModelsForUseCase("coding", "best");
-                    return ranked[0]?.model;
-                },
-                detail: m => {
-                    const r = rankModelsForUseCase("coding", "best")[0];
-                    return `Overall: ${r?.overallScore || 'N/A'}`;
-                }
-            },
-            {
-                label: "Best Open Source",
-                finder: () => {
-                    const oss = models.filter(m => m.costTier === "self-hosted");
-                    if (oss.length === 0) return models[0];
-                    const ranked = oss.map(m => {
-                        const cap = computeCapabilityScore(m, "coding");
-                        return { model: m, score: cap.score };
-                    }).sort((a, b) => b.score - a.score);
-                    return ranked[0]?.model;
-                },
-                detail: m => m.name
-            },
-            {
-                label: "Best for Documents",
-                finder: () => {
-                    const ranked = rankModelsForUseCase("documents", "capability");
-                    return ranked[0]?.model;
-                },
-                detail: m => {
-                    const r = rankModelsForUseCase("documents", "capability")[0];
-                    return `Score: ${r?.capabilityScore || 'N/A'}`;
-                }
-            }
+            { label: "Lowest Cost", finder: () => { const a = models.filter(m => m.pricing); return a.sort((a, b) => getBlendedCost(a) - getBlendedCost(b))[0]; }, detail: m => formatCost(m) },
+            { label: "Best for Coding", finder: () => rankModelsForUseCase("coding", "capability")[0]?.model, detail: () => `Score: ${rankModelsForUseCase("coding", "capability")[0]?.capabilityScore || 'N/A'}` },
+            { label: "Best Reasoning", finder: () => rankModelsForUseCase("reasoning", "capability")[0]?.model, detail: () => `Score: ${rankModelsForUseCase("reasoning", "capability")[0]?.capabilityScore || 'N/A'}` },
+            { label: "Longest Context", finder: () => [...models].sort((a, b) => (b.contextWindow || 0) - (a.contextWindow || 0))[0], detail: m => formatTokenCount(m.contextWindow) + " tokens" },
+            { label: "Best Value", finder: () => rankModelsForUseCase("coding", "cost")[0]?.model, detail: () => "Quality/cost leader" },
+            { label: "Best All-Round", finder: () => rankModelsForUseCase("coding", "best")[0]?.model, detail: () => `Overall: ${rankModelsForUseCase("coding", "best")[0]?.overallScore || 'N/A'}` },
+            { label: "Best Open Source", finder: () => { const oss = models.filter(m => m.costTier === "self-hosted"); return oss.map(m => ({ model: m, score: computeCapabilityScore(m, "coding").score })).sort((a, b) => b.score - a.score)[0]?.model || models[0]; }, detail: m => m.name },
+            { label: "Best for Documents", finder: () => rankModelsForUseCase("documents", "capability")[0]?.model, detail: () => `Score: ${rankModelsForUseCase("documents", "capability")[0]?.capabilityScore || 'N/A'}` }
         ];
 
         const picksEl = document.getElementById("quick-picks");
         picksEl.innerHTML = picks.map(p => {
             const m = p.finder();
             if (!m) return '';
-            return `
-            <div class="quick-pick-card" onclick="openModelModal('${m.id}')">
+            return `<div class="quick-pick-card" onclick="openModelModal('${m.id}')">
                 <div class="quick-pick-label">${p.label}</div>
                 <div class="quick-pick-model">${m.name}</div>
                 <div class="quick-pick-detail">${p.detail(m)}</div>
             </div>`;
         }).join("");
 
-        // Use-case table using scoring engine
-        const usecases = Object.keys(scoringConfig);
-        const ucTbody = document.getElementById("usecase-tbody");
-        ucTbody.innerHTML = usecases.map(uc => {
-            const ranked = rankModelsForUseCase(uc, "capability");
-            if (ranked.length === 0) return '';
-            const best = ranked[0];
-            const m = best.model;
-            const costClass = m.costTier === 'self-hosted' ? 'low' : m.costTier;
-            return `<tr onclick="openModelModal('${m.id}')" style="cursor:pointer;">
-                <td style="font-weight:600;">${scoringConfig[uc].name}</td>
-                <td class="model-name-cell">${m.name}</td>
-                <td>${getProviderName(m.provider)}</td>
-                <td class="winner-cell">${best.capabilityScore}</td>
-                <td><span class="cost-badge cost-${costClass}" style="font-size:0.7rem;">${getCostLabel(m.costTier)}</span></td>
-                <td>${formatTokenCount(m.contextWindow)}</td>
-            </tr>`;
-        }).join("");
+        function renderTables() {
+            const setConfig = modelData.useCaseSets[currentSet];
+            const ucKeys = setConfig.useCases;
 
-        // Full comparison table
-        const fullTbody = document.getElementById("full-tbody");
-        const ucKeys = ["coding", "reasoning", "chatbot", "content", "documents"];
+            // Use-case table
+            const ucTbody = document.getElementById("usecase-tbody");
+            ucTbody.innerHTML = ucKeys.map(uc => {
+                const ranked = rankModelsForUseCase(uc, "capability");
+                if (ranked.length === 0) return '';
+                const best = ranked[0];
+                const m = best.model;
+                const costClass = m.costTier === 'self-hosted' ? 'low' : m.costTier;
+                return `<tr onclick="openModelModal('${m.id}')" style="cursor:pointer;">
+                    <td style="font-weight:600;">${scoringConfig[uc].name}</td>
+                    <td class="model-name-cell">${m.name}</td>
+                    <td>${getProviderName(m.provider)}</td>
+                    <td class="winner-cell">${best.capabilityScore}</td>
+                    <td><span class="cost-badge cost-${costClass}" style="font-size:0.7rem;">${getCostLabel(m.costTier)}</span></td>
+                    <td>${formatTokenCount(m.contextWindow)}</td>
+                </tr>`;
+            }).join("");
 
-        // Compute average score across all use cases for each model
-        const modelScores = models.map(m => {
-            const scores = {};
-            let total = 0;
-            ucKeys.forEach(uc => {
-                const cap = computeCapabilityScore(m, uc);
-                scores[uc] = cap.score;
-                total += cap.score;
+            // Full comparison table — dynamic headers
+            const displayKeys = ucKeys.slice(0, 5); // show first 5 to keep table readable
+            const fullThead = document.getElementById("full-thead");
+            fullThead.innerHTML = `<tr><th>Model</th><th>Provider</th>${displayKeys.map(uc => `<th>${shortLabels[uc] || uc}</th>`).join('')}<th>Cost</th><th>Context</th></tr>`;
+
+            const fullTbody = document.getElementById("full-tbody");
+            const modelScores = models.map(m => {
+                const scores = {};
+                let total = 0;
+                displayKeys.forEach(uc => {
+                    const cap = computeCapabilityScore(m, uc);
+                    scores[uc] = cap.score;
+                    total += cap.score;
+                });
+                return { model: m, scores, avg: total / displayKeys.length };
+            }).sort((a, b) => b.avg - a.avg);
+
+            fullTbody.innerHTML = modelScores.map(item => {
+                const m = item.model;
+                const costClass = m.costTier === 'self-hosted' ? 'low' : m.costTier;
+                return `<tr onclick="openModelModal('${m.id}')" style="cursor:pointer;">
+                    <td class="model-name-cell">${m.name}</td>
+                    <td>${getProviderName(m.provider)}</td>
+                    ${displayKeys.map(uc => `<td>${item.scores[uc] || '—'}</td>`).join('')}
+                    <td><span class="cost-badge cost-${costClass}" style="font-size:0.7rem;">${getCostLabel(m.costTier)}</span></td>
+                    <td>${formatTokenCount(m.contextWindow)}</td>
+                </tr>`;
+            }).join("");
+        }
+
+        // Toggle buttons
+        document.querySelectorAll(".set-toggle-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".set-toggle-btn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                currentSet = btn.dataset.set;
+                renderTables();
             });
-            return { model: m, scores, avg: total / ucKeys.length };
-        }).sort((a, b) => b.avg - a.avg);
+        });
 
-        fullTbody.innerHTML = modelScores.map(item => {
-            const m = item.model;
-            const costClass = m.costTier === 'self-hosted' ? 'low' : m.costTier;
-            return `<tr onclick="openModelModal('${m.id}')" style="cursor:pointer;">
-                <td class="model-name-cell">${m.name}</td>
-                <td>${getProviderName(m.provider)}</td>
-                ${ucKeys.map(uc => `<td>${item.scores[uc] || '—'}</td>`).join('')}
-                <td><span class="cost-badge cost-${costClass}" style="font-size:0.7rem;">${getCostLabel(m.costTier)}</span></td>
-                <td>${formatTokenCount(m.contextWindow)}</td>
-            </tr>`;
-        }).join("");
+        renderTables();
 
         // Scroll indicator
         document.querySelectorAll(".compare-table-wrapper").forEach(wrapper => {

@@ -192,10 +192,51 @@ a:hover { color: var(--accent-hover); }
     margin-bottom: 36px;
 }
 
+/* --- Use Case Set Toggle --- */
+.usecase-set-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 24px;
+}
+
+.set-toggle-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: 0.03em;
+}
+
+.set-toggle-btn:first-child {
+    border-radius: 8px 0 0 8px;
+    border-right: none;
+}
+
+.set-toggle-btn:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.set-toggle-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.set-toggle-btn:not(.active):hover {
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+}
+
 /* --- Use Case Grid --- */
 .usecase-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     max-width: 780px;
     margin: 0 auto;
