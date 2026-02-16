@@ -464,6 +464,7 @@ a:hover { color: var(--accent-hover); }
 .badge-value { background: var(--amber-light); color: var(--amber); }
 .badge-context { background: rgba(167,139,250,0.12); color: var(--purple); }
 .badge-new { background: var(--red-light); color: var(--red); }
+.badge-onprem { background: rgba(96, 165, 250, 0.12); color: var(--blue); }
 .badge-default { background: var(--accent-light); color: var(--accent); }
 
 .cost-badge {

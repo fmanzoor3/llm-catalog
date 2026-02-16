@@ -55,6 +55,37 @@ function formatSpeed(model) {
     return 'Slower';
 }
 
+// ===== DEPLOYMENT HELPERS =====
+function getHostingLabel(model) {
+    var d = model.deployment;
+    if (!d) return model.specs?.apiAvailability || 'API';
+    if (d.hostedOnPrem) return 'Running On-Prem';
+    if (d.selfHostable) return 'Self-Hosted + API';
+    return 'API';
+}
+
+function matchesHostingFilter(model, filterValue) {
+    if (!filterValue) return true;
+    var d = model.deployment;
+    if (!d) return filterValue === 'api';
+    if (filterValue === 'api') return true; // all models have some API access
+    if (filterValue === 'self-hosted') return d.selfHostable;
+    if (filterValue === 'on-prem') return d.hostedOnPrem;
+    return true;
+}
+
+function matchesPlatformFilter(model, platformValue) {
+    if (!platformValue) return true;
+    var platforms = model.deployment?.cloudPlatforms || [];
+    return platforms.indexOf(platformValue) >= 0;
+}
+
+function getCloudPlatformLabels(model) {
+    var platforms = model.deployment?.cloudPlatforms || [];
+    var config = modelData.deploymentConfig?.cloudPlatforms || {};
+    return platforms.map(function(p) { return config[p]?.name || p; });
+}
+
 // ===== SCORING ENGINE =====
 function normalizeMetric(value, min, max) {
     if (value === null || value === undefined) return null;
@@ -205,7 +236,8 @@ function openModelModal(modelId) {
         { label: 'Multimodal', value: model.specs?.multimodal ? model.specs.multimodalTypes.join(', ') : 'Text only' },
         { label: 'Released', value: model.specs?.releaseDate || 'N/A' },
         { label: 'Training Cutoff', value: model.specs?.trainingDataCutoff || 'N/A' },
-        { label: 'Availability', value: model.specs?.apiAvailability || 'API' }
+        { label: 'Hosting', value: getHostingLabel(model) },
+        { label: 'Platforms', value: getCloudPlatformLabels(model).join(', ') || model.specs?.apiAvailability || 'Direct API' }
     ];
     document.getElementById('modalSpecs').innerHTML = specs.map(s =>
         `<div class="modal-spec"><div class="modal-spec-label">${s.label}</div><div class="modal-spec-value">${s.value}</div></div>`

@@ -94,6 +94,18 @@
                         <option value="low">$ Budget</option>
                         <option value="mid">$$ Mid-range</option>
                     </select>
+                    <select class="filter-select" id="hosting-filter" style="min-width:130px;">
+                        <option value="">All Hosting</option>
+                        <option value="api">API / Cloud</option>
+                        <option value="self-hosted">Self-Hosted</option>
+                        <option value="on-prem">On-Prem</option>
+                    </select>
+                    <select class="filter-select" id="platform-filter" style="min-width:140px;">
+                        <option value="">All Platforms</option>
+                        <option value="azure">Azure</option>
+                        <option value="aws">AWS</option>
+                        <option value="gcp">Google Cloud</option>
+                    </select>
                 </div>
             </div>
         </section>
@@ -267,6 +279,19 @@
 
         // Budget filter
         document.getElementById("budget-filter").addEventListener("change", render);
+        document.getElementById("hosting-filter").addEventListener("change", () => {
+            // Hide platform filter when self-hosted or on-prem is selected
+            const hostVal = document.getElementById("hosting-filter").value;
+            const platformEl = document.getElementById("platform-filter");
+            if (hostVal === 'self-hosted' || hostVal === 'on-prem') {
+                platformEl.value = '';
+                platformEl.style.display = 'none';
+            } else {
+                platformEl.style.display = '';
+            }
+            render();
+        });
+        document.getElementById("platform-filter").addEventListener("change", render);
 
         // Initial render of cards
         renderUsecaseCards();
@@ -293,10 +318,7 @@
 
             // Privacy filter
             if (currentPriority === 'privacy') {
-                ranked = ranked.filter(r =>
-                    r.model.costTier === 'self-hosted' ||
-                    (r.model.specs?.apiAvailability?.toLowerCase().includes('self-hosted'))
-                );
+                ranked = ranked.filter(r => r.model.deployment?.selfHostable);
                 ranked.sort((a, b) => b.capabilityScore - a.capabilityScore);
             }
 
@@ -307,6 +329,25 @@
                     if (budget === 'mid') return r.model.costTier !== 'high';
                     return true;
                 });
+            }
+
+            // Hosting filter
+            const hosting = document.getElementById("hosting-filter").value;
+            if (hosting) {
+                ranked = ranked.filter(r => matchesHostingFilter(r.model, hosting));
+                if (hosting === 'self-hosted') {
+                    ranked.sort((a, b) => {
+                        const aOP = a.model.deployment?.hostedOnPrem ? 1 : 0;
+                        const bOP = b.model.deployment?.hostedOnPrem ? 1 : 0;
+                        return bOP - aOP;
+                    });
+                }
+            }
+
+            // Platform filter
+            const platform = document.getElementById("platform-filter").value;
+            if (platform) {
+                ranked = ranked.filter(r => matchesPlatformFilter(r.model, platform));
             }
 
             // Filter zero scores
@@ -323,7 +364,12 @@
             }
 
             if (ranked.length === 0) {
-                resultsList.innerHTML = '<div class="empty-state"><p>No models match your criteria. Try adjusting filters.</p></div>';
+                const hostVal = document.getElementById("hosting-filter").value;
+                if (hostVal === 'on-prem') {
+                    resultsList.innerHTML = '<div class="empty-state"><p>No models are currently running on-prem. Select <strong>Self-Hosted</strong> to explore candidates.</p></div>';
+                } else {
+                    resultsList.innerHTML = '<div class="empty-state"><p>No models match your criteria. Try adjusting filters.</p></div>';
+                }
                 return;
             }
 
@@ -345,10 +391,11 @@
                 const primaryScore = currentPriority === 'best' ? r.overallScore : r.capabilityScore;
                 const drivers = getTopDrivers(r.breakdown, 2);
                 const incomplete = r.completeness < 0.5 ? '*' : '';
+                const onPremBadge = model.deployment?.hostedOnPrem ? '<span class="badge badge-onprem">ON-PREM</span>' : '';
 
                 return `<tr class="${hiddenClass}" onclick="openModelModal('${model.id}')">
                     <td class="rank-cell ${isTop ? 'top' : ''}">${idx + 1}</td>
-                    <td class="model-cell">${model.name}${isTop ? '<span class="badge badge-default">TOP PICK</span>' : ''}
+                    <td class="model-cell">${model.name}${isTop ? '<span class="badge badge-default">TOP PICK</span>' : ''}${onPremBadge}
                         <div class="provider-sub">${getProviderName(model.provider)}</div></td>
                     <td class="score-cell"><span class="score-val">${primaryScore}${incomplete}</span>
                         <div class="score-bar-mini"><div class="fill ${primaryClass}" style="width:${primaryScore}%"></div></div></td>
