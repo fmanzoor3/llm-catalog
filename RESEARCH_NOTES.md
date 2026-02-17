@@ -1494,4 +1494,24 @@ Before finalizing updates, verify:
 
 ---
 
-*Last updated: February 6, 2026*
+---
+
+## Future Feature: Multi-Select Use Cases
+
+**Status:** Implemented and tested, then reverted to single-select for simplicity (Feb 2026).
+
+**What it did:** Allowed users to select multiple use case cards (e.g. Chatbot + Knowledge) in the Find Your LLM section. Scores were averaged across selected use cases, breakdowns merged with weighted contributions, and the header showed combined names (e.g. "Recommended for Chatbot + Knowledge Base").
+
+**How it worked:**
+- `selectedUsecases` array replaced `currentUsecase` string
+- Click toggled cards on/off (at least one must remain selected)
+- `computeCapabilityScore()` called per use case, scores averaged
+- Breakdown metrics merged: duplicate metrics had contributions averaged
+- `computeValueScore()` used the averaged capability score
+- Sorting applied to averaged overall/capability/value scores
+
+**Why reverted:** Found to be less user-friendly than single selection for the current audience. Could be re-enabled in the future if users request combined use case analysis.
+
+**To re-enable:** See git commit `be63904` for the full multi-select implementation.
+
+*Last updated: February 16, 2026*
