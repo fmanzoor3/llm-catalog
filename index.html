@@ -362,7 +362,7 @@
                 return;
             }
 
-            // Metric display names
+            // Metric display names and descriptions
             const metricNames = {
                 'benchmarks.sweBenchVerified': 'SWE-bench', 'benchmarks.sweBenchPro': 'SWE-bench Pro',
                 'benchmarks.gpqaDiamond': 'GPQA', 'benchmarks.aime2024': 'AIME',
@@ -372,6 +372,23 @@
                 'arenaElo.overall': 'Arena', 'arenaElo.coding': 'Arena Code',
                 'arenaElo.math': 'Arena Math', 'arenaElo.creativeWriting': 'Arena CW',
                 'arenaElo.instructionFollowing': 'Arena IF', 'arenaElo.longerQuery': 'Arena LQ'
+            };
+            const metricDescs = {
+                'benchmarks.sweBenchVerified': 'SWE-bench Verified — % of real GitHub issues the model can autonomously resolve. Tests practical software engineering ability.',
+                'benchmarks.sweBenchPro': 'SWE-bench Pro — harder variant of SWE-bench with more complex, multi-step coding tasks.',
+                'benchmarks.gpqaDiamond': 'GPQA Diamond — graduate-level science questions (physics, chemistry, biology) written by domain experts.',
+                'benchmarks.aime2024': 'AIME 2024 — American Invitational Mathematics Exam problems. Tests advanced mathematical reasoning.',
+                'benchmarks.aiderPolyglot': 'Aider Polyglot — code editing benchmark across multiple programming languages using the Aider coding assistant.',
+                'benchmarks.mmmlu': 'MMMLU — Massive Multitask Language Understanding across 57 subjects including STEM, humanities, and social sciences.',
+                'benchmarks.math500': 'MATH-500 — 500 competition-level math problems testing numerical reasoning and problem solving.',
+                'benchmarks.arcAgi1': 'ARC-AGI — Abstract Reasoning Corpus measuring fluid intelligence and novel pattern recognition.',
+                'benchmarks.bigLawBench': 'BigLaw Bench — legal reasoning benchmark covering contract analysis, case law, and regulatory compliance.',
+                'arenaElo.overall': 'Chatbot Arena ELO — overall rating from blind human preference votes across all query types.',
+                'arenaElo.coding': 'Arena Coding ELO — human preference rating specifically for code generation and programming tasks.',
+                'arenaElo.math': 'Arena Math ELO — human preference rating for mathematical reasoning and calculation tasks.',
+                'arenaElo.creativeWriting': 'Arena Creative Writing ELO — human preference rating for creative and expressive writing tasks.',
+                'arenaElo.instructionFollowing': 'Arena Instruction Following ELO — human preference rating for how well the model follows complex instructions.',
+                'arenaElo.longerQuery': 'Arena Longer Query ELO — human preference rating for handling long, detailed prompts.'
             };
 
             // Determine which score columns to show based on use case + rankBy
@@ -392,7 +409,11 @@
             const initialShow = 8;
 
             let html = `<table class="rec-table"><thead><tr>
-                <th>Rank</th><th>Model</th><th>Speed</th><th>Cost</th><th>Context</th>${scoreColumns.map(k => `<th class="score-col-th">${metricNames[k] || k}</th>`).join('')}
+                <th>Rank</th><th>Model</th>
+                <th class="th-tip" data-tip="Output speed measured in tokens per second. Fast = 200+, Medium = 80–199, Slower = under 80.">Speed</th>
+                <th class="th-tip" data-tip="Average cost per million tokens (input + output ÷ 2). $ = under $2, $$ = $2–$10, $$$ = over $10.">Cost</th>
+                <th class="th-tip" data-tip="Maximum context window — how much text the model can process in a single request.">Context</th>
+                ${scoreColumns.map(k => `<th class="score-col-th th-tip" data-tip="${(metricDescs[k] || '').replace(/"/g, '&quot;')}">${metricNames[k] || k}</th>`).join('')}
             </tr></thead><tbody>`;
 
             html += ranked.map((r, idx) => {
@@ -402,10 +423,14 @@
                 const tps = model.outputTokensPerSec;
                 const onPremBadge = model.deployment?.hostedOnPrem ? '<span class="badge badge-onprem">ON-PREM</span>' : '';
 
-                // Cost display — actual pricing or "Self-hosted"
-                const costDisplay = model.pricing
-                    ? `<span class="cost-actual">$${model.pricing.inputPerMillion < 1 ? model.pricing.inputPerMillion.toFixed(2) : Math.round(model.pricing.inputPerMillion)}/$${model.pricing.outputPerMillion < 1 ? model.pricing.outputPerMillion.toFixed(2) : Math.round(model.pricing.outputPerMillion)}</span>`
-                    : '<span class="cost-actual cost-free">Self-hosted</span>';
+                // Speed: categorical label + numeric subtitle
+                const speedTier = getSpeedTier(model);
+                const speedSub = tps ? tps + ' tok/s' : '';
+
+                // Cost: categorical label + blended cost subtitle
+                const costTier = getCostTier(model);
+                const blended = model.pricing ? (model.pricing.inputPerMillion + model.pricing.outputPerMillion) / 2 : null;
+                const costSub = blended !== null ? '$' + (blended < 1 ? blended.toFixed(2) : blended.toFixed(1)) + '/M' : '';
 
                 // Dynamic score columns
                 const scoreCells = scoreColumns.map(k => {
@@ -420,8 +445,8 @@
                     <td class="rank-cell ${isTop ? 'top' : ''}">${idx + 1}</td>
                     <td class="model-cell">${model.name}${isTop ? '<span class="badge badge-default">TOP PICK</span>' : ''}${onPremBadge}
                         <div class="provider-sub">${getProviderName(model.provider)}</div></td>
-                    <td class="speed-cell">${tps ? tps + ' <span class="speed-unit">tok/s</span>' : '—'}</td>
-                    <td class="cost-cell">${costDisplay}</td>
+                    <td class="speed-cell"><span class="cell-tag ${speedTier.cls}">${speedTier.label}</span>${speedSub ? '<span class="cell-sub">' + speedSub + '</span>' : ''}</td>
+                    <td class="cost-cell"><span class="cell-tag ${costTier.cls}">${costTier.label}</span>${costSub ? '<span class="cell-sub">' + costSub + '</span>' : ''}</td>
                     <td class="context-cell">${formatTokenCount(model.contextWindow)}</td>
                     ${scoreCells}
                 </tr>`;

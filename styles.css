@@ -500,14 +500,27 @@ a:hover { color: var(--accent-hover); }
 .rec-table .rank-cell.top { color: var(--accent); font-size: 16px; }
 .rec-table .model-cell { font-weight: 600; color: var(--text-primary); font-size: 13px; }
 .rec-table .model-cell .provider-sub { font-weight: 400; color: var(--text-muted); font-size: 11px; display: block; margin-top: 2px; }
-.rec-table .speed-cell { width: 72px; text-align: right; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
-.rec-table .speed-unit { font-size: 10px; font-weight: 400; color: var(--text-muted); }
-.rec-table .cost-cell { width: 80px; text-align: center; }
-.rec-table .cost-actual { font-size: 12px; font-weight: 600; color: var(--text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.rec-table .cost-free { color: var(--green); }
+.rec-table .speed-cell, .rec-table .cost-cell { width: 80px; text-align: center; vertical-align: middle; }
+.rec-table .cell-tag { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+.rec-table .cell-sub { display: block; font-size: 10px; font-weight: 400; color: var(--text-muted); margin-top: 3px; font-variant-numeric: tabular-nums; }
+.rec-table .speed-fast { background: var(--green-light); color: var(--green); }
+.rec-table .speed-med { background: rgba(96,165,250,0.12); color: var(--blue); }
+.rec-table .speed-slow { background: var(--amber-light); color: var(--amber); }
+.rec-table .cost-free { background: var(--green-light); color: var(--green); }
+.rec-table .cost-low { background: var(--green-light); color: var(--green); }
+.rec-table .cost-mid { background: var(--amber-light); color: var(--amber); }
+.rec-table .cost-high { background: var(--red-light); color: var(--red); }
 .rec-table .context-cell { width: 56px; text-align: center; font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; font-weight: 600; }
 .rec-table .metric-cell { text-align: right; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-primary); padding-right: 16px; }
 .rec-table .score-col-th { text-align: right; padding-right: 16px; }
+.rec-table .th-tip { position: relative; cursor: help; border-bottom: 1px dashed var(--text-muted); }
+.rec-table .th-tip::after {
+    content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    background: var(--amber); color: #0b1120; font-size: 11px; font-weight: 500; line-height: 1.4;
+    padding: 6px 12px; border-radius: 6px; white-space: normal; width: max-content; max-width: 300px;
+    opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 20; text-align: left;
+}
+.rec-table .th-tip:hover::after { opacity: 1; }
 .rec-table .hidden-rec { display: none; }
 .rec-table .hidden-rec.show { display: table-row; }
 

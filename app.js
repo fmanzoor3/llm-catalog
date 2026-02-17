@@ -48,6 +48,22 @@ function formatCost(model) {
     return '$' + model.pricing.inputPerMillion.toFixed(2) + '/' + model.pricing.outputPerMillion.toFixed(2);
 }
 
+function getCostTier(model) {
+    if (!model.pricing) return { label: 'Free', cls: 'cost-free' };
+    var blend = (model.pricing.inputPerMillion + model.pricing.outputPerMillion) / 2;
+    if (blend < 2) return { label: '$', cls: 'cost-low' };
+    if (blend < 10) return { label: '$$', cls: 'cost-mid' };
+    return { label: '$$$', cls: 'cost-high' };
+}
+
+function getSpeedTier(model) {
+    var tps = model.outputTokensPerSec;
+    if (!tps) return { label: '—', cls: '' };
+    if (tps >= 200) return { label: 'Fast', cls: 'speed-fast' };
+    if (tps >= 80) return { label: 'Medium', cls: 'speed-med' };
+    return { label: 'Slower', cls: 'speed-slow' };
+}
+
 function formatSpeed(model) {
     var tps = model.outputTokensPerSec;
     if (!tps) return '—';
