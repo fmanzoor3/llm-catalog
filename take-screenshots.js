@@ -4,7 +4,7 @@ const { chromium } = require('playwright');
     const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
     const dir = process.cwd().split('\\').join('/');
 
-    // 1. Default state (Balanced, Coding)
+    // 1. Default state (Benchmark ranking, Coding)
     await page.goto('file:///' + dir + '/index.html');
     await page.waitForTimeout(1000);
     await page.screenshot({ path: 'screenshot-filters-v2.png', fullPage: false });
@@ -28,21 +28,20 @@ const { chromium } = require('playwright');
     await page.screenshot({ path: 'screenshot-filters-privacy.png', fullPage: false });
     console.log('4. Privacy optimize');
 
-    // 5. Click Rank By: Community
+    // 5. Switch to Community ranking
     await page.click('#optimize-group [data-value="balanced"]');
     await page.click('#rankby-group [data-value="community"]');
     await page.waitForTimeout(500);
     await page.screenshot({ path: 'screenshot-filters-community.png', fullPage: false });
     console.log('5. Community rank');
 
-    // 6. Click Rank By: Benchmark
+    // 6. Switch back to Benchmark ranking
     await page.click('#rankby-group [data-value="benchmark"]');
     await page.waitForTimeout(500);
     await page.screenshot({ path: 'screenshot-filters-benchmark.png', fullPage: false });
     console.log('6. Benchmark rank');
 
     // 7. Environment: On-Prem
-    await page.click('#rankby-group [data-value="balanced"]');
     await page.selectOption('#environment-filter', 'on-prem');
     await page.waitForTimeout(500);
     await page.screenshot({ path: 'screenshot-filters-onprem.png', fullPage: false });
