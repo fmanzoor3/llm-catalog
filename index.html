@@ -59,6 +59,7 @@
 
                 <!-- Use Case Cards (dynamic) -->
                 <div class="usecase-grid" id="usecase-grid"></div>
+                <p class="multi-select-hint">Select multiple to find models that handle combined needs</p>
             </div>
         </section>
 
@@ -193,7 +194,7 @@
         if (updatedEl && modelData.lastUpdated) updatedEl.textContent = modelData.lastUpdated;
 
         let currentSet = "generic";
-        let currentUsecase = "coding";
+        let selectedUsecases = ["coding"];
         let currentPriority = "best";
 
         const resultsList = document.getElementById("results-list");
@@ -231,12 +232,12 @@
             knowledge_base: "Knowledge", multilingual: "Multilingual"
         };
 
-        // Render use case cards for current set
+        // Render use case cards for current set (multi-select)
         function renderUsecaseCards() {
             const setConfig = modelData.useCaseSets[currentSet];
             const grid = document.getElementById("usecase-grid");
             const useCases = setConfig.useCases;
-            currentUsecase = useCases[0]; // reset to first
+            selectedUsecases = [useCases[0]]; // reset to first
 
             grid.innerHTML = useCases.map((uc, i) => {
                 const icon = usecaseIcons[uc] || usecaseIcons.chatbot;
@@ -247,12 +248,20 @@
                 </button>`;
             }).join('');
 
-            // Bind click events
+            // Bind click events — toggle multi-select
             grid.querySelectorAll(".usecase-card").forEach(card => {
                 card.addEventListener("click", () => {
-                    grid.querySelectorAll(".usecase-card").forEach(c => c.classList.remove("active"));
-                    card.classList.add("active");
-                    currentUsecase = card.dataset.usecase;
+                    const uc = card.dataset.usecase;
+                    const idx = selectedUsecases.indexOf(uc);
+                    if (idx >= 0 && selectedUsecases.length > 1) {
+                        // Deselect (but keep at least one)
+                        selectedUsecases.splice(idx, 1);
+                        card.classList.remove("active");
+                    } else if (idx < 0) {
+                        // Add to selection
+                        selectedUsecases.push(uc);
+                        card.classList.add("active");
+                    }
                     render();
                 });
             });
@@ -299,10 +308,12 @@
         function render() {
             const budget = document.getElementById("budget-filter").value;
 
-            // Update header
-            const ucConfig = modelData.scoringConfig[currentUsecase];
-            const ucName = ucConfig ? ucConfig.name : currentUsecase;
-            document.getElementById("usecase-name").textContent = ucName;
+            // Update header — show combined use case names
+            const ucNames = selectedUsecases.map(uc => {
+                const cfg = modelData.scoringConfig[uc];
+                return cfg ? cfg.name : uc;
+            });
+            document.getElementById("usecase-name").textContent = ucNames.join(' + ');
 
             const priorityDescs = {
                 best: 'Ranked by overall quality + value',
@@ -312,9 +323,46 @@
             };
             document.getElementById("results-meta").textContent = priorityDescs[currentPriority] || '';
 
-            // Score and rank
+            // Score and rank — average across selected use cases
             const sortBy = currentPriority === 'cost' ? 'cost' : currentPriority === 'best' ? 'best' : 'capability';
-            let ranked = rankModelsForUseCase(currentUsecase, sortBy);
+            let ranked;
+            if (selectedUsecases.length === 1) {
+                ranked = rankModelsForUseCase(selectedUsecases[0], sortBy);
+            } else {
+                // Multi-usecase: compute per model, average scores, merge breakdowns
+                ranked = modelData.models.map(model => {
+                    let totalCap = 0;
+                    let mergedBreakdown = [];
+                    let minCompleteness = 1;
+                    selectedUsecases.forEach(uc => {
+                        const cap = computeCapabilityScore(model, uc);
+                        totalCap += cap.score;
+                        minCompleteness = Math.min(minCompleteness, cap.completeness);
+                        cap.breakdown.forEach(d => {
+                            const existing = mergedBreakdown.find(b => b.metric === d.metric);
+                            if (existing) {
+                                existing.contribution += d.contribution / selectedUsecases.length;
+                            } else {
+                                mergedBreakdown.push({ ...d, contribution: d.contribution / selectedUsecases.length });
+                            }
+                        });
+                    });
+                    const avgCap = Math.round(totalCap / selectedUsecases.length);
+                    const val = computeValueScore(model, avgCap);
+                    mergedBreakdown.sort((a, b) => b.contribution - a.contribution);
+                    return {
+                        model,
+                        capabilityScore: avgCap,
+                        valueScore: val,
+                        overallScore: Math.round(avgCap * 0.7 + val * 0.3),
+                        breakdown: mergedBreakdown,
+                        completeness: minCompleteness
+                    };
+                });
+                if (sortBy === 'cost') ranked.sort((a, b) => b.valueScore - a.valueScore);
+                else if (sortBy === 'best') ranked.sort((a, b) => b.overallScore - a.overallScore);
+                else ranked.sort((a, b) => b.capabilityScore - a.capabilityScore);
+            }
 
             // Privacy filter
             if (currentPriority === 'privacy') {
