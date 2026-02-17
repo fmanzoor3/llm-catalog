@@ -49,10 +49,9 @@ function formatCost(model) {
 }
 
 function formatSpeed(model) {
-    // Use costTier as proxy
-    if (model.costTier === 'low' || model.costTier === 'self-hosted') return 'Fast';
-    if (model.costTier === 'mid') return 'Medium';
-    return 'Slower';
+    var tps = model.outputTokensPerSec;
+    if (!tps) return '—';
+    return tps + ' tok/s';
 }
 
 // ===== DEPLOYMENT HELPERS =====
@@ -99,9 +98,11 @@ function normalizeContextWindow(tokens) {
 }
 
 function getSpeedProxy(model) {
-    if (model.costTier === 'low' || model.costTier === 'self-hosted') return 80;
-    if (model.costTier === 'mid') return 50;
-    return 30;
+    // Use real output tokens/sec data, normalized to 0-100 scale
+    var tps = model.outputTokensPerSec;
+    if (!tps) return 50; // fallback
+    // Normalize: 30 tok/s -> ~20, 100 tok/s -> ~55, 200+ tok/s -> ~85+
+    return Math.min(100, Math.round((tps / 400) * 100));
 }
 
 function getMetricValue(model, metricKey) {

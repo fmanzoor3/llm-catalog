@@ -472,11 +472,7 @@ a:hover { color: var(--accent-hover); }
     flex-wrap: wrap;
     align-items: center;
 }
-.score-legend .legend-item { display: inline-flex; align-items: center; gap: 6px; }
-.score-legend .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.score-legend .legend-dot.quality { background: var(--blue); }
-.score-legend .legend-dot.overall { background: var(--accent); }
-.score-legend .legend-dot.efficiency { background: var(--green); }
+.score-legend .legend-item { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 0.72rem; }
 .score-desc { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 16px; }
 
 .results-list {
@@ -504,15 +500,14 @@ a:hover { color: var(--accent-hover); }
 .rec-table .rank-cell.top { color: var(--accent); font-size: 16px; }
 .rec-table .model-cell { font-weight: 600; color: var(--text-primary); font-size: 13px; }
 .rec-table .model-cell .provider-sub { font-weight: 400; color: var(--text-muted); font-size: 11px; display: block; margin-top: 2px; }
-.rec-table .score-cell { width: 76px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
-.rec-table .score-cell .score-val { font-size: 14px; }
-.rec-table .score-cell .score-bar-mini { height: 3px; background: var(--border); border-radius: 2px; margin-top: 4px; }
-.rec-table .score-cell .score-bar-mini .fill { height: 100%; border-radius: 2px; }
-.rec-table .score-cell .fill.quality { background: var(--blue); }
-.rec-table .score-cell .fill.overall { background: var(--accent); }
-.rec-table .score-cell .fill.efficiency { background: var(--green); }
-.rec-table .cost-cell { width: 56px; text-align: center; }
-.rec-table .drivers-cell { color: var(--text-muted); font-size: 12px; }
+.rec-table .speed-cell { width: 72px; text-align: right; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+.rec-table .speed-unit { font-size: 10px; font-weight: 400; color: var(--text-muted); }
+.rec-table .cost-cell { width: 80px; text-align: center; }
+.rec-table .cost-actual { font-size: 12px; font-weight: 600; color: var(--text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rec-table .cost-free { color: var(--green); }
+.rec-table .context-cell { width: 56px; text-align: center; font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; font-weight: 600; }
+.rec-table .metric-cell { text-align: right; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-primary); padding-right: 16px; }
+.rec-table .score-col-th { text-align: right; padding-right: 16px; }
 .rec-table .hidden-rec { display: none; }
 .rec-table .hidden-rec.show { display: table-row; }
 

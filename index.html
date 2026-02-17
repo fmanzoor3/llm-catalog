@@ -349,17 +349,9 @@
             // Filter zero scores
             ranked = ranked.filter(r => r.capabilityScore > 0);
 
-            // Score legend
+            // Score legend — clear
             const legendEl = document.getElementById("score-legend");
-            if (currentOptimize === 'balanced') {
-                legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot overall"></span> Score = quality + value</span><span class="legend-item"><span class="legend-dot efficiency"></span> Value = quality per dollar</span>';
-            } else if (currentOptimize === 'low-cost') {
-                legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot efficiency"></span> Value = quality per dollar</span><span class="legend-item"><span class="legend-dot quality"></span> Quality = benchmark score</span>';
-            } else if (currentOptimize === 'fast') {
-                legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot quality"></span> Speed+Quality blend</span><span class="legend-item"><span class="legend-dot efficiency"></span> Value = quality per dollar</span>';
-            } else {
-                legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot quality"></span> Quality = benchmark score</span><span class="legend-item"><span class="legend-dot efficiency"></span> Value = quality per dollar</span>';
-            }
+            legendEl.innerHTML = '';
 
             if (ranked.length === 0) {
                 if (currentEnvironment === 'on-prem') {
@@ -370,40 +362,68 @@
                 return;
             }
 
-            // Determine primary column
-            const isFast = currentOptimize === 'fast';
-            const primaryLabel = currentOptimize === 'balanced' ? 'Score' : isFast ? 'Speed+Q' : 'Quality';
-            const primaryClass = currentOptimize === 'balanced' ? 'overall' : 'quality';
-            const secondaryLabel = isFast ? 'Speed' : 'Value';
+            // Metric display names
+            const metricNames = {
+                'benchmarks.sweBenchVerified': 'SWE-bench', 'benchmarks.sweBenchPro': 'SWE-bench Pro',
+                'benchmarks.gpqaDiamond': 'GPQA', 'benchmarks.aime2024': 'AIME',
+                'benchmarks.aiderPolyglot': 'Aider', 'benchmarks.mmmlu': 'MMMLU',
+                'benchmarks.math500': 'MATH', 'benchmarks.arcAgi1': 'ARC-AGI',
+                'benchmarks.bigLawBench': 'BigLaw',
+                'arenaElo.overall': 'Arena', 'arenaElo.coding': 'Arena Code',
+                'arenaElo.math': 'Arena Math', 'arenaElo.creativeWriting': 'Arena CW',
+                'arenaElo.instructionFollowing': 'Arena IF', 'arenaElo.longerQuery': 'Arena LQ'
+            };
+
+            // Determine which score columns to show based on use case + rankBy
+            const ucWeights = modelData.scoringConfig[currentUsecase]?.weights || {};
+            let scoreColumns = [];
+            if (currentRankBy === 'benchmark') {
+                // Show benchmark metrics for this use case, fall back to arena if none
+                scoreColumns = Object.keys(ucWeights).filter(k => k.indexOf('benchmarks.') === 0);
+                if (scoreColumns.length === 0) scoreColumns = Object.keys(ucWeights).filter(k => k.indexOf('arenaElo.') === 0);
+            } else {
+                // Show arena metrics for this use case, fall back to benchmark if none
+                scoreColumns = Object.keys(ucWeights).filter(k => k.indexOf('arenaElo.') === 0);
+                if (scoreColumns.length === 0) scoreColumns = Object.keys(ucWeights).filter(k => k.indexOf('benchmarks.') === 0);
+            }
+            // Cap at 3 columns to keep table readable
+            scoreColumns = scoreColumns.slice(0, 3);
+
             const initialShow = 8;
 
             let html = `<table class="rec-table"><thead><tr>
-                <th>#</th><th>Model</th><th style="text-align:right">${primaryLabel}</th>
-                <th style="text-align:right">${secondaryLabel}</th><th>Cost</th><th>Key Strengths</th>
+                <th>Rank</th><th>Model</th><th>Speed</th><th>Cost</th><th>Context</th>${scoreColumns.map(k => `<th class="score-col-th">${metricNames[k] || k}</th>`).join('')}
             </tr></thead><tbody>`;
 
             html += ranked.map((r, idx) => {
                 const model = r.model;
-                const costClass = model.costTier === 'self-hosted' ? 'low' : model.costTier;
                 const hiddenClass = idx >= initialShow ? 'hidden-rec' : '';
                 const isTop = idx === 0;
-                const primaryScore = currentOptimize === 'balanced' ? r.overallScore : isFast ? r.speedAdjustedScore : r.capabilityScore;
-                const secondaryScore = isFast ? getSpeedProxy(model) : r.valueScore;
-                const secondaryDisplay = isFast ? (secondaryScore >= 70 ? 'Fast' : secondaryScore >= 40 ? 'Medium' : 'Slower') : secondaryScore;
-                const drivers = getTopDrivers(r.breakdown, 2);
-                const incomplete = r.completeness < 0.5 ? '*' : '';
+                const tps = model.outputTokensPerSec;
                 const onPremBadge = model.deployment?.hostedOnPrem ? '<span class="badge badge-onprem">ON-PREM</span>' : '';
+
+                // Cost display — actual pricing or "Self-hosted"
+                const costDisplay = model.pricing
+                    ? `<span class="cost-actual">$${model.pricing.inputPerMillion < 1 ? model.pricing.inputPerMillion.toFixed(2) : Math.round(model.pricing.inputPerMillion)}/$${model.pricing.outputPerMillion < 1 ? model.pricing.outputPerMillion.toFixed(2) : Math.round(model.pricing.outputPerMillion)}</span>`
+                    : '<span class="cost-actual cost-free">Self-hosted</span>';
+
+                // Dynamic score columns
+                const scoreCells = scoreColumns.map(k => {
+                    const val = getMetricValue(model, k);
+                    if (val === null || val === undefined) return '<td class="metric-cell">—</td>';
+                    const isArena = k.indexOf('arenaElo.') === 0;
+                    const display = isArena ? Math.round(val) : (typeof val === 'number' && val <= 100 ? val.toFixed(1) + '%' : val);
+                    return `<td class="metric-cell">${display}</td>`;
+                }).join('');
 
                 return `<tr class="${hiddenClass}" onclick="openModelModal('${model.id}')">
                     <td class="rank-cell ${isTop ? 'top' : ''}">${idx + 1}</td>
                     <td class="model-cell">${model.name}${isTop ? '<span class="badge badge-default">TOP PICK</span>' : ''}${onPremBadge}
                         <div class="provider-sub">${getProviderName(model.provider)}</div></td>
-                    <td class="score-cell"><span class="score-val">${primaryScore}${incomplete}</span>
-                        <div class="score-bar-mini"><div class="fill ${primaryClass}" style="width:${primaryScore}%"></div></div></td>
-                    <td class="score-cell"><span class="score-val">${secondaryDisplay}</span>
-                        <div class="score-bar-mini"><div class="fill efficiency" style="width:${isFast ? secondaryScore : secondaryScore}%"></div></div></td>
-                    <td class="cost-cell"><span class="cost-badge cost-${costClass}">${getCostLabel(model.costTier)}</span></td>
-                    <td class="drivers-cell">${drivers.join(' · ')}</td>
+                    <td class="speed-cell">${tps ? tps + ' <span class="speed-unit">tok/s</span>' : '—'}</td>
+                    <td class="cost-cell">${costDisplay}</td>
+                    <td class="context-cell">${formatTokenCount(model.contextWindow)}</td>
+                    ${scoreCells}
                 </tr>`;
             }).join('');
 
