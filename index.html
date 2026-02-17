@@ -97,7 +97,7 @@
             <div class="container">
                 <div class="results-header">
                     <h2 class="results-title">Recommended for <span id="usecase-name">Coding</span></h2>
-                    <span class="results-meta" id="results-meta">Ranked by overall quality + value</span>
+                    <span class="results-meta" id="results-meta">Ranked by quality + value</span>
                 </div>
                 <div class="rankby-bar">
                     <span class="rankby-label">Scores based on</span>
@@ -313,7 +313,7 @@
             }
 
             const optimizeDescs = {
-                balanced: 'Ranked by overall quality + value',
+                balanced: 'Ranked by quality + value',
                 quality: 'Ranked by benchmark performance',
                 'low-cost': 'Ranked by quality per dollar',
                 fast: 'Ranked by speed + quality',
@@ -352,7 +352,7 @@
             // Score legend
             const legendEl = document.getElementById("score-legend");
             if (currentOptimize === 'balanced') {
-                legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot overall"></span> Overall = quality + value</span><span class="legend-item"><span class="legend-dot efficiency"></span> Value = quality per dollar</span>';
+                legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot overall"></span> Score = quality + value</span><span class="legend-item"><span class="legend-dot efficiency"></span> Value = quality per dollar</span>';
             } else if (currentOptimize === 'low-cost') {
                 legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot efficiency"></span> Value = quality per dollar</span><span class="legend-item"><span class="legend-dot quality"></span> Quality = benchmark score</span>';
             } else if (currentOptimize === 'fast') {
@@ -372,7 +372,7 @@
 
             // Determine primary column
             const isFast = currentOptimize === 'fast';
-            const primaryLabel = currentOptimize === 'balanced' ? 'Overall' : isFast ? 'Speed+Q' : 'Quality';
+            const primaryLabel = currentOptimize === 'balanced' ? 'Score' : isFast ? 'Speed+Q' : 'Quality';
             const primaryClass = currentOptimize === 'balanced' ? 'overall' : 'quality';
             const secondaryLabel = isFast ? 'Speed' : 'Value';
             const initialShow = 8;

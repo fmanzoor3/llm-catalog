@@ -169,7 +169,7 @@
             { label: "Best Reasoning", finder: () => rankModelsForUseCase("reasoning", "capability")[0]?.model, detail: () => `Score: ${rankModelsForUseCase("reasoning", "capability")[0]?.capabilityScore || 'N/A'}` },
             { label: "Longest Context", finder: () => [...models].sort((a, b) => (b.contextWindow || 0) - (a.contextWindow || 0))[0], detail: m => formatTokenCount(m.contextWindow) + " tokens" },
             { label: "Best Value", finder: () => rankModelsForUseCase("coding", "cost")[0]?.model, detail: () => "Quality/cost leader" },
-            { label: "Best All-Round", finder: () => rankModelsForUseCase("coding", "best")[0]?.model, detail: () => `Overall: ${rankModelsForUseCase("coding", "best")[0]?.overallScore || 'N/A'}` },
+            { label: "Best All-Round", finder: () => rankModelsForUseCase("coding", "best")[0]?.model, detail: () => `Score: ${rankModelsForUseCase("coding", "best")[0]?.overallScore || 'N/A'}` },
             { label: "Best Open Source", finder: () => { const oss = models.filter(m => m.costTier === "self-hosted"); return oss.map(m => ({ model: m, score: computeCapabilityScore(m, "coding").score })).sort((a, b) => b.score - a.score)[0]?.model || models[0]; }, detail: m => m.name },
             { label: "Best for Documents", finder: () => rankModelsForUseCase("documents", "capability")[0]?.model, detail: () => `Score: ${rankModelsForUseCase("documents", "capability")[0]?.capabilityScore || 'N/A'}` }
         ];
