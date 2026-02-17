@@ -173,7 +173,8 @@ function computeCapabilityScore(model, useCaseKey) {
 
     score = Math.max(0, Math.min(100, score * 100 / totalWeight));
     var completeness = availableWeight / totalWeight;
-    if (completeness < 0.5) score = score * (0.5 + completeness);
+    // Penalize models missing key metrics — gentle above 70%, steep below
+    if (completeness < 0.7) score = score * Math.pow(completeness / 0.7, 2);
     score = Math.round(score);
 
     return {
@@ -367,7 +368,7 @@ function computeCapabilityScoreWithWeights(model, adjustedWeights, normRanges) {
 
     score = Math.max(0, Math.min(100, score * 100 / totalWeight));
     var completeness = availableWeight / totalWeight;
-    if (completeness < 0.5) score = score * (0.5 + completeness);
+    if (completeness < 0.7) score = score * Math.pow(completeness / 0.7, 2);
     score = Math.round(score);
 
     return { score: score, breakdown: breakdown.sort(function(a, b) { return b.contribution - a.contribution; }), completeness: completeness };
@@ -428,13 +429,19 @@ function openModelModal(modelId) {
 
     // Specs
     const specs = [
+        { label: 'Speed', value: model.outputTokensPerSec ? model.outputTokensPerSec + ' tok/s' : 'N/A' },
         { label: 'Context Window', value: formatTokenCount(model.contextWindow) },
         { label: 'Max Output', value: model.maxOutputTokens ? formatTokenCount(model.maxOutputTokens) : 'N/A' },
         { label: 'Multimodal', value: model.specs?.multimodal ? model.specs.multimodalTypes.join(', ') : 'Text only' },
         { label: 'Released', value: model.specs?.releaseDate || 'N/A' },
         { label: 'Training Cutoff', value: model.specs?.trainingDataCutoff || 'N/A' },
         { label: 'Hosting', value: getHostingLabel(model) },
-        { label: 'Platforms', value: getCloudPlatformLabels(model).join(', ') || model.specs?.apiAvailability || 'Direct API' }
+        { label: 'Available via', value: (function() {
+            var avail = model.specs?.apiAvailability || getCloudPlatformLabels(model).join(', ') || '';
+            // Remove standalone "API" entries since Hosting already covers that
+            avail = avail.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s && s.toLowerCase() !== 'api'; }).join(', ');
+            return avail || 'N/A';
+        })() }
     ];
     document.getElementById('modalSpecs').innerHTML = specs.map(s =>
         `<div class="modal-spec"><div class="modal-spec-label">${s.label}</div><div class="modal-spec-value">${s.value}</div></div>`

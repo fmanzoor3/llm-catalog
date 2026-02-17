@@ -374,21 +374,31 @@
                 'arenaElo.instructionFollowing': 'Arena IF', 'arenaElo.longerQuery': 'Arena LQ'
             };
             const metricDescs = {
-                'benchmarks.sweBenchVerified': 'SWE-bench Verified — % of real GitHub issues the model can autonomously resolve. Tests practical software engineering ability.',
-                'benchmarks.sweBenchPro': 'SWE-bench Pro — harder variant of SWE-bench with more complex, multi-step coding tasks.',
-                'benchmarks.gpqaDiamond': 'GPQA Diamond — graduate-level science questions (physics, chemistry, biology) written by domain experts.',
-                'benchmarks.aime2024': 'AIME 2024 — American Invitational Mathematics Exam problems. Tests advanced mathematical reasoning.',
-                'benchmarks.aiderPolyglot': 'Aider Polyglot — code editing benchmark across multiple programming languages using the Aider coding assistant.',
-                'benchmarks.mmmlu': 'MMMLU — Massive Multitask Language Understanding across 57 subjects including STEM, humanities, and social sciences.',
-                'benchmarks.math500': 'MATH-500 — 500 competition-level math problems testing numerical reasoning and problem solving.',
-                'benchmarks.arcAgi1': 'ARC-AGI — Abstract Reasoning Corpus measuring fluid intelligence and novel pattern recognition.',
-                'benchmarks.bigLawBench': 'BigLaw Bench — legal reasoning benchmark covering contract analysis, case law, and regulatory compliance.',
-                'arenaElo.overall': 'Chatbot Arena ELO — overall rating from blind human preference votes across all query types.',
-                'arenaElo.coding': 'Arena Coding ELO — human preference rating specifically for code generation and programming tasks.',
-                'arenaElo.math': 'Arena Math ELO — human preference rating for mathematical reasoning and calculation tasks.',
-                'arenaElo.creativeWriting': 'Arena Creative Writing ELO — human preference rating for creative and expressive writing tasks.',
-                'arenaElo.instructionFollowing': 'Arena Instruction Following ELO — human preference rating for how well the model follows complex instructions.',
-                'arenaElo.longerQuery': 'Arena Longer Query ELO — human preference rating for handling long, detailed prompts.'
+                'benchmarks.sweBenchVerified': 'Measures % of real GitHub issues a model can autonomously resolve. Tests practical software engineering ability.',
+                'benchmarks.sweBenchPro': 'Harder variant of SWE-bench with more complex, multi-step coding tasks.',
+                'benchmarks.gpqaDiamond': 'Graduate-level science questions in physics, chemistry, and biology, written by domain experts.',
+                'benchmarks.aime2024': 'Problems from the American Invitational Mathematics Exam. Tests advanced mathematical reasoning.',
+                'benchmarks.aiderPolyglot': 'Code editing benchmark across multiple programming languages using the Aider coding assistant.',
+                'benchmarks.mmmlu': 'Massive Multitask Language Understanding across 57 subjects including STEM, humanities, and social sciences.',
+                'benchmarks.math500': '500 competition-level math problems testing numerical reasoning and problem solving.',
+                'benchmarks.arcAgi1': 'Abstract Reasoning Corpus measuring fluid intelligence and novel pattern recognition.',
+                'benchmarks.bigLawBench': 'Legal reasoning benchmark covering contract analysis, case law, and regulatory compliance.',
+                'arenaElo.overall': 'Overall rating from blind human preference votes across all query types on Chatbot Arena.',
+                'arenaElo.coding': 'Human preference rating specifically for code generation and programming tasks.',
+                'arenaElo.math': 'Human preference rating for mathematical reasoning and calculation tasks.',
+                'arenaElo.creativeWriting': 'Human preference rating for creative and expressive writing tasks.',
+                'arenaElo.instructionFollowing': 'Human preference rating for how well the model follows complex instructions.',
+                'arenaElo.longerQuery': 'Human preference rating for handling long, detailed prompts.'
+            };
+            const metricFullNames = {
+                'benchmarks.sweBenchVerified': 'SWE-bench Verified', 'benchmarks.sweBenchPro': 'SWE-bench Pro',
+                'benchmarks.gpqaDiamond': 'GPQA Diamond', 'benchmarks.aime2024': 'AIME 2024',
+                'benchmarks.aiderPolyglot': 'Aider Polyglot', 'benchmarks.mmmlu': 'MMMLU',
+                'benchmarks.math500': 'MATH-500', 'benchmarks.arcAgi1': 'ARC-AGI',
+                'benchmarks.bigLawBench': 'BigLaw Bench',
+                'arenaElo.overall': 'Chatbot Arena ELO', 'arenaElo.coding': 'Arena Coding ELO',
+                'arenaElo.math': 'Arena Math ELO', 'arenaElo.creativeWriting': 'Arena Creative Writing ELO',
+                'arenaElo.instructionFollowing': 'Arena Instruction Following ELO', 'arenaElo.longerQuery': 'Arena Longer Query ELO'
             };
 
             // Determine which score columns to show based on use case + rankBy
@@ -410,10 +420,10 @@
 
             let html = `<table class="rec-table"><thead><tr>
                 <th>Rank</th><th>Model</th>
-                <th class="th-tip" data-tip="Output speed measured in tokens per second. Fast = 200+, Medium = 80–199, Slower = under 80.">Speed</th>
-                <th class="th-tip" data-tip="Average cost per million tokens (input + output ÷ 2). $ = under $2, $$ = $2–$10, $$$ = over $10.">Cost</th>
-                <th class="th-tip" data-tip="Maximum context window — how much text the model can process in a single request.">Context</th>
-                ${scoreColumns.map(k => `<th class="score-col-th th-tip" data-tip="${(metricDescs[k] || '').replace(/"/g, '&quot;')}">${metricNames[k] || k}</th>`).join('')}
+                <th class="th-tip" data-tip-title="Speed" data-tip-desc="Output tokens generated per second. Measured via Artificial Analysis using standardized prompts.">Speed</th>
+                <th class="th-tip" data-tip-title="Cost" data-tip-desc="Average of input and output price per million tokens. Based on direct API pricing — platform rates (Azure, AWS) may differ.">Cost</th>
+                <th class="th-tip" data-tip-title="Context Window" data-tip-desc="Max tokens the model can process in a single request.">Context</th>
+                ${scoreColumns.map(k => `<th class="score-col-th th-tip" data-tip-title="${(metricFullNames[k] || metricNames[k] || k).replace(/"/g, '&quot;')}" data-tip-desc="${(metricDescs[k] || '').replace(/"/g, '&quot;')}">${metricNames[k] || k}</th>`).join('')}
             </tr></thead><tbody>`;
 
             html += ranked.map((r, idx) => {
@@ -472,6 +482,28 @@
         btn.textContent = isExpanded ? `Show ${hiddenRows.length} more` : 'Show fewer';
         btn.dataset.expanded = isExpanded ? 'false' : 'true';
     }
+
+    // Column header tooltips
+    (function() {
+        const tip = document.createElement('div');
+        tip.className = 'col-tooltip';
+        document.body.appendChild(tip);
+        document.addEventListener('mouseover', function(e) {
+            const th = e.target.closest('.th-tip');
+            if (!th) { tip.classList.remove('show'); return; }
+            const title = th.dataset.tipTitle || '';
+            const desc = th.dataset.tipDesc || '';
+            if (!desc) { tip.classList.remove('show'); return; }
+            tip.innerHTML = '<div class="tip-title">' + title + '</div><div class="tip-desc">' + desc + '</div>';
+            tip.classList.add('show');
+            const rect = th.getBoundingClientRect();
+            tip.style.left = Math.max(8, Math.min(rect.left + rect.width / 2 - tip.offsetWidth / 2, window.innerWidth - tip.offsetWidth - 8)) + 'px';
+            tip.style.top = (rect.top - tip.offsetHeight - 8) + 'px';
+        });
+        document.addEventListener('mouseout', function(e) {
+            if (e.target.closest('.th-tip')) tip.classList.remove('show');
+        });
+    })();
     </script>
 </body>
 </html>
