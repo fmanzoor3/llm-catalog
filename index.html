@@ -62,50 +62,32 @@
             </div>
         </section>
 
-        <!-- Priority Filters -->
+        <!-- Filters -->
         <section class="filters-section">
             <div class="container">
-                <div class="filters-bar">
-                    <span class="filter-label-tag">PRIORITY</span>
-                    <div class="filter-toggles">
-                        <label class="toggle-filter">
-                            <span class="toggle-text">Best Overall</span>
-                            <input type="radio" name="priority" value="best" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <label class="toggle-filter">
-                            <span class="toggle-text">Quality</span>
-                            <input type="radio" name="priority" value="quality">
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <label class="toggle-filter">
-                            <span class="toggle-text">Cost Efficient</span>
-                            <input type="radio" name="priority" value="cost">
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <label class="toggle-filter">
-                            <span class="toggle-text">Privacy</span>
-                            <input type="radio" name="priority" value="privacy">
-                            <span class="toggle-slider"></span>
-                        </label>
+                <div class="filters-bar filters-bar-v2">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <span class="filter-label-tag">OPTIMIZE FOR</span>
+                            <div class="chip-group" id="optimize-group">
+                                <button class="filter-chip active" data-value="balanced">Balanced</button>
+                                <button class="filter-chip" data-value="quality">Quality</button>
+                                <button class="filter-chip" data-value="low-cost">Low Cost</button>
+                                <button class="filter-chip" data-value="fast">Fast</button>
+                                <button class="filter-chip" data-value="privacy">Privacy</button>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-label-tag">ENVIRONMENT</span>
+                            <select class="filter-select" id="environment-filter" style="min-width:140px;">
+                                <option value="">All</option>
+                                <option value="on-prem">On-Prem</option>
+                                <option value="azure">Azure</option>
+                                <option value="aws">AWS</option>
+                                <option value="gcp">Google Cloud</option>
+                            </select>
+                        </div>
                     </div>
-                    <select class="filter-select" id="budget-filter" style="min-width:130px;">
-                        <option value="">All Budgets</option>
-                        <option value="low">$ Budget</option>
-                        <option value="mid">$$ Mid-range</option>
-                    </select>
-                    <select class="filter-select" id="hosting-filter" style="min-width:130px;">
-                        <option value="">All Hosting</option>
-                        <option value="api">API / Cloud</option>
-                        <option value="self-hosted">Self-Hosted</option>
-                        <option value="on-prem">On-Prem</option>
-                    </select>
-                    <select class="filter-select" id="platform-filter" style="min-width:140px;">
-                        <option value="">All Platforms</option>
-                        <option value="azure">Azure</option>
-                        <option value="aws">AWS</option>
-                        <option value="gcp">Google Cloud</option>
-                    </select>
                 </div>
             </div>
         </section>
@@ -117,7 +99,15 @@
                     <h2 class="results-title">Recommended for <span id="usecase-name">Coding</span></h2>
                     <span class="results-meta" id="results-meta">Ranked by overall quality + value</span>
                 </div>
-                <div class="score-legend" id="score-legend"></div>
+                <div class="rankby-bar">
+                    <span class="filter-label-tag">RANK BY</span>
+                    <div class="chip-group" id="rankby-group">
+                        <button class="filter-chip active" data-value="balanced">Balanced</button>
+                        <button class="filter-chip" data-value="benchmark">Benchmark</button>
+                        <button class="filter-chip" data-value="community">Community</button>
+                    </div>
+                    <div class="score-legend" id="score-legend"></div>
+                </div>
                 <div class="results-list" id="results-list">
                     <!-- Populated by JS -->
                 </div>
@@ -194,7 +184,10 @@
 
         let currentSet = "generic";
         let currentUsecase = "coding";
-        let currentPriority = "best";
+        let currentOptimize = "balanced";
+        let currentEnvironment = "";
+        let currentBoosts = new Set(); // reserved for future boost feature
+        let currentRankBy = "balanced";
 
         const resultsList = document.getElementById("results-list");
         if (!resultsList) return;
@@ -209,7 +202,6 @@
             extraction: '<svg viewBox="0 0 40 40" width="36" height="36"><ellipse cx="20" cy="12" rx="12" ry="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12 v6 c0 2.2 5.4 4 12 4 s12-1.8 12-4 v-6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 18 v6 c0 2.2 5.4 4 12 4 s12-1.8 12-4 v-6" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
             translation: '<svg viewBox="0 0 40 40" width="36" height="36"><circle cx="20" cy="20" r="12" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="20" cy="20" rx="6" ry="12" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="1.5"/></svg>',
             vision: '<svg viewBox="0 0 40 40" width="36" height="36"><path d="M4 20 Q20 8 36 20 Q20 32 4 20Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="20" r="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="20" r="2" fill="currentColor"/></svg>',
-            // Enerjisa-specific icons
             internal_chatbot: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="6" y="8" width="28" height="20" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="14,28 20,28 16,34" fill="currentColor" opacity="0.6"/><circle cx="14" cy="18" r="1.5" fill="currentColor"/><circle cx="20" cy="18" r="1.5" fill="currentColor"/><circle cx="26" cy="18" r="1.5" fill="currentColor"/></svg>',
             dev_tools: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="4" y="8" width="32" height="24" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12,16 16,20 12,24" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="24" x2="28" y2="24" stroke="currentColor" stroke-width="2"/></svg>',
             report_analysis: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="8" y="6" width="24" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12,24 16,18 20,22 24,14 28,16" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
@@ -220,7 +212,6 @@
             multilingual: '<svg viewBox="0 0 40 40" width="36" height="36"><circle cx="20" cy="20" r="12" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="20" cy="20" rx="6" ry="12" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="1.5"/></svg>'
         };
 
-        // Short labels for cards
         const usecaseLabels = {
             coding: "Coding", reasoning: "Reasoning", chatbot: "Chatbot",
             documents: "Documents", content: "Content", extraction: "Extraction",
@@ -247,7 +238,6 @@
                 </button>`;
             }).join('');
 
-            // Bind click events — single select
             grid.querySelectorAll(".usecase-card").forEach(card => {
                 card.addEventListener("click", () => {
                     grid.querySelectorAll(".usecase-card").forEach(c => c.classList.remove("active"));
@@ -269,84 +259,89 @@
             });
         });
 
-        // Priority radio buttons
-        document.querySelectorAll('input[name="priority"]').forEach(radio => {
-            radio.addEventListener("change", () => {
-                currentPriority = radio.value;
+        // Optimize For — single select chips
+        document.querySelectorAll('#optimize-group .filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('#optimize-group .filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentOptimize = chip.dataset.value;
                 render();
             });
         });
 
-        // Budget filter
-        document.getElementById("budget-filter").addEventListener("change", render);
-        document.getElementById("hosting-filter").addEventListener("change", () => {
-            // Hide platform filter when self-hosted or on-prem is selected
-            const hostVal = document.getElementById("hosting-filter").value;
-            const platformEl = document.getElementById("platform-filter");
-            if (hostVal === 'self-hosted' || hostVal === 'on-prem') {
-                platformEl.value = '';
-                platformEl.style.display = 'none';
-            } else {
-                platformEl.style.display = '';
-            }
+        // Environment dropdown
+        document.getElementById('environment-filter').addEventListener('change', function() {
+            currentEnvironment = this.value;
             render();
         });
-        document.getElementById("platform-filter").addEventListener("change", render);
 
-        // Initial render of cards
+        // Rank By — single select chips
+        document.querySelectorAll('#rankby-group .filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                if (chip.classList.contains('disabled')) return;
+                document.querySelectorAll('#rankby-group .filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentRankBy = chip.dataset.value;
+                render();
+            });
+        });
+
+        // Initial render
         renderUsecaseCards();
 
         function render() {
-            const budget = document.getElementById("budget-filter").value;
-
             // Update header
             const ucConfig = modelData.scoringConfig[currentUsecase];
             document.getElementById("usecase-name").textContent = ucConfig ? ucConfig.name : currentUsecase;
 
-            const priorityDescs = {
-                best: 'Ranked by overall quality + value',
+            // Update Rank By chip availability
+            const benchChip = document.querySelector('#rankby-group [data-value="benchmark"]');
+            const commChip = document.querySelector('#rankby-group [data-value="community"]');
+            const hasBench = hasBenchmarkMetrics(currentUsecase);
+            const hasArena = hasArenaMetrics(currentUsecase);
+            benchChip.classList.toggle('disabled', !hasBench);
+            commChip.classList.toggle('disabled', !hasArena);
+            // Reset to balanced if current selection is disabled
+            if ((currentRankBy === 'benchmark' && !hasBench) || (currentRankBy === 'community' && !hasArena)) {
+                currentRankBy = 'balanced';
+                document.querySelectorAll('#rankby-group .filter-chip').forEach(c => c.classList.remove('active'));
+                document.querySelector('#rankby-group [data-value="balanced"]').classList.add('active');
+            }
+
+            const optimizeDescs = {
+                balanced: 'Ranked by overall quality + value',
                 quality: 'Ranked by benchmark performance',
-                cost: 'Ranked by quality per dollar',
+                'low-cost': 'Ranked by quality per dollar',
+                fast: 'Ranked by speed + quality',
                 privacy: 'Open-weight models for self-hosting'
             };
-            document.getElementById("results-meta").textContent = priorityDescs[currentPriority] || '';
+            const rankByDescs = { balanced: '', benchmark: ' (benchmark data)', community: ' (community rankings)' };
+            let metaText = optimizeDescs[currentOptimize] || '';
+            metaText += rankByDescs[currentRankBy] || '';
+            document.getElementById("results-meta").textContent = metaText;
 
-            // Score and rank
-            const sortBy = currentPriority === 'cost' ? 'cost' : currentPriority === 'best' ? 'best' : 'capability';
-            let ranked = rankModelsForUseCase(currentUsecase, sortBy);
+            // Score and rank using advanced system
+            let ranked = rankModelsAdvanced(currentUsecase, currentOptimize, currentRankBy, currentBoosts);
 
             // Privacy filter
-            if (currentPriority === 'privacy') {
+            if (currentOptimize === 'privacy') {
                 ranked = ranked.filter(r => r.model.deployment?.selfHostable);
                 ranked.sort((a, b) => b.capabilityScore - a.capabilityScore);
             }
 
-            // Budget filter
-            if (budget) {
-                ranked = ranked.filter(r => {
-                    if (budget === 'low') return r.model.costTier === 'low' || r.model.costTier === 'self-hosted';
-                    if (budget === 'mid') return r.model.costTier !== 'high';
-                    return true;
-                });
-            }
-
-            // Hosting filter
-            const hosting = document.getElementById("hosting-filter").value;
-            if (hosting) {
-                ranked = ranked.filter(r => matchesHostingFilter(r.model, hosting));
-                if (hosting === 'self-hosted') {
+            // Environment filter
+            if (currentEnvironment) {
+                if (currentEnvironment === 'on-prem') {
+                    ranked = ranked.filter(r => r.model.deployment?.selfHostable);
                     ranked.sort((a, b) => {
                         const aOP = a.model.deployment?.hostedOnPrem ? 1 : 0;
                         const bOP = b.model.deployment?.hostedOnPrem ? 1 : 0;
-                        return bOP - aOP;
+                        if (bOP !== aOP) return bOP - aOP;
+                        return b.capabilityScore - a.capabilityScore;
                     });
+                } else {
+                    ranked = ranked.filter(r => matchesPlatformFilter(r.model, currentEnvironment));
                 }
-            }
-
-            // Platform filter
-            const platform = document.getElementById("platform-filter").value;
-            if (platform) {
-                ranked = ranked.filter(r => matchesPlatformFilter(r.model, platform));
             }
 
             // Filter zero scores
@@ -354,32 +349,35 @@
 
             // Score legend
             const legendEl = document.getElementById("score-legend");
-            if (currentPriority === 'best') {
+            if (currentOptimize === 'balanced') {
                 legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot overall"></span> Overall = quality + value</span><span class="legend-item"><span class="legend-dot efficiency"></span> Value = quality per dollar</span>';
-            } else if (currentPriority === 'cost') {
+            } else if (currentOptimize === 'low-cost') {
                 legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot efficiency"></span> Value = quality per dollar</span><span class="legend-item"><span class="legend-dot quality"></span> Quality = benchmark score</span>';
+            } else if (currentOptimize === 'fast') {
+                legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot quality"></span> Speed+Quality blend</span><span class="legend-item"><span class="legend-dot efficiency"></span> Value = quality per dollar</span>';
             } else {
                 legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot quality"></span> Quality = benchmark score</span><span class="legend-item"><span class="legend-dot efficiency"></span> Value = quality per dollar</span>';
             }
 
             if (ranked.length === 0) {
-                const hostVal = document.getElementById("hosting-filter").value;
-                if (hostVal === 'on-prem') {
-                    resultsList.innerHTML = '<div class="empty-state"><p>No models are currently running on-prem. Select <strong>Self-Hosted</strong> to explore candidates.</p></div>';
+                if (currentEnvironment === 'on-prem') {
+                    resultsList.innerHTML = '<div class="empty-state"><p>No models are currently running on-prem. Select <strong>On-Prem</strong> in the environment filter to see self-hostable candidates.</p></div>';
                 } else {
                     resultsList.innerHTML = '<div class="empty-state"><p>No models match your criteria. Try adjusting filters.</p></div>';
                 }
                 return;
             }
 
-            // Build recommendation table
-            const primaryLabel = currentPriority === 'best' ? 'Overall' : 'Quality';
-            const primaryClass = currentPriority === 'best' ? 'overall' : 'quality';
+            // Determine primary column
+            const isFast = currentOptimize === 'fast';
+            const primaryLabel = currentOptimize === 'balanced' ? 'Overall' : isFast ? 'Speed+Q' : 'Quality';
+            const primaryClass = currentOptimize === 'balanced' ? 'overall' : 'quality';
+            const secondaryLabel = isFast ? 'Speed' : 'Value';
             const initialShow = 8;
 
             let html = `<table class="rec-table"><thead><tr>
                 <th>#</th><th>Model</th><th style="text-align:right">${primaryLabel}</th>
-                <th style="text-align:right">Value</th><th>Cost</th><th>Key Strengths</th>
+                <th style="text-align:right">${secondaryLabel}</th><th>Cost</th><th>Key Strengths</th>
             </tr></thead><tbody>`;
 
             html += ranked.map((r, idx) => {
@@ -387,7 +385,9 @@
                 const costClass = model.costTier === 'self-hosted' ? 'low' : model.costTier;
                 const hiddenClass = idx >= initialShow ? 'hidden-rec' : '';
                 const isTop = idx === 0;
-                const primaryScore = currentPriority === 'best' ? r.overallScore : r.capabilityScore;
+                const primaryScore = currentOptimize === 'balanced' ? r.overallScore : isFast ? r.speedAdjustedScore : r.capabilityScore;
+                const secondaryScore = isFast ? getSpeedProxy(model) : r.valueScore;
+                const secondaryDisplay = isFast ? (secondaryScore >= 70 ? 'Fast' : secondaryScore >= 40 ? 'Medium' : 'Slower') : secondaryScore;
                 const drivers = getTopDrivers(r.breakdown, 2);
                 const incomplete = r.completeness < 0.5 ? '*' : '';
                 const onPremBadge = model.deployment?.hostedOnPrem ? '<span class="badge badge-onprem">ON-PREM</span>' : '';
@@ -398,8 +398,8 @@
                         <div class="provider-sub">${getProviderName(model.provider)}</div></td>
                     <td class="score-cell"><span class="score-val">${primaryScore}${incomplete}</span>
                         <div class="score-bar-mini"><div class="fill ${primaryClass}" style="width:${primaryScore}%"></div></div></td>
-                    <td class="score-cell"><span class="score-val">${r.valueScore}</span>
-                        <div class="score-bar-mini"><div class="fill efficiency" style="width:${r.valueScore}%"></div></div></td>
+                    <td class="score-cell"><span class="score-val">${secondaryDisplay}</span>
+                        <div class="score-bar-mini"><div class="fill efficiency" style="width:${isFast ? secondaryScore : secondaryScore}%"></div></div></td>
                     <td class="cost-cell"><span class="cost-badge cost-${costClass}">${getCostLabel(model.costTier)}</span></td>
                     <td class="drivers-cell">${drivers.join(' · ')}</td>
                 </tr>`;

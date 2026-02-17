@@ -208,10 +208,190 @@ function getTopDrivers(breakdown, maxDrivers) {
         if (label === 'Arena creativeWriting') label = 'Arena CW';
         if (label === 'Arena instructionFollowing') label = 'Arena IF';
         if (label === 'Arena longerQuery') label = 'Arena LQ';
+        if (d.metric === 'toolCallingBonus') return 'Tool Use';
         if (d.metric === 'contextWindow' || d.metric === 'speedProxy' || d.metric === 'multimodal') return label;
         var displayVal = d.metric.indexOf('arenaElo') >= 0 ? Math.round(d.raw) : (Math.round(d.raw * 10) / 10) + '%';
         return label + ' ' + displayVal;
     });
+}
+
+// ===== ADVANCED SCORING (Filter Redesign) =====
+function classifyMetric(metricKey) {
+    if (metricKey.indexOf('arenaElo.') === 0) return 'arena';
+    if (metricKey.indexOf('benchmarks.') === 0) return 'benchmark';
+    return 'other';
+}
+
+function hasBenchmarkMetrics(useCaseKey) {
+    var weights = modelData.scoringConfig[useCaseKey]?.weights || {};
+    return Object.keys(weights).some(function(k) { return k.indexOf('benchmarks.') === 0; });
+}
+
+function hasArenaMetrics(useCaseKey) {
+    var weights = modelData.scoringConfig[useCaseKey]?.weights || {};
+    return Object.keys(weights).some(function(k) { return k.indexOf('arenaElo.') === 0; });
+}
+
+function buildAdjustedWeights(useCaseKey, rankBy, boosts) {
+    var config = modelData.scoringConfig[useCaseKey];
+    if (!config) return { adjustedWeights: {}, normRanges: {} };
+
+    var weights = {};
+    Object.keys(config.weights).forEach(function(k) { weights[k] = config.weights[k]; });
+    var normRanges = {};
+    if (config.normRanges) Object.keys(config.normRanges).forEach(function(k) { normRanges[k] = config.normRanges[k]; });
+
+    // Rank By adjustment: redistribute weights between arena and benchmark
+    if (rankBy !== 'balanced') {
+        var zeroType = (rankBy === 'benchmark') ? 'arena' : 'benchmark';
+        var boostType = (rankBy === 'benchmark') ? 'benchmark' : 'arena';
+        var removedWeight = 0;
+        var boostMetrics = [];
+
+        Object.keys(weights).forEach(function(metric) {
+            var type = classifyMetric(metric);
+            if (type === zeroType) {
+                removedWeight += weights[metric];
+                weights[metric] = 0;
+            } else if (type === boostType) {
+                boostMetrics.push(metric);
+            }
+        });
+
+        if (boostMetrics.length > 0 && removedWeight > 0) {
+            var currentTotal = boostMetrics.reduce(function(s, m) { return s + weights[m]; }, 0);
+            if (currentTotal > 0) {
+                boostMetrics.forEach(function(m) {
+                    weights[m] += removedWeight * (weights[m] / currentTotal);
+                });
+            } else {
+                var share = removedWeight / boostMetrics.length;
+                boostMetrics.forEach(function(m) { weights[m] = share; });
+            }
+        } else if (boostMetrics.length === 0 && removedWeight > 0) {
+            // No target metrics exist — redistribute to 'other' metrics
+            var otherMetrics = Object.keys(weights).filter(function(m) {
+                return classifyMetric(m) === 'other' && weights[m] > 0;
+            });
+            if (otherMetrics.length > 0) {
+                var otherTotal = otherMetrics.reduce(function(s, m) { return s + weights[m]; }, 0);
+                otherMetrics.forEach(function(m) {
+                    weights[m] += removedWeight * (weights[m] / otherTotal);
+                });
+            }
+        }
+    }
+
+    // Boost: Long Context — increase contextWindow weight to at least 0.35
+    if (boosts.has('long-context')) {
+        var cwKey = 'contextWindow';
+        if (weights.hasOwnProperty(cwKey)) {
+            var oldCW = weights[cwKey];
+            var newCW = Math.max(0.35, oldCW);
+            var delta = newCW - oldCW;
+            if (delta > 0) {
+                var others = Object.keys(weights).filter(function(k) { return k !== cwKey && weights[k] > 0; });
+                var othersSum = others.reduce(function(s, k) { return s + weights[k]; }, 0);
+                if (othersSum > 0) {
+                    others.forEach(function(k) { weights[k] -= delta * (weights[k] / othersSum); });
+                }
+                weights[cwKey] = newCW;
+            }
+        } else {
+            // Add contextWindow to this use case's weights
+            var totalW = Object.keys(weights).reduce(function(s, k) { return s + weights[k]; }, 0);
+            var stealRatio = 0.35 / (totalW + 0.35);
+            Object.keys(weights).forEach(function(k) { weights[k] *= (1 - stealRatio); });
+            weights[cwKey] = 0.35;
+            normRanges[cwKey] = 'log';
+        }
+    }
+
+    // Remove zero-weight entries
+    Object.keys(weights).forEach(function(k) {
+        if (weights[k] <= 0.001) delete weights[k];
+    });
+
+    return { adjustedWeights: weights, normRanges: normRanges };
+}
+
+function computeCapabilityScoreWithWeights(model, adjustedWeights, normRanges) {
+    var breakdown = [];
+    var totalWeight = 0;
+    var availableWeight = 0;
+
+    Object.keys(adjustedWeights).forEach(function(metric) {
+        var raw = getMetricValue(model, metric);
+        totalWeight += adjustedWeights[metric];
+        if (raw !== null) availableWeight += adjustedWeights[metric];
+    });
+
+    if (availableWeight === 0) return { score: 0, breakdown: [], completeness: 0 };
+
+    var weightScale = totalWeight / availableWeight;
+    var score = 0;
+
+    Object.keys(adjustedWeights).forEach(function(metric) {
+        var raw = getMetricValue(model, metric);
+        if (raw === null) return;
+        var normalized;
+        if (metric === 'contextWindow' || metric === 'speedProxy' || metric === 'multimodal') {
+            normalized = raw;
+        } else if (normRanges && normRanges[metric] && normRanges[metric] !== 'log') {
+            normalized = normalizeMetric(raw, normRanges[metric][0], normRanges[metric][1]);
+        } else {
+            normalized = raw;
+        }
+        var adjustedWeight = adjustedWeights[metric] * weightScale;
+        var contribution = normalized * adjustedWeight / 100;
+        score += contribution;
+        breakdown.push({ metric: metric, raw: raw, normalized: Math.round(normalized), weight: adjustedWeight, contribution: contribution });
+    });
+
+    score = Math.max(0, Math.min(100, score * 100 / totalWeight));
+    var completeness = availableWeight / totalWeight;
+    if (completeness < 0.5) score = score * (0.5 + completeness);
+    score = Math.round(score);
+
+    return { score: score, breakdown: breakdown.sort(function(a, b) { return b.contribution - a.contribution; }), completeness: completeness };
+}
+
+function rankModelsAdvanced(useCaseKey, optimizeFor, rankBy, boosts) {
+    var adjusted = buildAdjustedWeights(useCaseKey, rankBy, boosts);
+
+    var results = modelData.models.map(function(model) {
+        var cap = computeCapabilityScoreWithWeights(model, adjusted.adjustedWeights, adjusted.normRanges);
+
+        // Tool Calling boost
+        if (boosts.has('tool-calling') && model.specs && model.specs.supportsFunctionCalling) {
+            cap.score = Math.min(100, cap.score + 8);
+            cap.breakdown.push({ metric: 'toolCallingBonus', raw: 1, normalized: 80, weight: 0.08, contribution: 8 });
+        }
+
+        var val = computeValueScore(model, cap.score);
+        return { model: model, capabilityScore: cap.score, valueScore: val, breakdown: cap.breakdown, completeness: cap.completeness };
+    });
+
+    results.forEach(function(r) {
+        r.overallScore = Math.round(r.capabilityScore * 0.7 + r.valueScore * 0.3);
+    });
+
+    // Sort based on optimizeFor
+    if (optimizeFor === 'low-cost') {
+        results.sort(function(a, b) { return b.valueScore - a.valueScore; });
+    } else if (optimizeFor === 'balanced') {
+        results.sort(function(a, b) { return b.overallScore - a.overallScore; });
+    } else if (optimizeFor === 'fast') {
+        results.forEach(function(r) {
+            r.speedAdjustedScore = Math.round(r.capabilityScore * 0.6 + getSpeedProxy(r.model) * 0.4);
+        });
+        results.sort(function(a, b) { return b.speedAdjustedScore - a.speedAdjustedScore; });
+    } else {
+        // quality, privacy
+        results.sort(function(a, b) { return b.capabilityScore - a.capabilityScore; });
+    }
+
+    return results;
 }
 
 // ===== MODAL FUNCTIONS =====

@@ -1515,3 +1515,35 @@ Before finalizing updates, verify:
 **To re-enable:** See git commit `be63904` for the full multi-select implementation.
 
 *Last updated: February 16, 2026*
+
+---
+
+## Future Feature: Boost Filters (Tool Calling & Long Context)
+
+**Status:** Designed, backend scoring functions implemented in `app.js`, UI deferred for simplicity (Feb 2026).
+
+**What it would do:** Add two toggle-chip "Boost" filters to the Find Your LLM filter bar. Users could activate one or both to re-rank models that excel in those areas:
+
+- **Tool Calling Boost:** +8 point bonus to `capabilityScore` for models where `specs.supportsFunctionCalling === true`. Surfaces tool-calling-capable models higher in rankings.
+- **Long Context Boost:** Increases the `contextWindow` weight to `max(0.35, current)` in the scoring formula, redistributing weight from other metrics proportionally. Rewards models with large context windows (Llama 4 Scout 10M, Gemini 1M, etc.).
+
+**Backend support already exists:**
+- `buildAdjustedWeights(useCaseKey, rankBy, boosts)` in `app.js` accepts a `boosts` Set and applies Long Context weight redistribution
+- `rankModelsAdvanced()` applies the Tool Calling +8 bonus when `boosts.has('tool-calling')`
+- Currently called with an empty `boosts` Set — re-enabling the UI is straightforward
+
+**UI design (deferred):**
+```
+BOOST  [Tool Calling] [Long Context]
+```
+- Pill-shaped toggle chips (multi-select, stackable)
+- `.chip-group-toggle` layout with `.filter-chip-toggle` styling
+- Both boosts compose naturally when both active
+
+**To re-enable:**
+1. Add the Boost row back to the filter bar HTML in `index.html`
+2. Add click handlers that toggle `currentBoosts.has('tool-calling')` / `currentBoosts.has('long-context')`
+3. Re-add `.chip-group-toggle` and `.filter-chip-toggle` CSS to `styles.css`
+4. The backend scoring in `app.js` requires no changes
+
+*Last updated: February 16, 2026*
