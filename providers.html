@@ -131,22 +131,43 @@
             const provClass = getProviderClass(key);
             const provAbbrev = getProviderAbbrev(key);
 
-            const modelsHtml = providerModels.map(m => {
+            // Cost range
+            const priced = providerModels.filter(m => m.pricing);
+            let costRange = 'Self-hosted';
+            if (priced.length > 0) {
+                const blends = priced.map(m => (m.pricing.inputPerMillion + m.pricing.outputPerMillion) / 2).sort((a,b) => a - b);
+                const lo = blends[0], hi = blends[blends.length - 1];
+                costRange = lo === hi ? '$' + lo.toFixed(2) + '/M' : '$' + lo.toFixed(2) + ' – $' + hi.toFixed(2) + '/M';
+            }
+
+            // Sort newest first
+            const sorted = [...providerModels].sort((a, b) => {
+                const da = a.specs?.releaseDate ? new Date(a.specs.releaseDate) : new Date(0);
+                const db = b.specs?.releaseDate ? new Date(b.specs.releaseDate) : new Date(0);
+                return db - da;
+            });
+            const maxShow = 4;
+            const visible = sorted.slice(0, maxShow);
+            const remaining = sorted.length - maxShow;
+
+            const modelsHtml = visible.map(m => {
                 const newBadge = isNew(m) ? ' <span class="badge badge-new" style="font-size:0.55rem;">NEW</span>' : '';
-                const priceLabel = formatCost(m);
-                const ctxLabel = formatTokenCount(m.contextWindow);
+                const rd = m.specs?.releaseDate;
+                const dateLabel = rd ? new Date(rd).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
                 return `<div class="provider-model-item" onclick="openModelModal('${m.id}')" style="cursor:pointer;">
                     <span>${m.name}${newBadge}</span>
-                    <span>${priceLabel} &middot; ${ctxLabel} ctx</span>
+                    <span class="provider-model-date">${dateLabel}</span>
                 </div>`;
             }).join("");
 
-            const strengthsHtml = (p.strengths || []).map(s => `<span class="strength-tag">${s}</span>`).join("");
+            const viewAllHtml = remaining > 0
+                ? `<a href="models.html?provider=${key}" class="provider-view-all">View all ${sorted.length} models &rarr;</a>`
+                : '';
 
             const linksHtml = [
-                p.docsUrl ? `<a href="${p.docsUrl}" target="_blank" rel="noopener" style="font-size:0.75rem;color:var(--accent);text-decoration:none;">Docs &#8599;</a>` : '',
-                p.pricingUrl ? `<a href="${p.pricingUrl}" target="_blank" rel="noopener" style="font-size:0.75rem;color:var(--accent);text-decoration:none;">Pricing &#8599;</a>` : ''
-            ].filter(Boolean).join(' &nbsp; ');
+                p.docsUrl ? `<a href="${p.docsUrl}" target="_blank" rel="noopener" class="provider-link">Docs &#8599;</a>` : '',
+                p.pricingUrl ? `<a href="${p.pricingUrl}" target="_blank" rel="noopener" class="provider-link">Pricing &#8599;</a>` : ''
+            ].filter(Boolean).join('');
 
             return `
             <div class="provider-card">
@@ -158,18 +179,16 @@
                     </div>
                 </div>
                 <div class="provider-body">
-                    <div class="provider-strengths">
-                        <h4>Strengths</h4>
-                        <div class="strength-tags">${strengthsHtml}</div>
+                    <div class="provider-quick-stats">
+                        <div class="provider-stat"><span class="provider-stat-val">${providerModels.length}</span><span class="provider-stat-lbl">Models</span></div>
+                        <div class="provider-stat"><span class="provider-stat-val">${costRange}</span><span class="provider-stat-lbl">Price range</span></div>
                     </div>
-                    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:16px;">
-                        <strong style="color:var(--text-secondary);">Trade-offs:</strong> ${p.tradeoffs}
-                    </p>
                     <div class="provider-models-list">
-                        <h4>Models (${providerModels.length})</h4>
+                        <h4 class="provider-models-label">Latest releases</h4>
                         ${modelsHtml}
+                        ${viewAllHtml}
                     </div>
-                    ${linksHtml ? `<div style="margin-top:12px;display:flex;gap:12px;">${linksHtml}</div>` : ''}
+                    ${linksHtml ? `<div class="provider-links">${linksHtml}</div>` : ''}
                 </div>
             </div>`;
         }).join("");

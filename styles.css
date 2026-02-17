@@ -637,46 +637,62 @@ a:hover { color: var(--accent-hover); }
 .provider-name { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
 .provider-tagline { font-size: 0.78rem; color: var(--text-muted); }
 
-.provider-body p {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    margin-bottom: 14px;
+.provider-quick-stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
 }
+.provider-stat { display: flex; flex-direction: column; gap: 2px; }
+.provider-stat-val { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+.provider-stat-lbl { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
-.provider-strengths { margin-bottom: 14px; }
-
-.provider-strengths h4, .provider-models-list h4 {
+.provider-models-list { display: flex; flex-direction: column; gap: 1px; }
+.provider-models-label {
     font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px;
+    letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px;
 }
-
-.strength-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-
-.strength-tag {
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
-}
-
-.provider-models-list {
-    border-top: 1px solid var(--border);
-    padding-top: 12px;
-}
+.provider-model-date { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
 
 .provider-model-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 0;
+    padding: 6px 8px;
     font-size: 0.8rem;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition);
 }
+.provider-model-item:hover { background: rgba(255,255,255,0.04); }
 
 .provider-model-item span:first-child { font-weight: 600; color: var(--text-primary); }
-.provider-model-item span:last-child { color: var(--text-muted); font-size: 0.72rem; }
+
+.provider-links {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+}
+.provider-link {
+    font-size: 0.75rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+.provider-link:hover { text-decoration: underline; }
+
+.provider-view-all {
+    display: block;
+    text-align: center;
+    padding: 8px 0 2px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+}
+.provider-view-all:hover { text-decoration: underline; }
 
 /* ============================================
    COMPARE PAGE
