@@ -131,14 +131,19 @@
             const provClass = getProviderClass(key);
             const provLogo = getProviderLogo(key, 28);
 
-            // Cost range
-            const priced = providerModels.filter(m => m.pricing);
-            let costRange = 'Self-hosted';
-            if (priced.length > 0) {
-                const blends = priced.map(m => (m.pricing.inputPerMillion + m.pricing.outputPerMillion) / 2).sort((a,b) => a - b);
-                const lo = blends[0], hi = blends[blends.length - 1];
-                costRange = lo === hi ? '$' + lo.toFixed(2) + '/M' : '$' + lo.toFixed(2) + ' – $' + hi.toFixed(2) + '/M';
-            }
+            // Max context
+            const contexts = providerModels.map(m => m.contextWindow).filter(Boolean);
+            const maxCtx = contexts.length ? formatTokenCount(Math.max(...contexts)) : '—';
+
+            // Capability badges
+            const caps = [];
+            if (providerModels.some(m => m.specs?.supportsFunctionCalling)) caps.push('Tool Calling');
+            if (providerModels.some(m => m.specs?.multimodal)) caps.push('Multimodal');
+            if (providerModels.some(m => m.deployment?.selfHostable)) caps.push('Self-Hostable');
+            const platforms = [...new Set(providerModels.flatMap(m => m.deployment?.cloudPlatforms || []))];
+            if (platforms.includes('azure')) caps.push('Azure');
+            if (platforms.includes('aws')) caps.push('AWS');
+            if (platforms.includes('gcp')) caps.push('GCP');
 
             // Sort newest first
             const sorted = [...providerModels].sort((a, b) => {
@@ -181,13 +186,14 @@
                 <div class="provider-body">
                     <div class="provider-quick-stats">
                         <div class="provider-stat"><span class="provider-stat-val">${providerModels.length}</span><span class="provider-stat-lbl">Models</span></div>
-                        <div class="provider-stat"><span class="provider-stat-val">${costRange}</span><span class="provider-stat-lbl">Price range</span></div>
+                        <div class="provider-stat"><span class="provider-stat-val">${maxCtx}</span><span class="provider-stat-lbl">Max context</span></div>
                     </div>
                     <div class="provider-models-list">
                         <h4 class="provider-models-label">Latest releases</h4>
                         ${modelsHtml}
                         ${viewAllHtml}
                     </div>
+                    ${caps.length ? `<div class="provider-caps">${caps.map(c => `<span class="provider-cap">${c}</span>`).join('')}</div>` : ''}
                     ${linksHtml ? `<div class="provider-links">${linksHtml}</div>` : ''}
                 </div>
             </div>`;
