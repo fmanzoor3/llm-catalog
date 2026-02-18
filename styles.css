@@ -1069,6 +1069,112 @@ a:hover { color: var(--accent-hover); }
 
 .resource-section-label:first-child { margin-top: 0; }
 
+/* Expandable resource cards */
+.res-expand-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition);
+    margin-bottom: 16px;
+}
+.res-expand-card:hover { border-color: var(--accent); }
+.res-expand-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 22px;
+    cursor: pointer;
+}
+.res-expand-header .resource-card-icon { margin-bottom: 0; flex-shrink: 0; }
+.res-expand-header-text { flex: 1; min-width: 0; }
+.res-expand-header-text h3 {
+    font-size: 0.95rem; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 4px;
+}
+.res-expand-header-text p {
+    font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;
+}
+.res-expand-chevron {
+    font-size: 0.8rem; color: var(--text-muted); transition: transform 0.2s; flex-shrink: 0;
+}
+.res-expand-card.open .res-expand-chevron { transform: rotate(180deg); }
+.res-expand-body {
+    display: none;
+    padding: 0 22px 22px;
+}
+.res-expand-card.open .res-expand-body { display: block; }
+
+/* Scoring grid inside expanded card */
+.res-scoring-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+.res-scoring-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+}
+.res-scoring-card h4 {
+    font-size: 0.84rem; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 8px;
+}
+.res-scoring-metric {
+    display: flex; justify-content: space-between;
+    font-size: 0.75rem; color: var(--text-muted); padding: 3px 0;
+}
+.res-scoring-metric span:last-child { font-weight: 600; color: var(--accent); }
+.res-set-label {
+    font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted);
+    margin-bottom: 10px; margin-top: 20px; padding-left: 2px;
+}
+.res-set-label:first-child { margin-top: 0; }
+.res-scoring-intro {
+    font-size: 0.84rem; color: var(--text-secondary);
+    line-height: 1.65; margin-bottom: 18px;
+}
+
+/* Benchmark cards inside expanded card */
+.res-bench-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+}
+.res-bench-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+}
+.res-bench-card h4 {
+    font-size: 0.88rem; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 6px;
+}
+.res-bench-card p {
+    font-size: 0.78rem; color: var(--text-muted);
+    line-height: 1.5; margin-bottom: 8px;
+}
+.res-bench-card a {
+    font-size: 0.75rem; color: var(--accent);
+    text-decoration: none; font-weight: 500;
+}
+
+/* Data freshness */
+.res-freshness {
+    font-size: 0.8rem; color: var(--text-muted);
+    text-align: center; margin: 48px 0 0;
+}
+
+@media (max-width: 768px) {
+    .res-scoring-grid { grid-template-columns: 1fr 1fr; }
+    .res-bench-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+    .res-scoring-grid { grid-template-columns: 1fr; }
+}
+
 /* ============================================
    MODALS
    ============================================ */
