@@ -24,16 +24,16 @@ function getProviderClass(providerId) {
     const map = {
         anthropic: 'bg-anthropic', openai: 'bg-openai', google: 'bg-google',
         deepseek: 'bg-deepseek', xai: 'bg-xai', moonshot: 'bg-moonshot',
-        opensource: 'bg-opensource'
+        meta: 'bg-meta', alibaba: 'bg-alibaba', mistral: 'bg-mistral'
     };
-    return map[providerId] || 'bg-opensource';
+    return map[providerId] || 'bg-default';
 }
 
 function getProviderAbbrev(providerId) {
     const map = {
         anthropic: 'ANT', openai: 'OAI', google: 'GDM',
         deepseek: 'DS', xai: 'xAI', moonshot: 'MS',
-        opensource: 'OSS'
+        meta: 'META', alibaba: 'QWN', mistral: 'MST'
     };
     return map[providerId] || providerId.substring(0, 3).toUpperCase();
 }

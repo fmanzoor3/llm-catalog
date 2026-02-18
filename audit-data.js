@@ -98,7 +98,7 @@ Object.entries(modelData.useCases).forEach(([ucKey, uc]) => {
             if (prioKey === 'cost' && (model.costTier === 'high')) {
                 warn(`${ucKey}.cost recommends ${modelRec.id} which is costTier="high"`);
             }
-            if (prioKey === 'privacy' && model.costTier !== 'self-hosted' && model.provider !== 'opensource') {
+            if (prioKey === 'privacy' && model.costTier !== 'self-hosted' && !['meta','alibaba','mistral'].includes(model.provider)) {
                 // Not necessarily wrong but worth noting
             }
         });

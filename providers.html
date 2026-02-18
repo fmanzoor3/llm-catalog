@@ -120,9 +120,9 @@
         function isNew(model) {
             if (!model.specs?.releaseDate) return false;
             const released = new Date(model.specs.releaseDate);
-            const threeMonthsAgo = new Date();
-            threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-            return released >= threeMonthsAgo;
+            const cutoff = new Date();
+            cutoff.setDate(cutoff.getDate() - 30);
+            return released >= cutoff;
         }
 
         grid.innerHTML = providerKeys.map(key => {

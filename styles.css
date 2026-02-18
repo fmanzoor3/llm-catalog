@@ -536,7 +536,7 @@ a:hover { color: var(--accent-hover); }
 .badge-fast { background: rgba(96,165,250,0.12); color: var(--blue); }
 .badge-value { background: var(--amber-light); color: var(--amber); }
 .badge-context { background: rgba(167,139,250,0.12); color: var(--purple); }
-.badge-new { background: var(--red-light); color: var(--red); }
+.badge-new { background: linear-gradient(135deg, #d97706, #fbbf24, #d97706); color: #fff; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 .badge-onprem { background: rgba(96, 165, 250, 0.12); color: var(--blue); }
 .badge-default { background: var(--accent-light); color: var(--accent); }
 
