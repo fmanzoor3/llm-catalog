@@ -951,6 +951,11 @@ a:hover { color: var(--accent-hover); }
     color: var(--text-muted);
     margin-bottom: 10px;
     line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: calc(2 * 0.75rem * 1.45);
 }
 
 .catalog-card-strengths {
@@ -967,6 +972,9 @@ a:hover { color: var(--accent-hover); }
     line-height: 1.35;
     padding-left: 16px;
     position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .catalog-card-strengths li::before {
     content: '✓';
