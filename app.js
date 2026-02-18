@@ -38,6 +38,33 @@ function getProviderAbbrev(providerId) {
     return map[providerId] || providerId.substring(0, 3).toUpperCase();
 }
 
+function getProviderLogo(providerId, size) {
+    size = size || 32;
+    const s = size;
+    // Logos with own background (cover the container)
+    var coverLogos = {
+        openai: 'logos/openai.jpg',
+        anthropic: 'logos/anthropic.jpg',
+        xai: 'logos/xai.png',
+        moonshot: 'logos/moonshot.jpg'
+    };
+    // Logos with white/transparent bg (need container bg, use contain+padding)
+    var containLogos = {
+        google: 'logos/gemini-logo.png',
+        deepseek: 'logos/deepseek.png',
+        meta: 'logos/meta.png',
+        alibaba: 'logos/alibaba.png',
+        mistral: 'logos/mistral.png'
+    };
+    if (coverLogos[providerId]) {
+        return '<img src="'+coverLogos[providerId]+'" alt="'+getProviderName(providerId)+'" width="'+s+'" height="'+s+'" class="provider-logo-img">';
+    }
+    if (containLogos[providerId]) {
+        return '<img src="'+containLogos[providerId]+'" alt="'+getProviderName(providerId)+'" width="'+s+'" height="'+s+'" class="provider-logo-img logo-contain">';
+    }
+    return '<svg viewBox="0 0 32 32" width="'+s+'" height="'+s+'"><text x="16" y="20" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="10" fill="white">'+getProviderAbbrev(providerId)+'</text></svg>';
+}
+
 function getBlendedCost(model) {
     if (!model.pricing) return 0;
     return (model.pricing.inputPerMillion + model.pricing.outputPerMillion) / 2;

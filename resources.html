@@ -184,7 +184,7 @@
             const name = p.displayName || p.name;
             return `<a class="resource-card" href="${url}" target="_blank" rel="noopener">
                 <div class="resource-card-icon" style="background:rgba(148,163,184,0.12);">
-                    <div class="provider-logo ${getProviderClass(key)}" style="width:28px;height:28px;font-size:0.55rem;">${getProviderAbbrev(key)}</div>
+                    <div class="provider-logo ${getProviderClass(key)}" style="width:28px;height:28px;">${getProviderLogo(key, 18)}</div>
                 </div>
                 <h3>${name}</h3>
                 <p>${p.tagline}</p>

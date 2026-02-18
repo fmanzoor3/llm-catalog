@@ -129,7 +129,7 @@
             const p = providers[key];
             const providerModels = models.filter(m => m.provider === key);
             const provClass = getProviderClass(key);
-            const provAbbrev = getProviderAbbrev(key);
+            const provLogo = getProviderLogo(key, 28);
 
             // Cost range
             const priced = providerModels.filter(m => m.pricing);
@@ -172,7 +172,7 @@
             return `
             <div class="provider-card">
                 <div class="provider-card-header">
-                    <div class="provider-logo ${provClass}">${provAbbrev}</div>
+                    <div class="provider-logo ${provClass}">${provLogo}</div>
                     <div>
                         <div class="provider-name">${p.displayName || p.name}</div>
                         <div class="provider-tagline">${p.tagline}</div>

@@ -236,7 +236,7 @@
 
             grid.innerHTML = filtered.map(m => {
                 const provClass = getProviderClass(m.provider);
-                const provAbbrev = getProviderAbbrev(m.provider);
+                const provLogo = getProviderLogo(m.provider, 24);
                 const provName = getProviderName(m.provider);
                 const costLabel = getCostLabel(m.costTier);
                 const costClass = m.costTier === 'self-hosted' ? 'low' : m.costTier;
@@ -249,7 +249,7 @@
                 return `
                 <div class="catalog-card" onclick="openModelModal('${m.id}')">
                     <div class="catalog-card-header">
-                        <div class="catalog-card-icon ${provClass}">${provAbbrev}</div>
+                        <div class="catalog-card-icon ${provClass}">${provLogo}</div>
                         <div>
                             <div class="catalog-card-title">${m.name} ${newBadge}${onPremBadge}</div>
                             <div class="catalog-card-provider">${provName}</div>
