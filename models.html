@@ -70,11 +70,11 @@
                     <option value="gcp">Google Cloud</option>
                 </select>
                 <select class="filter-select" id="sort-select">
+                    <option value="newest">Newest First</option>
                     <option value="name-asc">A → Z</option>
                     <option value="cost-asc">Lowest Cost</option>
                     <option value="cost-desc">Highest Cost</option>
                     <option value="context-desc">Longest Context</option>
-                    <option value="newest">Newest First</option>
                 </select>
             </div>
             <div class="catalog-count" id="catalog-count"></div>
@@ -238,39 +238,29 @@
                 const provClass = getProviderClass(m.provider);
                 const provLogo = getProviderLogo(m.provider, 24);
                 const provName = getProviderName(m.provider);
-                const costLabel = getCostLabel(m.costTier);
-                const costClass = m.costTier === 'self-hosted' ? 'low' : m.costTier;
-                const ctxLabel = formatTokenCount(m.contextWindow);
-                const priceLabel = formatCost(m);
                 const newBadge = isNew(m) ? '<span class="badge badge-new">NEW</span>' : '';
                 const onPremBadge = m.deployment?.hostedOnPrem ? '<span class="badge badge-onprem">ON-PREM</span>' : '';
-                const tagsHtml = (m.bestFor || []).slice(0, 4).map(t => `<span class="catalog-tag">${t}</span>`).join("");
+                const rd = m.specs?.releaseDate;
+                const dateLabel = rd ? new Date(rd).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
+                const strengthsHtml = (m.strengths || []).slice(0, 3).map(s => `<li>${s.split(' — ')[0]}</li>`).join("");
 
                 return `
                 <div class="catalog-card" onclick="openModelModal('${m.id}')">
                     <div class="catalog-card-header">
                         <div class="catalog-card-icon ${provClass}">${provLogo}</div>
-                        <div>
+                        <div class="catalog-card-header-text">
                             <div class="catalog-card-title">${m.name} ${newBadge}${onPremBadge}</div>
-                            <div class="catalog-card-provider">${provName}</div>
+                            <div class="catalog-card-meta">
+                                <span class="catalog-card-provider">${provName}</span>
+                                ${dateLabel ? `<span class="catalog-card-date">${dateLabel}</span>` : ''}
+                            </div>
                         </div>
                     </div>
                     <p class="catalog-card-desc">${m.description}</p>
-                    <div class="catalog-card-stats">
-                        <div class="catalog-stat">
-                            <div class="catalog-stat-label">Cost</div>
-                            <div class="catalog-stat-value"><span class="cost-badge cost-${costClass}" style="font-size:0.7rem;padding:2px 6px;">${costLabel}</span></div>
-                        </div>
-                        <div class="catalog-stat">
-                            <div class="catalog-stat-label">Price</div>
-                            <div class="catalog-stat-value" style="font-size:0.72rem;">${priceLabel}</div>
-                        </div>
-                        <div class="catalog-stat">
-                            <div class="catalog-stat-label">Context</div>
-                            <div class="catalog-stat-value">${ctxLabel}</div>
-                        </div>
+                    <ul class="catalog-card-strengths">${strengthsHtml}</ul>
+                    <div class="catalog-card-footer">
+                        <a href="compare.html?models=${m.id}" class="catalog-compare-btn" onclick="event.stopPropagation();">Compare</a>
                     </div>
-                    <div class="catalog-card-tags">${tagsHtml}</div>
                 </div>`;
             }).join("");
         }
