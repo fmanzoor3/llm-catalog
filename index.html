@@ -51,12 +51,6 @@
                 <h1>What are you building today?</h1>
                 <p class="hero-subtitle">Select a use case and we'll rank models using real benchmark data.</p>
 
-                <!-- Use Case Set Toggle -->
-                <div class="usecase-set-toggle">
-                    <button class="set-toggle-btn active" data-set="generic">Generic</button>
-                    <button class="set-toggle-btn" data-set="enerjisa">Enerjisa</button>
-                </div>
-
                 <!-- Use Case Cards (dynamic) -->
                 <div class="usecase-grid" id="usecase-grid"></div>
             </div>
@@ -70,11 +64,11 @@
                         <div class="filter-group">
                             <span class="filter-label-tag">OPTIMIZE FOR</span>
                             <div class="chip-group" id="optimize-group">
-                                <button class="filter-chip active" data-value="balanced">Balanced</button>
-                                <button class="filter-chip" data-value="quality">Quality</button>
+                                <button class="filter-chip active" data-value="balanced">Balance</button>
+                                <button class="filter-chip" data-value="quality">Performance</button>
                                 <button class="filter-chip" data-value="low-cost">Low Cost</button>
-                                <button class="filter-chip" data-value="fast">Fast</button>
-                                <button class="filter-chip" data-value="privacy">Privacy</button>
+                                <button class="filter-chip" data-value="fast">Speed</button>
+                                <button class="filter-chip" data-value="context">Context</button>
                             </div>
                         </div>
                         <div class="filter-group">
@@ -97,17 +91,9 @@
             <div class="container">
                 <div class="results-header">
                     <h2 class="results-title">Recommended for <span id="usecase-name">Coding</span></h2>
-                    <span class="results-meta" id="results-meta">Ranked by quality + value</span>
+                    <p class="results-desc" id="results-desc"></p>
                 </div>
-                <div class="rankby-bar">
-                    <span class="rankby-label">Scores based on</span>
-                    <div class="rankby-toggle" id="rankby-group">
-                        <button class="rankby-option active" data-value="benchmark">Benchmark</button>
-                        <span class="rankby-sep">|</span>
-                        <button class="rankby-option" data-value="community">Community</button>
-                    </div>
-                    <div class="score-legend" id="score-legend"></div>
-                </div>
+                <div class="score-legend" id="score-legend"></div>
                 <div class="results-list" id="results-list">
                     <!-- Populated by JS -->
                 </div>
@@ -182,13 +168,10 @@
         const updatedEl = document.getElementById('lastUpdated');
         if (updatedEl && modelData.lastUpdated) updatedEl.textContent = modelData.lastUpdated;
 
-        let currentSet = "generic";
         let currentUsecase = "coding";
         let currentOptimize = "balanced";
         let currentEnvironment = "";
         let currentBoosts = new Set(); // reserved for future boost feature
-        let currentRankBy = "benchmark";
-
         const resultsList = document.getElementById("results-list");
         if (!resultsList) return;
 
@@ -201,32 +184,30 @@
             content: '<svg viewBox="0 0 40 40" width="36" height="36"><path d="M20 6 L22 14 L30 14 L24 19 L26 27 L20 22 L14 27 L16 19 L10 14 L18 14 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
             extraction: '<svg viewBox="0 0 40 40" width="36" height="36"><ellipse cx="20" cy="12" rx="12" ry="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12 v6 c0 2.2 5.4 4 12 4 s12-1.8 12-4 v-6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 18 v6 c0 2.2 5.4 4 12 4 s12-1.8 12-4 v-6" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
             translation: '<svg viewBox="0 0 40 40" width="36" height="36"><circle cx="20" cy="20" r="12" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="20" cy="20" rx="6" ry="12" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="1.5"/></svg>',
-            vision: '<svg viewBox="0 0 40 40" width="36" height="36"><path d="M4 20 Q20 8 36 20 Q20 32 4 20Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="20" r="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="20" r="2" fill="currentColor"/></svg>',
-            internal_chatbot: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="6" y="8" width="28" height="20" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="14,28 20,28 16,34" fill="currentColor" opacity="0.6"/><circle cx="14" cy="18" r="1.5" fill="currentColor"/><circle cx="20" cy="18" r="1.5" fill="currentColor"/><circle cx="26" cy="18" r="1.5" fill="currentColor"/></svg>',
-            dev_tools: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="4" y="8" width="32" height="24" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12,16 16,20 12,24" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="24" x2="28" y2="24" stroke="currentColor" stroke-width="2"/></svg>',
-            report_analysis: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="8" y="6" width="24" height="28" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12,24 16,18 20,22 24,14 28,16" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
-            regulatory: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="8" y="4" width="24" height="32" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 14 L18 18 L26 10" fill="none" stroke="currentColor" stroke-width="2.5"/><line x1="12" y1="24" x2="28" y2="24" stroke="currentColor" stroke-width="1.5"/><line x1="12" y1="28" x2="22" y2="28" stroke="currentColor" stroke-width="1.5"/></svg>',
-            customer_comms: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="4" y="10" width="32" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="4,12 20,22 36,12" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
-            data_analytics: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="6" y="22" width="6" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="17" y="14" width="6" height="20" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="28" y="6" width="6" height="28" rx="1" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
-            knowledge_base: '<svg viewBox="0 0 40 40" width="36" height="36"><rect x="6" y="8" width="28" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="6" y1="14" x2="34" y2="14" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="24" r="4" fill="none" stroke="currentColor" stroke-width="2"/><line x1="20" y1="20" x2="20" y2="22" stroke="currentColor" stroke-width="1.5"/></svg>',
-            multilingual: '<svg viewBox="0 0 40 40" width="36" height="36"><circle cx="20" cy="20" r="12" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="20" cy="20" rx="6" ry="12" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="20" x2="32" y2="20" stroke="currentColor" stroke-width="1.5"/></svg>'
+            vision: '<svg viewBox="0 0 40 40" width="36" height="36"><path d="M4 20 Q20 8 36 20 Q20 32 4 20Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="20" r="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="20" r="2" fill="currentColor"/></svg>'
         };
 
         const usecaseLabels = {
             coding: "Coding", reasoning: "Reasoning", chatbot: "Chatbot",
             documents: "Documents", content: "Content", extraction: "Extraction",
-            translation: "Translation", vision: "Vision",
-            internal_chatbot: "Chatbot", dev_tools: "Dev Tools",
-            report_analysis: "Reports", regulatory: "Compliance",
-            customer_comms: "Comms", data_analytics: "Analytics",
-            knowledge_base: "Knowledge", multilingual: "Multilingual"
+            translation: "Translation", vision: "Vision"
         };
 
-        // Render use case cards for current set
+        const usecaseDescs = {
+            coding: "Code generation, review, debugging, and autonomous software engineering tasks.",
+            reasoning: "Complex math, science, and multi-step analytical problems.",
+            chatbot: "Customer support, Q&A bots, and conversational assistants.",
+            documents: "Summarizing, analyzing, and extracting insights from long documents and reports.",
+            content: "Marketing copy, blog posts, emails, and creative writing.",
+            extraction: "Pulling structured data from PDFs, forms, invoices, and images.",
+            translation: "Translating and understanding content across multiple languages.",
+            vision: "Analyzing images, charts, screenshots, and visual content."
+        };
+
+        // Render use case cards
         function renderUsecaseCards() {
-            const setConfig = modelData.useCaseSets[currentSet];
             const grid = document.getElementById("usecase-grid");
-            const useCases = setConfig.useCases;
+            const useCases = modelData.useCaseSets.default.useCases;
             currentUsecase = useCases[0];
 
             grid.innerHTML = useCases.map((uc, i) => {
@@ -248,17 +229,6 @@
             });
         }
 
-        // Set toggle buttons
-        document.querySelectorAll(".set-toggle-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                document.querySelectorAll(".set-toggle-btn").forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                currentSet = btn.dataset.set;
-                renderUsecaseCards();
-                render();
-            });
-        });
-
         // Optimize For — single select chips
         document.querySelectorAll('#optimize-group .filter-chip').forEach(chip => {
             chip.addEventListener('click', () => {
@@ -275,17 +245,6 @@
             render();
         });
 
-        // Rank By — inline text toggle
-        document.querySelectorAll('#rankby-group .rankby-option').forEach(opt => {
-            opt.addEventListener('click', () => {
-                if (opt.classList.contains('disabled')) return;
-                document.querySelectorAll('#rankby-group .rankby-option').forEach(o => o.classList.remove('active'));
-                opt.classList.add('active');
-                currentRankBy = opt.dataset.value;
-                render();
-            });
-        });
-
         // Initial render
         renderUsecaseCards();
 
@@ -293,43 +252,10 @@
             // Update header
             const ucConfig = modelData.scoringConfig[currentUsecase];
             document.getElementById("usecase-name").textContent = ucConfig ? ucConfig.name : currentUsecase;
+            document.getElementById("results-desc").textContent = usecaseDescs[currentUsecase] || '';
 
-            // Update Rank By option availability
-            const benchOpt = document.querySelector('#rankby-group [data-value="benchmark"]');
-            const commOpt = document.querySelector('#rankby-group [data-value="community"]');
-            const hasBench = hasBenchmarkMetrics(currentUsecase);
-            const hasArena = hasArenaMetrics(currentUsecase);
-            benchOpt.classList.toggle('disabled', !hasBench);
-            commOpt.classList.toggle('disabled', !hasArena);
-            // Fall back to the other option if current is disabled
-            if (currentRankBy === 'benchmark' && !hasBench) {
-                currentRankBy = hasArena ? 'community' : 'benchmark';
-                document.querySelectorAll('#rankby-group .rankby-option').forEach(o => o.classList.remove('active'));
-                document.querySelector('#rankby-group [data-value="' + currentRankBy + '"]').classList.add('active');
-            } else if (currentRankBy === 'community' && !hasArena) {
-                currentRankBy = hasBench ? 'benchmark' : 'community';
-                document.querySelectorAll('#rankby-group .rankby-option').forEach(o => o.classList.remove('active'));
-                document.querySelector('#rankby-group [data-value="' + currentRankBy + '"]').classList.add('active');
-            }
-
-            const optimizeDescs = {
-                balanced: 'Ranked by quality + value',
-                quality: 'Ranked by benchmark performance',
-                'low-cost': 'Ranked by quality per dollar',
-                fast: 'Ranked by speed + quality',
-                privacy: 'Open-weight models for self-hosting'
-            };
-            let metaText = optimizeDescs[currentOptimize] || '';
-            document.getElementById("results-meta").textContent = metaText;
-
-            // Score and rank using advanced system
-            let ranked = rankModelsAdvanced(currentUsecase, currentOptimize, currentRankBy, currentBoosts);
-
-            // Privacy filter
-            if (currentOptimize === 'privacy') {
-                ranked = ranked.filter(r => r.model.deployment?.selfHostable);
-                ranked.sort((a, b) => b.capabilityScore - a.capabilityScore);
-            }
+            // Score and rank using advanced system (blended benchmark + community)
+            let ranked = rankModelsAdvanced(currentUsecase, currentOptimize, 'balanced', currentBoosts);
 
             // Environment filter
             if (currentEnvironment) {
@@ -401,20 +327,12 @@
                 'arenaElo.instructionFollowing': 'Arena Instruction Following ELO', 'arenaElo.longerQuery': 'Arena Longer Query ELO'
             };
 
-            // Determine which score columns to show based on use case + rankBy
+            // Show top 3 scoring metrics by weight (benchmark + arena combined)
             const ucWeights = modelData.scoringConfig[currentUsecase]?.weights || {};
-            let scoreColumns = [];
-            if (currentRankBy === 'benchmark') {
-                // Show benchmark metrics for this use case, fall back to arena if none
-                scoreColumns = Object.keys(ucWeights).filter(k => k.indexOf('benchmarks.') === 0);
-                if (scoreColumns.length === 0) scoreColumns = Object.keys(ucWeights).filter(k => k.indexOf('arenaElo.') === 0);
-            } else {
-                // Show arena metrics for this use case, fall back to benchmark if none
-                scoreColumns = Object.keys(ucWeights).filter(k => k.indexOf('arenaElo.') === 0);
-                if (scoreColumns.length === 0) scoreColumns = Object.keys(ucWeights).filter(k => k.indexOf('benchmarks.') === 0);
-            }
-            // Cap at 3 columns to keep table readable
-            scoreColumns = scoreColumns.slice(0, 3);
+            let scoreColumns = Object.keys(ucWeights)
+                .filter(k => k.indexOf('benchmarks.') === 0 || k.indexOf('arenaElo.') === 0)
+                .sort((a, b) => ucWeights[b] - ucWeights[a])
+                .slice(0, 3);
 
             const initialShow = 8;
 

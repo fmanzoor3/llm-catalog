@@ -245,20 +245,16 @@
             'multimodal': 'Multimodal'
         };
 
-        let html = '';
-        Object.entries(sets).forEach(([setKey, setInfo]) => {
-            html += '<div class="res-set-label">' + setInfo.label + ' Use Cases</div>';
-            html += '<div class="res-scoring-grid">';
-            setInfo.useCases.forEach(ucKey => {
-                const uc = config[ucKey];
-                if (!uc) return;
-                const metrics = Object.entries(uc.weights).map(function(entry) {
-                    return '<div class="res-scoring-metric"><span>' + (metricLabels[entry[0]] || entry[0]) + '</span><span>' + Math.round(entry[1] * 100) + '%</span></div>';
-                }).join('');
-                html += '<div class="res-scoring-card"><h4>' + uc.name + '</h4>' + metrics + '</div>';
-            });
-            html += '</div>';
+        let html = '<div class="res-scoring-grid">';
+        sets.default.useCases.forEach(function(ucKey) {
+            const uc = config[ucKey];
+            if (!uc) return;
+            const metrics = Object.entries(uc.weights).map(function(entry) {
+                return '<div class="res-scoring-metric"><span>' + (metricLabels[entry[0]] || entry[0]) + '</span><span>' + Math.round(entry[1] * 100) + '%</span></div>';
+            }).join('');
+            html += '<div class="res-scoring-card"><h4>' + uc.name + '</h4>' + metrics + '</div>';
         });
+        html += '</div>';
         document.getElementById("res-scoring").innerHTML = html;
 
         // Provider docs

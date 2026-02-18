@@ -431,8 +431,15 @@ function rankModelsAdvanced(useCaseKey, optimizeFor, rankBy, boosts) {
             r.speedAdjustedScore = Math.round(r.capabilityScore * 0.6 + getSpeedProxy(r.model) * 0.4);
         });
         results.sort(function(a, b) { return b.speedAdjustedScore - a.speedAdjustedScore; });
+    } else if (optimizeFor === 'context') {
+        results.forEach(function(r) {
+            var ctx = r.model.contextWindow || 0;
+            var ctxNorm = Math.min(100, (ctx / 1000000) * 100);
+            r.contextAdjustedScore = Math.round(r.capabilityScore * 0.6 + ctxNorm * 0.4);
+        });
+        results.sort(function(a, b) { return b.contextAdjustedScore - a.contextAdjustedScore; });
     } else {
-        // quality, privacy
+        // quality
         results.sort(function(a, b) { return b.capabilityScore - a.capabilityScore; });
     }
 

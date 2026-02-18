@@ -489,7 +489,7 @@
             }
 
             // === Use Case Scores ===
-            const useCaseKeys = ['coding', 'reasoning', 'chatbot', 'content', 'documents', 'translation'];
+            const useCaseKeys = ['coding', 'reasoning', 'chatbot', 'documents', 'content', 'extraction', 'translation', 'vision'];
             html += `<div class="cmp-section-header">Use Case Scores <span class="cmp-section-info">Composite 0–100 scores based on weighted benchmarks and community ratings. <a href="resources.html" style="color:var(--accent);">Learn more</a></span></div>`;
             useCaseKeys.forEach(uc => {
                 const config = modelData.scoringConfig[uc];

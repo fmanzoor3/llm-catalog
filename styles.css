@@ -192,47 +192,6 @@ a:hover { color: var(--accent-hover); }
     margin-bottom: 36px;
 }
 
-/* --- Use Case Set Toggle --- */
-.usecase-set-toggle {
-    display: flex;
-    justify-content: center;
-    gap: 0;
-    margin-bottom: 24px;
-}
-
-.set-toggle-btn {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    font-family: inherit;
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 8px 20px;
-    cursor: pointer;
-    transition: all var(--transition);
-    letter-spacing: 0.03em;
-}
-
-.set-toggle-btn:first-child {
-    border-radius: 8px 0 0 8px;
-    border-right: none;
-}
-
-.set-toggle-btn:last-child {
-    border-radius: 0 8px 8px 0;
-}
-
-.set-toggle-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-}
-
-.set-toggle-btn:not(.active):hover {
-    background: var(--bg-hover);
-    color: var(--text-secondary);
-}
-
 /* --- Use Case Grid --- */
 .usecase-grid {
     display: grid;
@@ -389,12 +348,7 @@ a:hover { color: var(--accent-hover); }
 .results-section { padding: 24px 0 48px; }
 
 .results-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
     margin-bottom: 16px;
-    flex-wrap: wrap;
-    gap: 8px;
 }
 
 .results-title {
@@ -405,60 +359,11 @@ a:hover { color: var(--accent-hover); }
 
 .results-title span { color: var(--accent); }
 
-.results-meta {
-    font-size: 0.78rem;
+.results-desc {
+    font-size: 0.84rem;
     color: var(--text-muted);
-}
-
-/* Rank By bar (above results table) — subtle inline toggle */
-.rankby-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-}
-.rankby-label {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    letter-spacing: 0.02em;
-}
-.rankby-toggle {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-.rankby-option {
-    background: none;
-    border: none;
-    font-family: var(--font);
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 2px 6px;
-    border-radius: 4px;
-    transition: all var(--transition);
-    letter-spacing: 0.01em;
-}
-.rankby-option.active {
-    color: var(--accent);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-}
-.rankby-option:not(.active):hover {
-    color: var(--text-secondary);
-}
-.rankby-option.disabled {
-    opacity: 0.3;
-    pointer-events: none;
-    cursor: not-allowed;
-}
-.rankby-sep {
-    color: var(--text-muted);
-    opacity: 0.3;
-    font-size: 0.72rem;
-    user-select: none;
+    margin-top: 6px;
+    line-height: 1.5;
 }
 
 /* Score Legend */
