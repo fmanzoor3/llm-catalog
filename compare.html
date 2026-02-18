@@ -150,7 +150,6 @@
             { key: 'arenaElo.instructionFollowing', label: 'Arena Instruction Following', suffix: '' }
         ];
 
-        const useCaseKeys = ['coding', 'reasoning', 'chatbot', 'content', 'documents', 'translation'];
 
         // URL handling
         function updateURL() {
@@ -431,8 +430,7 @@
             });
 
             // === Benchmarks ===
-            const allBenchmarks = [...benchmarkMetrics, ...arenaMetrics];
-            const visibleBenchmarks = allBenchmarks.filter(bm => {
+            const visibleBenchmarks = benchmarkMetrics.filter(bm => {
                 return mods.some(m => getMetricValue(m, bm.key) !== null);
             });
 
@@ -451,7 +449,7 @@
                         if (v === null) {
                             html += `<div class="cmp-value"><span style="color:var(--text-muted);">—</span></div>`;
                         } else {
-                            const display = bm.suffix === '%' ? (Math.round(v * 10) / 10) + '%' : Math.round(v);
+                            const display = (Math.round(v * 10) / 10) + '%';
                             html += `<div class="cmp-value${isBest ? ' cmp-best' : ''}">
                                 ${renderBar(v, maxVal, isBest)}
                                 <span class="cmp-bar-value">${display}</span>
@@ -461,21 +459,50 @@
                 });
             }
 
+            // === Arena Ratings ===
+            const visibleArena = arenaMetrics.filter(bm => {
+                return mods.some(m => getMetricValue(m, bm.key) !== null);
+            });
+
+            if (visibleArena.length > 0) {
+                html += `<div class="cmp-section-header">Community Ratings (Chatbot Arena)</div>`;
+                visibleArena.forEach(bm => {
+                    const values = mods.map(m => getMetricValue(m, bm.key));
+                    const numericValues = values.filter(v => v !== null);
+                    const maxVal = numericValues.length > 0 ? Math.max(...numericValues) : 1;
+                    const bestIdx = getBestIndex(values, 'highest');
+
+                    html += `<div class="cmp-label">${bm.label.replace('Arena ', '')}</div>`;
+                    mods.forEach((m, i) => {
+                        const v = values[i];
+                        const isBest = i === bestIdx;
+                        if (v === null) {
+                            html += `<div class="cmp-value"><span style="color:var(--text-muted);">—</span></div>`;
+                        } else {
+                            html += `<div class="cmp-value${isBest ? ' cmp-best' : ''}">
+                                ${renderBar(v, maxVal, isBest)}
+                                <span class="cmp-bar-value">${Math.round(v)}</span>
+                            </div>`;
+                        }
+                    });
+                });
+            }
+
             // === Use Case Scores ===
-            html += `<div class="cmp-section-header">Use Case Scores</div>`;
+            const useCaseKeys = ['coding', 'reasoning', 'chatbot', 'content', 'documents', 'translation'];
+            html += `<div class="cmp-section-header">Use Case Scores <span class="cmp-section-info">Composite 0–100 scores based on weighted benchmarks and community ratings. <a href="resources.html" style="color:var(--accent);">Learn more</a></span></div>`;
             useCaseKeys.forEach(uc => {
                 const config = modelData.scoringConfig[uc];
                 if (!config) return;
                 const scores = mods.map(m => computeCapabilityScore(m, uc).score);
                 const bestIdx = getBestIndex(scores, 'highest');
-                const maxScore = Math.max(...scores.filter(s => s > 0), 1);
 
                 html += `<div class="cmp-label">${config.name}</div>`;
                 mods.forEach((m, i) => {
                     const isBest = i === bestIdx;
                     html += `<div class="cmp-value${isBest ? ' cmp-best' : ''}">
                         ${renderBar(scores[i], 100, isBest)}
-                        <span class="cmp-bar-value">${scores[i]}</span>
+                        <span class="cmp-bar-value">${scores[i]}<span style="opacity:0.5;font-weight:400;">/100</span></span>
                     </div>`;
                 });
             });
@@ -518,15 +545,15 @@
         function renderAwards() {
             const awardsEl = document.getElementById('cmp-awards');
             const picks = [
-                { label: 'Best Overall', detail: m => { const s = rankModelsForUseCase('coding', 'best')[0]; return s ? 'Score: ' + s.overallScore : ''; }, finder: () => rankModelsForUseCase('coding', 'best')[0]?.model },
-                { label: 'Best for Coding', detail: m => { const s = rankModelsForUseCase('coding', 'capability')[0]; return s ? 'Score: ' + s.capabilityScore : ''; }, finder: () => rankModelsForUseCase('coding', 'capability')[0]?.model },
-                { label: 'Best Reasoning', detail: m => { const s = rankModelsForUseCase('reasoning', 'capability')[0]; return s ? 'Score: ' + s.capabilityScore : ''; }, finder: () => rankModelsForUseCase('reasoning', 'capability')[0]?.model },
-                { label: 'Best Value', detail: m => 'Quality per dollar', finder: () => rankModelsForUseCase('coding', 'cost')[0]?.model },
-                { label: 'Lowest Cost', detail: m => formatCost(m), finder: () => { const a = models.filter(m => m.pricing); return a.sort((a, b) => getBlendedCost(a) - getBlendedCost(b))[0]; } },
-                { label: 'Fastest', detail: m => formatSpeed(m), finder: () => [...models].sort((a, b) => (b.outputTokensPerSec || 0) - (a.outputTokensPerSec || 0))[0] },
-                { label: 'Longest Context', detail: m => formatTokenCount(m.contextWindow) + ' tokens', finder: () => [...models].sort((a, b) => (b.contextWindow || 0) - (a.contextWindow || 0))[0] },
-                { label: 'Best Open Source', detail: m => m.name, finder: () => { const oss = models.filter(m => m.costTier === 'self-hosted'); return oss.map(m => ({ model: m, score: computeCapabilityScore(m, 'coding').score })).sort((a, b) => b.score - a.score)[0]?.model; } },
-                { label: 'Best for Documents', detail: m => { const s = rankModelsForUseCase('documents', 'capability')[0]; return s ? 'Score: ' + s.capabilityScore : ''; }, finder: () => rankModelsForUseCase('documents', 'capability')[0]?.model }
+                { label: 'Best Overall', finder: () => rankModelsForUseCase('coding', 'best')[0]?.model },
+                { label: 'Best for Coding', finder: () => rankModelsForUseCase('coding', 'capability')[0]?.model },
+                { label: 'Best Reasoning', finder: () => rankModelsForUseCase('reasoning', 'capability')[0]?.model },
+                { label: 'Best Value', finder: () => rankModelsForUseCase('coding', 'cost')[0]?.model },
+                { label: 'Lowest Cost', finder: () => { const a = models.filter(m => m.pricing); return a.sort((a, b) => getBlendedCost(a) - getBlendedCost(b))[0]; } },
+                { label: 'Fastest', finder: () => [...models].sort((a, b) => (b.outputTokensPerSec || 0) - (a.outputTokensPerSec || 0))[0] },
+                { label: 'Longest Context', finder: () => [...models].sort((a, b) => (b.contextWindow || 0) - (a.contextWindow || 0))[0] },
+                { label: 'Best Open Source', finder: () => { const oss = models.filter(m => m.costTier === 'self-hosted'); return oss.map(m => ({ model: m, score: computeCapabilityScore(m, 'coding').score })).sort((a, b) => b.score - a.score)[0]?.model; } },
+                { label: 'Best for Documents', finder: () => rankModelsForUseCase('documents', 'capability')[0]?.model }
             ];
 
             let html = `<div class="cmp-awards-title">Quick Awards — click to add to comparison</div><div class="cmp-awards-grid">`;
@@ -535,14 +562,12 @@
                 if (!m) return;
                 const provClass = getProviderClass(m.provider);
                 const logo = getProviderLogo(m.provider, 24);
-                const detail = p.detail(m);
                 html += `<div class="cmp-award" data-model-id="${m.id}">
                     <div class="cmp-award-top">
                         <div class="cmp-award-logo ${provClass}">${logo}</div>
                         <div class="cmp-award-label">${p.label}</div>
                     </div>
                     <div class="cmp-award-model">${m.name}</div>
-                    ${detail ? `<div class="cmp-award-detail">${detail}</div>` : ''}
                 </div>`;
             });
             html += '</div>';
