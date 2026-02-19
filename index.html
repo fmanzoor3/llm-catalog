@@ -374,10 +374,10 @@
                 <th>Rank</th><th>Model</th>
                 <th class="th-tip" data-tip-title="Speed" data-tip-desc="Output tokens generated per second. Measured via Artificial Analysis using standardized prompts.">Speed</th>
                 ${isSelfHostView
-                    ? `<th class="th-tip" data-tip-title="Parameters" data-tip-desc="Total model parameters and active parameters per forward pass for MoE models.">Params</th>`
+                    ? `<th class="th-tip" data-tip-title="Parameters" data-tip-desc="Total model parameters and active parameters per forward pass for MoE models.">Params</th>
+                       <th class="th-tip" data-tip-title="Min VRAM" data-tip-desc="Minimum GPU memory required for FP16 inference. INT4/INT8 quantization can reduce this by 2-4x.">VRAM</th>`
                     : `<th class="th-tip" data-tip-title="Cost" data-tip-desc="Average of input and output price per million tokens. Based on direct API pricing — platform rates (Azure, AWS) may differ.">Cost</th>`}
                 <th class="th-tip" data-tip-title="Context Window" data-tip-desc="Max tokens the model can process in a single request.">Context</th>
-                ${isSelfHostView ? `<th class="th-tip" data-tip-title="Min VRAM" data-tip-desc="Minimum GPU memory required for FP16 inference. INT4/INT8 quantization can reduce this by 2-4x.">VRAM</th>` : ''}
                 ${benchHeaders}
             </tr></thead><tbody>`;
 
@@ -413,10 +413,10 @@
                         <div class="provider-sub">${getProviderName(model.provider)}${onPremLabel}</div></td>
                     <td class="speed-cell"><span class="cell-tag ${speedTier.cls}">${speedTier.label}</span>${speedSub ? '<span class="cell-sub">' + speedSub + '</span>' : ''}</td>
                     ${isSelfHostView
-                        ? `<td class="metric-cell">${model.specs?.parameters || '—'}</td>`
+                        ? `<td class="metric-cell">${model.specs?.parameters || '—'}</td>
+                           <td class="metric-cell">${model.specs?.minVram || '—'}</td>`
                         : `<td class="cost-cell"><span class="cell-tag ${costTier.cls}">${costTier.label}</span>${costSub ? '<span class="cell-sub">' + costSub + '</span>' : ''}</td>`}
                     <td class="context-cell">${formatTokenCount(model.contextWindow)}</td>
-                    ${isSelfHostView ? `<td class="metric-cell">${model.specs?.minVram || '—'}</td>` : ''}
                     ${scoreCells}
                 </tr>`;
             }).join('');
