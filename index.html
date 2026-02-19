@@ -363,6 +363,7 @@
                 .slice(0, 3);
 
             const isSelfHostView = currentEnvironment === 'self-hosted' || currentEnvironment === 'on-prem';
+            const isAllView = !currentEnvironment;
             // Show fewer benchmark columns in self-host view to make room for Params + VRAM
             if (isSelfHostView) scoreColumns = scoreColumns.slice(0, 2);
 
@@ -372,6 +373,7 @@
 
             let html = `<table class="rec-table"><thead><tr>
                 <th>Rank</th><th>Model</th>
+                ${isAllView ? `<th class="th-tip" data-tip-title="Hosting" data-tip-desc="Whether the model is open source (can be self-hosted) or only available via API.">Hosting</th>` : ''}
                 <th class="th-tip" data-tip-title="Speed" data-tip-desc="Output tokens generated per second. Measured via Artificial Analysis using standardized prompts.">Speed</th>
                 ${isSelfHostView
                     ? `<th class="th-tip" data-tip-title="Parameters" data-tip-desc="Total model parameters and active parameters per forward pass for MoE models.">Params</th>
@@ -407,10 +409,16 @@
                     return `<td class="metric-cell">${display}</td>`;
                 }).join('');
 
+                const isSelfHostable = model.deployment?.selfHostable;
+                const hostingTag = isSelfHostable
+                    ? '<span class="cell-tag hosting-open">Open Source</span>'
+                    : '<span class="cell-tag hosting-api">Cloud API</span>';
+
                 return `<tr class="${hiddenClass}" onclick="openModelModal('${model.id}')">
                     <td class="rank-cell ${isTop ? 'top' : ''}">${idx + 1}</td>
                     <td class="model-cell">${model.name}${isTop ? '<span class="badge badge-default">TOP PICK</span>' : ''}
                         <div class="provider-sub">${getProviderName(model.provider)}${onPremLabel}</div></td>
+                    ${isAllView ? `<td class="hosting-cell">${hostingTag}</td>` : ''}
                     <td class="speed-cell"><span class="cell-tag ${speedTier.cls}">${speedTier.label}</span>${speedSub ? '<span class="cell-sub">' + speedSub + '</span>' : ''}</td>
                     ${isSelfHostView
                         ? `<td class="metric-cell">${model.specs?.parameters || '—'}</td>
