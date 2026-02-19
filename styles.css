@@ -466,6 +466,14 @@ a:hover { color: var(--accent-hover); }
 }
 .show-more-btn:hover { color: var(--accent); border-color: var(--accent); }
 
+/* Ranking Disclaimer */
+.ranking-disclaimer {
+    margin: 16px 0 24px; padding: 14px 18px;
+    background: var(--accent-light); border: 1px solid rgba(232,133,59,0.25); border-radius: var(--radius-md);
+    font-size: 0.82rem; line-height: 1.7; color: var(--text-secondary); letter-spacing: 0.01em;
+}
+.ranking-disclaimer strong { color: var(--accent); font-weight: 700; }
+
 /* Results Footer */
 .results-footer { text-align: center; margin-top: 28px; }
 
