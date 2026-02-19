@@ -182,8 +182,11 @@ function computeCapabilityScore(model, useCaseKey) {
 
     if (availableWeight === 0) return { score: 0, breakdown: [], completeness: 0 };
 
-    // Rescale weights so available metrics fill the full score range
-    var weightScale = totalWeight / availableWeight;
+    var completeness = availableWeight / totalWeight;
+
+    // Only rescale weights when we have enough data to be meaningful (>=60%)
+    // Below 60%: missing metrics contribute 0, naturally lowering the score
+    var weightScale = completeness >= 0.6 ? (totalWeight / availableWeight) : 1;
     var score = 0;
 
     Object.keys(weights).forEach(function(metric) {
@@ -204,15 +207,6 @@ function computeCapabilityScore(model, useCaseKey) {
     });
 
     score = Math.max(0, Math.min(100, score * 100 / totalWeight));
-    var completeness = availableWeight / totalWeight;
-
-    // Confidence penalty for sparse data
-    // 60%+ data: no penalty (weight rescaling handles missing metrics)
-    // Below 60%: linear penalty down to 0.4x at 0% data
-    if (completeness < 0.6) {
-        var penalty = 0.4 + (completeness / 0.6) * 0.6;
-        score = score * penalty;
-    }
     score = Math.round(score);
 
     return {
@@ -384,7 +378,8 @@ function computeCapabilityScoreWithWeights(model, adjustedWeights, normRanges) {
 
     if (availableWeight === 0) return { score: 0, breakdown: [], completeness: 0 };
 
-    var weightScale = totalWeight / availableWeight;
+    var completeness = availableWeight / totalWeight;
+    var weightScale = completeness >= 0.6 ? (totalWeight / availableWeight) : 1;
     var score = 0;
 
     Object.keys(adjustedWeights).forEach(function(metric) {
@@ -405,12 +400,6 @@ function computeCapabilityScoreWithWeights(model, adjustedWeights, normRanges) {
     });
 
     score = Math.max(0, Math.min(100, score * 100 / totalWeight));
-    var completeness = availableWeight / totalWeight;
-
-    if (completeness < 0.6) {
-        var penalty = 0.4 + (completeness / 0.6) * 0.6;
-        score = score * penalty;
-    }
     score = Math.round(score);
 
     return { score: score, breakdown: breakdown.sort(function(a, b) { return b.contribution - a.contribution; }), completeness: completeness };
