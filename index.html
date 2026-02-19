@@ -350,11 +350,16 @@
                 'arenaElo.instructionFollowing': 'Arena Instruction Following ELO', 'arenaElo.longerQuery': 'Arena Longer Query ELO'
             };
 
-            // Show top 3 scoring metrics by weight (benchmark + arena combined)
+            // Show top 3 scoring metrics by weight — arena first, then benchmarks
             const ucWeights = modelData.scoringConfig[currentUsecase]?.weights || {};
             let scoreColumns = Object.keys(ucWeights)
                 .filter(k => k.indexOf('benchmarks.') === 0 || k.indexOf('arenaElo.') === 0)
-                .sort((a, b) => ucWeights[b] - ucWeights[a])
+                .sort((a, b) => {
+                    const aIsArena = a.indexOf('arenaElo.') === 0 ? 0 : 1;
+                    const bIsArena = b.indexOf('arenaElo.') === 0 ? 0 : 1;
+                    if (aIsArena !== bIsArena) return aIsArena - bIsArena;
+                    return ucWeights[b] - ucWeights[a];
+                })
                 .slice(0, 3);
 
             const isSelfHostView = currentEnvironment === 'self-hosted' || currentEnvironment === 'on-prem';
