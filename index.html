@@ -331,14 +331,23 @@
                 .sort((a, b) => ucWeights[b] - ucWeights[a])
                 .slice(0, 3);
 
+            const isSelfHostView = currentEnvironment === 'self-hosted' || currentEnvironment === 'on-prem';
+            // Show fewer benchmark columns in self-host view to make room for Params + VRAM
+            if (isSelfHostView) scoreColumns = scoreColumns.slice(0, 2);
+
             const initialShow = 8;
+
+            const benchHeaders = scoreColumns.map(k => `<th class="score-col-th th-tip" data-tip-title="${(metricFullNames[k] || metricNames[k] || k).replace(/"/g, '&quot;')}" data-tip-desc="${(metricDescs[k] || '').replace(/"/g, '&quot;')}">${metricNames[k] || k}</th>`).join('');
 
             let html = `<table class="rec-table"><thead><tr>
                 <th>Rank</th><th>Model</th>
                 <th class="th-tip" data-tip-title="Speed" data-tip-desc="Output tokens generated per second. Measured via Artificial Analysis using standardized prompts.">Speed</th>
-                <th class="th-tip" data-tip-title="Cost" data-tip-desc="Average of input and output price per million tokens. Based on direct API pricing — platform rates (Azure, AWS) may differ.">Cost</th>
+                ${isSelfHostView
+                    ? `<th class="th-tip" data-tip-title="Parameters" data-tip-desc="Total model parameters and active parameters per forward pass for MoE models.">Params</th>`
+                    : `<th class="th-tip" data-tip-title="Cost" data-tip-desc="Average of input and output price per million tokens. Based on direct API pricing — platform rates (Azure, AWS) may differ.">Cost</th>`}
                 <th class="th-tip" data-tip-title="Context Window" data-tip-desc="Max tokens the model can process in a single request.">Context</th>
-                ${scoreColumns.map(k => `<th class="score-col-th th-tip" data-tip-title="${(metricFullNames[k] || metricNames[k] || k).replace(/"/g, '&quot;')}" data-tip-desc="${(metricDescs[k] || '').replace(/"/g, '&quot;')}">${metricNames[k] || k}</th>`).join('')}
+                ${isSelfHostView ? `<th class="th-tip" data-tip-title="Min VRAM" data-tip-desc="Minimum GPU memory required for FP16 inference. INT4/INT8 quantization can reduce this by 2-4x.">VRAM</th>` : ''}
+                ${benchHeaders}
             </tr></thead><tbody>`;
 
             html += ranked.map((r, idx) => {
@@ -358,7 +367,7 @@
                 const blended = model.pricing ? (model.pricing.inputPerMillion + model.pricing.outputPerMillion) / 2 : null;
                 const costSub = blended !== null ? '$' + (blended < 1 ? blended.toFixed(2) : blended.toFixed(1)) + '/M' : '';
 
-                // Dynamic score columns
+                // Dynamic score columns (benchmarks always shown)
                 const scoreCells = scoreColumns.map(k => {
                     const val = getMetricValue(model, k);
                     if (val === null || val === undefined) return '<td class="metric-cell">—</td>';
@@ -372,8 +381,11 @@
                     <td class="model-cell">${model.name}${isTop ? '<span class="badge badge-default">TOP PICK</span>' : ''}
                         <div class="provider-sub">${getProviderName(model.provider)}${onPremLabel}</div></td>
                     <td class="speed-cell"><span class="cell-tag ${speedTier.cls}">${speedTier.label}</span>${speedSub ? '<span class="cell-sub">' + speedSub + '</span>' : ''}</td>
-                    <td class="cost-cell"><span class="cell-tag ${costTier.cls}">${costTier.label}</span>${costSub ? '<span class="cell-sub">' + costSub + '</span>' : ''}</td>
+                    ${isSelfHostView
+                        ? `<td class="metric-cell">${model.specs?.parameters || '—'}</td>`
+                        : `<td class="cost-cell"><span class="cell-tag ${costTier.cls}">${costTier.label}</span>${costSub ? '<span class="cell-sub">' + costSub + '</span>' : ''}</td>`}
                     <td class="context-cell">${formatTokenCount(model.contextWindow)}</td>
+                    ${isSelfHostView ? `<td class="metric-cell">${model.specs?.minVram || '—'}</td>` : ''}
                     ${scoreCells}
                 </tr>`;
             }).join('');
