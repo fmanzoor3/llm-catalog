@@ -465,11 +465,21 @@ function openModelModal(modelId) {
 
     document.getElementById('modalOverview').textContent = model.overview || model.description;
 
-    // Specs
+    // Specs — numeric first, then categorical
     const specs = [
-        { label: 'Speed', value: model.outputTokensPerSec ? model.outputTokensPerSec + ' tok/s' : 'N/A' },
         { label: 'Context Window', value: formatTokenCount(model.contextWindow) },
         { label: 'Max Output', value: model.maxOutputTokens ? formatTokenCount(model.maxOutputTokens) : 'N/A' },
+        { label: 'Speed', value: model.outputTokensPerSec ? model.outputTokensPerSec + ' tok/s' : 'N/A' },
+    ];
+    // Pricing
+    if (model.pricing?.inputPerMillion != null) {
+        specs.push({ label: 'Input / 1M tokens', value: '$' + model.pricing.inputPerMillion.toFixed(2) });
+        specs.push({ label: 'Output / 1M tokens', value: '$' + model.pricing.outputPerMillion.toFixed(2) });
+    } else {
+        specs.push({ label: 'Pricing', value: 'Self-hosted' });
+    }
+    // Categorical
+    specs.push(
         { label: 'Multimodal', value: model.specs?.multimodal ? model.specs.multimodalTypes.join(', ') : 'Text only' },
         { label: 'Released', value: model.specs?.releaseDate || 'N/A' },
         { label: 'Hosting', value: getHostingLabel(model) },
@@ -478,7 +488,7 @@ function openModelModal(modelId) {
             avail = avail.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s && s.toLowerCase() !== 'api'; }).join(', ');
             return avail || 'N/A';
         })() }
-    ];
+    );
     // Add self-hosting specs only for open-source models
     if (model.deployment?.selfHostable) {
         if (model.specs?.parameters) specs.push({ label: 'Parameters', value: model.specs.parameters });
@@ -486,18 +496,11 @@ function openModelModal(modelId) {
     }
     document.getElementById('modalSpecs').innerHTML = specs.map(s =>
         `<div class="modal-spec"><div class="modal-spec-label">${s.label}</div><div class="modal-spec-value">${s.value}</div></div>`
-    ).join('');
+    ).join('') + (model.pricing?.notes ? `<div class="modal-spec-note">${model.pricing.notes}</div>` : '');
 
-    // Pricing
-    const pricingEl = document.getElementById('modalPricing');
-    if (model.pricing?.inputPerMillion != null) {
-        pricingEl.innerHTML = `
-            <div class="modal-price-item"><div class="modal-price-label">Input / 1M</div><div class="modal-price-value">$${model.pricing.inputPerMillion.toFixed(2)}</div></div>
-            <div class="modal-price-item"><div class="modal-price-label">Output / 1M</div><div class="modal-price-value">$${model.pricing.outputPerMillion.toFixed(2)}</div></div>
-        ` + (model.pricing.notes ? `<div style="grid-column:1/-1;font-size:0.78rem;color:var(--text-muted);padding-top:4px;">${model.pricing.notes}</div>` : '');
-    } else {
-        pricingEl.innerHTML = '<div class="modal-price-item" style="grid-column:1/-1;"><div class="modal-price-value" style="font-size:0.88rem;">Self-hosted — cost depends on infrastructure</div></div>';
-    }
+    // Hide separate pricing section
+    const pricingSection = document.getElementById('modalPricingSection');
+    if (pricingSection) pricingSection.style.display = 'none';
 
     // Strengths & Weaknesses
     document.getElementById('modalStrengths').innerHTML = (model.strengths || []).map(s => `<li>${s}</li>`).join('') || '<li>No data</li>';
