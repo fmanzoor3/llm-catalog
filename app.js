@@ -140,22 +140,22 @@ function normalizeMetric(value, min, max) {
 
 function normalizeContextWindow(tokens) {
     if (!tokens) return 0;
+    // Log scale: 128K -> ~55, 200K -> ~62, 400K -> ~72, 1M -> ~85, 2M -> ~93, 10M -> ~100
     var logVal = Math.log2(tokens / 1000);
-    return Math.max(0, Math.min(100, (logVal - 5) * 7.5 + 20));
+    return Math.max(0, Math.min(100, (logVal - 3) * 8 + 25));
 }
 
 function getSpeedProxy(model) {
-    // Use real output tokens/sec data, normalized to 0-100 scale
     var tps = model.outputTokensPerSec;
-    if (!tps) return 50; // fallback
-    // Normalize: 30 tok/s -> ~20, 100 tok/s -> ~55, 200+ tok/s -> ~85+
-    return Math.min(100, Math.round((tps / 400) * 100));
+    if (!tps) return null; // missing data should not contribute
+    // 30 tok/s -> ~35, 80 tok/s -> ~52, 150 tok/s -> ~70, 300+ tok/s -> ~97
+    return Math.min(100, Math.round(30 + (tps / 450) * 70));
 }
 
 function getMetricValue(model, metricKey) {
     if (metricKey === 'speedProxy') return getSpeedProxy(model);
     if (metricKey === 'contextWindow') return normalizeContextWindow(model.contextWindow);
-    if (metricKey === 'multimodal') return (model.specs && model.specs.multimodal) ? 80 : 20;
+    if (metricKey === 'multimodal') return (model.specs && model.specs.multimodal) ? 75 : 15;
     var parts = metricKey.split('.');
     var val = model;
     for (var i = 0; i < parts.length; i++) {
@@ -182,7 +182,7 @@ function computeCapabilityScore(model, useCaseKey) {
 
     if (availableWeight === 0) return { score: 0, breakdown: [], completeness: 0 };
 
-    var weightScale = totalWeight / availableWeight;
+    // No weight rescaling — missing metrics contribute 0, preserving relative ranking
     var score = 0;
 
     Object.keys(weights).forEach(function(metric) {
@@ -196,16 +196,20 @@ function computeCapabilityScore(model, useCaseKey) {
         } else {
             normalized = raw;
         }
-        var adjustedWeight = weights[metric] * weightScale;
-        var contribution = normalized * adjustedWeight / 100;
+        var contribution = normalized * weights[metric] / 100;
         score += contribution;
-        breakdown.push({ metric, raw, normalized: Math.round(normalized), weight: adjustedWeight, contribution });
+        breakdown.push({ metric, raw, normalized: Math.round(normalized), weight: weights[metric], contribution });
     });
 
     score = Math.max(0, Math.min(100, score * 100 / totalWeight));
     var completeness = availableWeight / totalWeight;
-    // Penalize models missing key metrics — gentle above 70%, steep below
-    if (completeness < 0.7) score = score * Math.pow(completeness / 0.7, 2);
+
+    // Gentle linear penalty for missing data — starts at 50% completeness
+    // 100% complete = no penalty, 50% = score * 0.5, below 50% floors at 0.5x
+    if (completeness < 1.0) {
+        var penalty = 0.5 + 0.5 * Math.min(1, completeness / 1.0);
+        score = score * penalty;
+    }
     score = Math.round(score);
 
     return {
@@ -377,7 +381,6 @@ function computeCapabilityScoreWithWeights(model, adjustedWeights, normRanges) {
 
     if (availableWeight === 0) return { score: 0, breakdown: [], completeness: 0 };
 
-    var weightScale = totalWeight / availableWeight;
     var score = 0;
 
     Object.keys(adjustedWeights).forEach(function(metric) {
@@ -391,15 +394,18 @@ function computeCapabilityScoreWithWeights(model, adjustedWeights, normRanges) {
         } else {
             normalized = raw;
         }
-        var adjustedWeight = adjustedWeights[metric] * weightScale;
-        var contribution = normalized * adjustedWeight / 100;
+        var contribution = normalized * adjustedWeights[metric] / 100;
         score += contribution;
-        breakdown.push({ metric: metric, raw: raw, normalized: Math.round(normalized), weight: adjustedWeight, contribution: contribution });
+        breakdown.push({ metric: metric, raw: raw, normalized: Math.round(normalized), weight: adjustedWeights[metric], contribution: contribution });
     });
 
     score = Math.max(0, Math.min(100, score * 100 / totalWeight));
     var completeness = availableWeight / totalWeight;
-    if (completeness < 0.7) score = score * Math.pow(completeness / 0.7, 2);
+
+    if (completeness < 1.0) {
+        var penalty = 0.5 + 0.5 * Math.min(1, completeness / 1.0);
+        score = score * penalty;
+    }
     score = Math.round(score);
 
     return { score: score, breakdown: breakdown.sort(function(a, b) { return b.contribution - a.contribution; }), completeness: completeness };
