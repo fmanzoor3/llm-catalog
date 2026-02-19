@@ -130,7 +130,13 @@
                 </div>
                 <div class="res-expand-body">
                     <p class="res-scoring-intro">
-                        Each use case gets a composite score from 0 to 100. We normalize each metric to a 0&ndash;1 range using fixed bounds, multiply by its weight, and sum the results. Context window uses logarithmic scaling. Speed and multimodal support contribute as binary factors.
+                        Each use case gets a composite score from 0 to 100 based on a weighted blend of community ratings (Chatbot Arena Elo) and benchmarks (SWE-bench, GPQA, AIME, etc.). Each metric is normalized to a 0&ndash;100 scale using fixed bounds, then multiplied by its weight.
+                    </p>
+                    <p class="res-scoring-intro" style="margin-top:12px;">
+                        <strong>Missing data handling:</strong> When a model has 60% or more of the weighted metrics available, scores are rescaled so available data fills the full range. Below 60%, missing metrics contribute zero &mdash; naturally lowering the score. This means newly released models with limited evaluation data will score lower until more benchmarks and community ratings are published.
+                    </p>
+                    <p class="res-scoring-intro" style="margin-top:12px;">
+                        <strong>Practical factors:</strong> Context window is log-scaled (larger windows have diminishing returns). Speed is normalized from output tokens per second. Multimodal capability is treated as a bonus factor for relevant use cases.
                     </p>
                     <div id="res-scoring"></div>
                 </div>
