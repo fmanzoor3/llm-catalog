@@ -403,11 +403,11 @@ a:hover { color: var(--accent-hover); }
 .rec-table tbody tr:hover { background: var(--bg-hover); }
 .rec-table tbody tr:first-child { background: var(--accent-glow); }
 .rec-table tbody tr:first-child:hover { background: var(--bg-hover); }
-.rec-table .rank-cell { width: 50px; text-align: center; color: var(--text-muted); font-weight: 700; font-size: 14px; }
+.rec-table .rank-cell { width: 42px; text-align: center; color: var(--text-muted); font-weight: 700; font-size: 14px; }
 .rec-table .rank-cell.top { color: var(--accent); font-size: 16px; }
 .rec-table .model-cell { font-weight: 600; color: var(--text-primary); font-size: 13px; }
 .rec-table .model-cell .provider-sub { font-weight: 400; color: var(--text-muted); font-size: 11px; display: block; margin-top: 2px; }
-.rec-table .speed-cell, .rec-table .cost-cell { width: 90px; text-align: center; vertical-align: middle; }
+.rec-table .speed-cell, .rec-table .cost-cell { width: 82px; text-align: center; vertical-align: middle; }
 .rec-table .cell-tag { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
 .rec-table .cell-sub { display: block; font-size: 10px; font-weight: 400; color: var(--text-muted); margin-top: 3px; font-variant-numeric: tabular-nums; }
 .rec-table .speed-fast { background: var(--green-light); color: var(--green); }
@@ -417,9 +417,9 @@ a:hover { color: var(--accent-hover); }
 .rec-table .cost-low { background: var(--green-light); color: var(--green); }
 .rec-table .cost-mid { background: var(--amber-light); color: var(--amber); }
 .rec-table .cost-high { background: var(--red-light); color: var(--red); }
-.rec-table .context-cell { width: 80px; text-align: center; font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; font-weight: 600; }
-.rec-table .metric-cell { width: 110px; text-align: right; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-primary); padding-right: 16px; }
-.rec-table .score-col-th { width: 110px; text-align: right; padding-right: 16px; }
+.rec-table .context-cell { width: 72px; text-align: center; font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; font-weight: 600; }
+.rec-table .metric-cell { width: 120px; text-align: right; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-primary); padding-right: 16px; }
+.rec-table .score-col-th { width: 120px; text-align: right; padding-right: 16px; white-space: nowrap; }
 .rec-table .th-tip { cursor: help; border-bottom: 1px dashed var(--text-muted); }
 .col-tooltip {
     position: fixed; z-index: 100; pointer-events: none;
