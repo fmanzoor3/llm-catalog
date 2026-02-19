@@ -384,6 +384,7 @@ a:hover { color: var(--accent-hover); }
     display: flex;
     flex-direction: column;
     gap: 8px;
+    overflow-x: auto;
 }
 
 /* --- Recommendation Table --- */
@@ -411,7 +412,7 @@ a:hover { color: var(--accent-hover); }
 .rec-table .speed-fast { background: var(--green-light); color: var(--green); }
 .rec-table .speed-med { background: rgba(96,165,250,0.12); color: var(--blue); }
 .rec-table .speed-slow { background: var(--amber-light); color: var(--amber); }
-.rec-table .cost-free { background: var(--green-light); color: var(--green); }
+.rec-table .cost-self { background: rgba(139,92,246,0.12); color: #a78bfa; }
 .rec-table .cost-low { background: var(--green-light); color: var(--green); }
 .rec-table .cost-mid { background: var(--amber-light); color: var(--amber); }
 .rec-table .cost-high { background: var(--red-light); color: var(--red); }
@@ -451,6 +452,7 @@ a:hover { color: var(--accent-hover); }
     display: inline-block; padding: 3px 10px; border-radius: 6px;
     font-size: 11px; font-weight: 700;
 }
+.cost-self { background: rgba(139,92,246,0.12); color: #a78bfa; }
 .cost-low { background: var(--green-light); color: var(--green); }
 .cost-mid { background: var(--amber-light); color: var(--amber); }
 .cost-high { background: var(--red-light); color: var(--red); }
@@ -1201,6 +1203,40 @@ a:hover { color: var(--accent-hover); }
     display: flex; align-items: center; gap: 6px;
 }
 .modal-sources a:hover { text-decoration: underline; }
+
+/* Score Breakdown — collapsible */
+.breakdown-summary {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    cursor: pointer; padding: 8px 0; user-select: none;
+}
+.breakdown-score-inline { font-size: 1.1rem; font-weight: 800; color: var(--accent); }
+.breakdown-score-inline small { font-size: 0.75rem; font-weight: 400; color: var(--text-muted); }
+.breakdown-context { font-size: 0.8rem; color: var(--text-muted); }
+.breakdown-drivers { font-size: 0.78rem; color: var(--text-secondary); }
+.breakdown-toggle { font-size: 0.75rem; color: var(--accent); margin-left: auto; white-space: nowrap; }
+.breakdown-detail { display: none; padding-top: 12px; }
+.breakdown-detail.open { display: block; }
+.breakdown-detail.open + .breakdown-summary .breakdown-toggle,
+.breakdown-summary:has(~ .breakdown-detail.open) .breakdown-toggle { /* no-op, toggle handled in JS */ }
+.breakdown-uc-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.breakdown-uc-chip {
+    font-size: 0.72rem; padding: 3px 8px; border-radius: 6px;
+    background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-muted);
+    cursor: default; white-space: nowrap;
+}
+.breakdown-uc-chip.active { background: var(--accent-glow); border-color: var(--accent); color: var(--text-primary); }
+.breakdown-uc-chip strong { margin-left: 3px; color: inherit; }
+.breakdown-completeness { font-size: 0.72rem; color: var(--text-muted); margin-top: 8px; }
+.breakdown-list { display: flex; flex-direction: column; gap: 6px; }
+.breakdown-row { display: grid; grid-template-columns: 140px 1fr 50px; gap: 8px; align-items: center; }
+.breakdown-label { font-size: 0.78rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.breakdown-weight { font-size: 0.68rem; color: var(--text-muted); }
+.breakdown-bar-wrap { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.breakdown-bar { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+.breakdown-strong { background: var(--green); }
+.breakdown-avg { background: var(--blue); }
+.breakdown-weak { background: var(--amber); }
+.breakdown-raw { font-size: 0.78rem; font-weight: 600; color: var(--text-primary); text-align: right; font-variant-numeric: tabular-nums; }
 
 /* Methodology Modal */
 .methodology-modal-overlay {

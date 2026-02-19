@@ -80,7 +80,7 @@ function formatCost(model) {
 }
 
 function getCostTier(model) {
-    if (!model.pricing) return { label: 'Free', cls: 'cost-free' };
+    if (!model.pricing) return { label: 'Self-hosted', cls: 'cost-self' };
     var blend = (model.pricing.inputPerMillion + model.pricing.outputPerMillion) / 2;
     if (blend < 2) return { label: '$', cls: 'cost-low' };
     if (blend < 10) return { label: '$$', cls: 'cost-mid' };
@@ -461,7 +461,7 @@ function openModelModal(modelId) {
 
     const costBadge = document.getElementById('modalCostBadge');
     costBadge.textContent = getCostLabel(model.costTier);
-    costBadge.className = 'cost-badge cost-' + (model.costTier === 'self-hosted' ? 'low' : model.costTier);
+    costBadge.className = 'cost-badge cost-' + (model.costTier === 'self-hosted' ? 'self' : model.costTier);
 
     document.getElementById('modalOverview').textContent = model.overview || model.description;
 
@@ -534,6 +534,72 @@ function openModelModal(modelId) {
         benchSection.style.display = '';
     } else {
         benchSection.style.display = 'none';
+    }
+
+    // Score Breakdown — collapsible
+    const breakdownSection = document.getElementById('modalScoreBreakdownSection');
+    const breakdownEl = document.getElementById('modalScoreBreakdown');
+    if (breakdownSection && breakdownEl) {
+        const useCases = modelData.useCaseSets.default.useCases;
+        const ucScores = {};
+        useCases.forEach(uc => { ucScores[uc] = computeCapabilityScore(model, uc); });
+
+        const activeUC = (typeof currentUsecase !== 'undefined' && currentUsecase) ? currentUsecase : useCases[0];
+        const activeResult = ucScores[activeUC] || computeCapabilityScore(model, activeUC);
+        const ucName = modelData.scoringConfig[activeUC]?.name || activeUC;
+
+        if (activeResult.breakdown.length > 0) {
+            const topDrivers = getTopDrivers(activeResult.breakdown.slice(0, 3), 3);
+            const uid = 'bd_' + Date.now();
+
+            // Summary line (always visible)
+            let html = `<div class="breakdown-summary" onclick="document.getElementById('${uid}').classList.toggle('open')">`;
+            html += `<span class="breakdown-score-inline">${activeResult.score}<small>/100</small></span>`;
+            html += `<span class="breakdown-context">for ${ucName}</span>`;
+            html += `<span class="breakdown-drivers">${topDrivers.join(' · ')}</span>`;
+            html += `<span class="breakdown-toggle">&#9656; Details</span>`;
+            html += `</div>`;
+
+            // Expandable detail (hidden by default)
+            html += `<div class="breakdown-detail" id="${uid}">`;
+
+            // Use case chips
+            html += '<div class="breakdown-uc-row">';
+            useCases.forEach(uc => {
+                const s = ucScores[uc]?.score || 0;
+                const name = modelData.scoringConfig[uc]?.name || uc;
+                const shortName = name.split(' ')[0];
+                html += `<span class="breakdown-uc-chip ${uc === activeUC ? 'active' : ''}" title="${name}: ${s}/100">${shortName} <strong>${s}</strong></span>`;
+            });
+            html += '</div>';
+
+            // Bars
+            html += '<div class="breakdown-list">';
+            activeResult.breakdown.forEach(d => {
+                const label = getTopDrivers([d], 1)[0].replace(/ [\d.]+%?$/, '');
+                const rawDisplay = d.metric.indexOf('arenaElo') >= 0 ? Math.round(d.raw) :
+                    (d.metric === 'contextWindow' || d.metric === 'speedProxy' || d.metric === 'multimodal') ? Math.round(d.raw) :
+                    (Math.round(d.raw * 10) / 10) + '%';
+                const weightPct = Math.round(d.weight * 100);
+                const barWidth = Math.max(2, Math.round(d.normalized));
+                const strength = d.normalized >= 70 ? 'strong' : d.normalized >= 40 ? 'avg' : 'weak';
+                html += `<div class="breakdown-row">`;
+                html += `<div class="breakdown-label">${label} <span class="breakdown-weight">${weightPct}%</span></div>`;
+                html += `<div class="breakdown-bar-wrap"><div class="breakdown-bar breakdown-${strength}" style="width:${barWidth}%"></div></div>`;
+                html += `<div class="breakdown-raw">${rawDisplay}</div>`;
+                html += `</div>`;
+            });
+            html += '</div>';
+
+            const pct = Math.round(activeResult.completeness * 100);
+            html += `<div class="breakdown-completeness">${pct}% data coverage</div>`;
+            html += '</div>';
+
+            breakdownEl.innerHTML = html;
+            breakdownSection.style.display = '';
+        } else {
+            breakdownSection.style.display = 'none';
+        }
     }
 
     // Tags

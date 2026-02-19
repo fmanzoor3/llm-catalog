@@ -364,7 +364,7 @@ function populateComparisonTable() {
 
         html += ranked.map(function(r, idx) {
             var model = r.model;
-            var costClass = model.costTier === 'self-hosted' ? 'low' : model.costTier;
+            var costClass = model.costTier === 'self-hosted' ? 'self' : model.costTier;
             var hiddenClass = idx >= initialShow ? 'hidden-rec' : '';
             var isTop = idx === 0;
             var overallScore = r.overallScore || Math.round(r.capabilityScore * 0.7 + r.valueScore * 0.3);
@@ -424,7 +424,7 @@ function populateComparisonTable() {
         document.getElementById('modalProvider').textContent = getProviderName(model.provider);
         const costBadge = document.getElementById('modalCostBadge');
         costBadge.textContent = getCostLabel(model.costTier);
-        costBadge.className = 'cost-badge cost-' + (model.costTier === 'self-hosted' ? 'low' : model.costTier);
+        costBadge.className = 'cost-badge cost-' + (model.costTier === 'self-hosted' ? 'self' : model.costTier);
         document.getElementById('modalOverview').textContent = model.overview || model.description;
 
         // Specs grid

@@ -141,6 +141,9 @@
                 <h3>Benchmarks</h3>
                 <div class="modal-benchmarks" id="modalBenchmarks"></div>
             </div>
+            <div class="modal-section" id="modalScoreBreakdownSection">
+                <div id="modalScoreBreakdown"></div>
+            </div>
             <div class="modal-tags" id="modalTags"></div>
             <div class="modal-section" id="modalSourcesSection">
                 <h3>Sources</h3>
@@ -157,7 +160,7 @@
                 <span>LLM Catalog</span>
             </div>
             <div class="footer-links">
-                <a href="compare.html">Methodology</a>
+                <a href="resources.html">Methodology</a>
                 <a href="resources.html">Resources</a>
             </div>
             <span class="footer-copy">&copy; 2026 Enterprise AI Team &middot; Last updated <span id="lastUpdated"></span></span>
@@ -172,10 +175,22 @@
         const updatedEl = document.getElementById('lastUpdated');
         if (updatedEl && modelData.lastUpdated) updatedEl.textContent = modelData.lastUpdated;
 
-        let currentUsecase = "coding";
-        let currentOptimize = "balanced";
-        let currentEnvironment = "";
+        // Read initial state from URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentUsecase = urlParams.get('usecase') || "coding";
+        let currentOptimize = urlParams.get('optimize') || "balanced";
+        let currentEnvironment = urlParams.get('env') || "";
         let currentBoosts = new Set(); // reserved for future boost feature
+
+        function updateURL() {
+            const params = new URLSearchParams();
+            if (currentUsecase !== 'coding') params.set('usecase', currentUsecase);
+            if (currentOptimize !== 'balanced') params.set('optimize', currentOptimize);
+            if (currentEnvironment) params.set('env', currentEnvironment);
+            const qs = params.toString();
+            const newUrl = window.location.pathname + (qs ? '?' + qs : '');
+            history.replaceState(null, '', newUrl);
+        }
         const resultsList = document.getElementById("results-list");
         if (!resultsList) return;
 
@@ -212,12 +227,13 @@
         function renderUsecaseCards() {
             const grid = document.getElementById("usecase-grid");
             const useCases = modelData.useCaseSets.default.useCases;
-            currentUsecase = useCases[0];
+            // Only default to first use case if URL didn't specify one
+            if (!useCases.includes(currentUsecase)) currentUsecase = useCases[0];
 
-            grid.innerHTML = useCases.map((uc, i) => {
+            grid.innerHTML = useCases.map((uc) => {
                 const icon = usecaseIcons[uc] || usecaseIcons.chatbot;
                 const label = usecaseLabels[uc] || uc;
-                return `<button class="usecase-card ${i === 0 ? 'active' : ''}" data-usecase="${uc}">
+                return `<button class="usecase-card ${uc === currentUsecase ? 'active' : ''}" data-usecase="${uc}">
                     <div class="usecase-icon">${icon}</div>
                     <span class="usecase-label">${label}</span>
                 </button>`;
@@ -249,10 +265,21 @@
             render();
         });
 
+        // Set initial filter UI from URL params
+        if (currentOptimize !== 'balanced') {
+            document.querySelectorAll('#optimize-group .filter-chip').forEach(c => {
+                c.classList.toggle('active', c.dataset.value === currentOptimize);
+            });
+        }
+        if (currentEnvironment) {
+            document.getElementById('environment-filter').value = currentEnvironment;
+        }
+
         // Initial render
         renderUsecaseCards();
 
         function render() {
+            updateURL();
             // Update header
             const ucConfig = modelData.scoringConfig[currentUsecase];
             document.getElementById("usecase-name").textContent = ucConfig ? ucConfig.name : currentUsecase;
