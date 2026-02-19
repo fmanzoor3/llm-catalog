@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Catalog — Scoring Platforms & Leaderboards</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .research-content { max-width: 920px; margin: 0 auto; padding: 0 24px 80px; }
+        .research-content h2 { font-size: 1.3rem; font-weight: 700; color: var(--accent); margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .research-content h2:first-of-type { margin-top: 0; }
+        .research-content h3 { font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin: 28px 0 10px; }
+        .research-content p { color: var(--text-secondary); line-height: 1.8; margin-bottom: 14px; font-size: 0.92rem; }
+        .research-content strong { color: var(--text-primary); }
+        .research-content a { color: var(--accent); text-decoration: none; }
+        .research-content a:hover { text-decoration: underline; }
+        .research-content ul { color: var(--text-secondary); line-height: 1.8; margin: 10px 0 18px 24px; font-size: 0.92rem; }
+        .research-content li { margin-bottom: 6px; }
+        .platform-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px 28px; margin: 20px 0; transition: border-color 0.2s; }
+        .platform-card:hover { border-color: var(--border-hover); }
+        .platform-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+        .platform-header h3 { margin: 0; font-size: 1.1rem; }
+        .platform-url { font-size: 0.82rem; color: var(--text-muted); }
+        .platform-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; }
+        .platform-tag { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .tag-human { background: var(--green-light); color: var(--green); }
+        .tag-auto { background: rgba(96,165,250,0.12); color: var(--blue); }
+        .tag-hybrid { background: rgba(167,139,250,0.12); color: var(--purple); }
+        .tag-usage { background: var(--amber-light); color: var(--amber); }
+        .tag-models { background: var(--accent-light); color: var(--accent); }
+        .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin: 12px 0 16px; }
+        .cat-item { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 0.82rem; color: var(--text-secondary); }
+        .cat-item strong { color: var(--text-primary); font-weight: 600; display: block; font-size: 0.85rem; margin-bottom: 2px; }
+        .summary-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 24px 0 32px; border-radius: var(--radius-md); overflow: hidden; font-size: 0.85rem; }
+        .summary-table th { background: var(--bg-surface); color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        .summary-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); line-height: 1.5; }
+        .summary-table tr:last-child td { border-bottom: none; }
+        .summary-table tbody tr:hover { background: var(--bg-hover); }
+        .intro-box { background: var(--accent-light); border: 1px solid rgba(232,133,59,0.25); border-radius: var(--radius-md); padding: 20px 24px; margin: 0 0 40px; }
+        .intro-box p { margin-bottom: 0; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <svg class="brand-icon" viewBox="0 0 32 32" width="28" height="28">
+                    <rect width="32" height="32" rx="8" fill="#e8853b"/>
+                    <path d="M16 9 L16 24" stroke="white" stroke-width="1.5" opacity="0.5"/>
+                    <path d="M16 10 Q12 8 8 10 L8 22 Q12 20 16 22" fill="white" opacity="0.85"/>
+                    <path d="M16 10 Q20 8 24 10 L24 22 Q20 20 16 22" fill="white" opacity="0.6"/>
+                    <path d="M22 7 L22.6 8.8 L24.4 9.4 L22.6 10 L22 11.8 L21.4 10 L19.6 9.4 L21.4 8.8 Z" fill="white"/>
+                </svg>
+                <span>LLM Catalog</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Find Your LLM</a>
+                <a href="providers.html" class="nav-link">Providers</a>
+                <a href="compare.html" class="nav-link">Compare</a>
+                <a href="models.html" class="nav-link">All Models</a>
+                <a href="resources.html" class="nav-link">Resources</a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>LLM Scoring Platforms & Leaderboards</h1>
+                <p>A comprehensive guide to every major platform that evaluates and ranks large language models.</p>
+            </div>
+        </section>
+
+        <div class="research-content">
+
+            <div class="intro-box">
+                <p>There is no single "best" leaderboard. Each platform uses different methodologies, covers different models, and measures different things. This page documents the major platforms, what they measure, and how to interpret their scores. See also: <a href="research-scoring.html">Community Scoring vs Benchmarks</a> for analysis of the tradeoffs.</p>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- SUMMARY TABLE -->
+            <!-- ============================================ -->
+
+            <h2>At a Glance</h2>
+
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Scoring</th>
+                        <th>Models</th>
+                        <th>Method</th>
+                        <th>Key Strength</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Arena (LMSYS)</strong></td>
+                        <td>Elo (~885&ndash;1560)</td>
+                        <td>600+</td>
+                        <td>Human voting</td>
+                        <td>Gold standard for preference; 9 modalities</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Artificial Analysis</strong></td>
+                        <td>Index (0&ndash;100)</td>
+                        <td>200+</td>
+                        <td>Automated</td>
+                        <td>Price/speed/intelligence tradeoffs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LiveBench</strong></td>
+                        <td>Accuracy %</td>
+                        <td>40&ndash;50</td>
+                        <td>Automated (ground truth)</td>
+                        <td>Contamination-free, monthly refresh</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OpenRouter</strong></td>
+                        <td>Usage volume</td>
+                        <td>300+</td>
+                        <td>Real-world API traffic</td>
+                        <td>Actual developer preferences</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SEAL (Scale AI)</strong></td>
+                        <td>Mixed (%, Elo, CI)</td>
+                        <td>60+</td>
+                        <td>Expert + automated</td>
+                        <td>Expert-driven, safety focus</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HF Open LLM</strong></td>
+                        <td>Normalized %</td>
+                        <td>Hundreds</td>
+                        <td>Automated</td>
+                        <td>Open-source model focus</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HELM (Stanford)</strong></td>
+                        <td>% per 7 dimensions</td>
+                        <td>30+</td>
+                        <td>Automated</td>
+                        <td>Holistic (accuracy + fairness + bias)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LM Council</strong></td>
+                        <td>Mixed</td>
+                        <td>50+</td>
+                        <td>Hybrid (LLM-as-judge)</td>
+                        <td>20 benchmark categories</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SWE-bench</strong></td>
+                        <td>Resolve rate %</td>
+                        <td>30+</td>
+                        <td>Automated (test suites)</td>
+                        <td>Real-world software engineering</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LiveCodeBench</strong></td>
+                        <td>Pass@1 %</td>
+                        <td>65+</td>
+                        <td>Automated (code exec)</td>
+                        <td>Contamination-free coding</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Aider Polyglot</strong></td>
+                        <td>Pass@1 %</td>
+                        <td>40+</td>
+                        <td>Automated (test suites)</td>
+                        <td>Multi-language code editing</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <!-- COMMUNITY / HUMAN VOTING -->
+            <!-- ============================================ -->
+
+            <h2>Community / Human Voting Platforms</h2>
+
+            <!-- Arena -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>Arena (LMSYS Chatbot Arena)</h3>
+                </div>
+                <div class="platform-url"><a href="https://arena.ai" target="_blank" rel="noopener">arena.ai</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-human">Human Voting</span>
+                    <span class="platform-tag tag-models">600+ Models</span>
+                </div>
+                <p>The most widely referenced LLM leaderboard. Users chat with two anonymous models side-by-side and vote for the better response. Scores use a <strong>Bradley-Terry model</strong> (Elo-like scale, ~885&ndash;1560). Over 1,000,000 votes collected across 190+ models by 2024. Models need at least 3,000 votes for converged rankings.</p>
+                <p><strong>9 Separate Arenas:</strong> Text, Code (agentic WebDev), Vision, Search, Text-to-Image, Image Edit, Text-to-Video, Image-to-Video, Overview.</p>
+                <h3>Text Leaderboard Categories</h3>
+                <div class="cat-grid">
+                    <div class="cat-item"><strong>Overall</strong> Aggregate ranking</div>
+                    <div class="cat-item"><strong>Coding</strong> Programming tasks</div>
+                    <div class="cat-item"><strong>Math</strong> Mathematical reasoning</div>
+                    <div class="cat-item"><strong>Creative Writing</strong> Prose and storytelling</div>
+                    <div class="cat-item"><strong>Instruction Following</strong> Precise task execution</div>
+                    <div class="cat-item"><strong>Hard Prompts</strong> Challenging queries</div>
+                    <div class="cat-item"><strong>Multi-Turn</strong> Conversation quality</div>
+                    <div class="cat-item"><strong>Longer Query</strong> Extended interactions</div>
+                </div>
+                <p><strong>8 Occupational Categories:</strong> Software &amp; IT, Writing/Literature, Life/Physical/Social Science, Entertainment/Sports/Media, Business/Finance, Mathematical, Legal/Government, Medicine/Healthcare.</p>
+                <p><strong>Filters:</strong> Style Control toggle, License filter (All / Proprietary / Open Source), 8 language filters (English, Chinese, French, German, Spanish, Russian, Japanese, Korean).</p>
+                <p><strong>Source:</strong> Chiang et al., <a href="https://arxiv.org/abs/2403.04132" target="_blank" rel="noopener">"Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference,"</a> ICML 2024.</p>
+            </div>
+
+            <!-- Code Arena -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>Code Arena</h3>
+                </div>
+                <div class="platform-url"><a href="https://arena.ai/leaderboard/code" target="_blank" rel="noopener">arena.ai/leaderboard/code</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-human">Human Voting</span>
+                    <span class="platform-tag tag-models">43 Models</span>
+                </div>
+                <p>A separate arena from the Chatbot Arena text leaderboard. Tests <strong>agentic coding ability</strong> &mdash; models receive WebDev tasks, use tools, write files, run code, and build applications. 162,000+ votes collected. Scores are Elo-rated but on a different scale than the text arena (typically 1,100&ndash;1,560).</p>
+                <p><strong>Key difference from Chatbot Arena Coding:</strong> Chatbot Arena's coding category tests conversational coding (explaining, writing snippets). Code Arena tests actual execution &mdash; multi-step reasoning with tool use. Rankings can differ significantly between the two.</p>
+            </div>
+
+            <!-- OpenRouter -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>OpenRouter Rankings</h3>
+                </div>
+                <div class="platform-url"><a href="https://openrouter.ai/rankings" target="_blank" rel="noopener">openrouter.ai/rankings</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-usage">Usage-Based</span>
+                    <span class="platform-tag tag-models">300+ Models</span>
+                </div>
+                <p>Not a benchmark &mdash; measures which models developers actually choose and use in production via real API traffic from millions of developers. Rankings by daily, weekly, monthly, and all-time periods.</p>
+                <p><strong>12 Use-Case Categories:</strong> Programming, Roleplay, Marketing, Translation, Finance, Legal, Health, Science, Technology, Trivia, SEO, Academia.</p>
+                <p><strong>Additional dimensions:</strong> Market share by provider, natural language breakdown, programming language breakdown, context length usage, tool call patterns.</p>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- AUTOMATED BENCHMARK PLATFORMS -->
+            <!-- ============================================ -->
+
+            <h2>Automated Benchmark Platforms</h2>
+
+            <!-- Artificial Analysis -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>Artificial Analysis</h3>
+                </div>
+                <div class="platform-url"><a href="https://artificialanalysis.ai" target="_blank" rel="noopener">artificialanalysis.ai</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-auto">Automated</span>
+                    <span class="platform-tag tag-models">200+ Models</span>
+                </div>
+                <p>Comprehensive analytics platform with a proprietary <strong>Intelligence Index v4.0.2</strong> (composite 0&ndash;100 score from 10 benchmarks). Also tracks speed, latency, price, and context window across providers. Updated 8x daily for performance metrics.</p>
+                <h3>Intelligence Index &mdash; 4 Categories (25% each)</h3>
+                <div class="cat-grid">
+                    <div class="cat-item"><strong>Agents</strong> GDPval-AA (knowledge work), Tau2-Bench (tool-use simulation)</div>
+                    <div class="cat-item"><strong>Coding</strong> Terminal-Bench Hard (terminal tasks), SciCode (scientific Python)</div>
+                    <div class="cat-item"><strong>General</strong> Long context reasoning, Omniscience (hallucination), IFBench (instruction following)</div>
+                    <div class="cat-item"><strong>Scientific Reasoning</strong> Humanity's Last Exam, GPQA Diamond, CritPt (physics)</div>
+                </div>
+                <p><strong>Comparison axes:</strong> Intelligence vs Price, Intelligence vs Speed, Intelligence vs Latency, Intelligence vs Context Window, Speed vs Price.</p>
+                <p><strong>Source:</strong> <a href="https://artificialanalysis.ai/methodology/intelligence-benchmarking" target="_blank" rel="noopener">Intelligence Benchmarking Methodology</a></p>
+            </div>
+
+            <!-- LiveBench -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>LiveBench</h3>
+                </div>
+                <div class="platform-url"><a href="https://livebench.ai" target="_blank" rel="noopener">livebench.ai</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-auto">Automated</span>
+                    <span class="platform-tag tag-models">40&ndash;50 Models</span>
+                </div>
+                <p>A <strong>contamination-resistant</strong> benchmark that releases new questions monthly from recent sources (arXiv papers, news, IMDb, new datasets). Answers scored against objective ground truth &mdash; no LLM judge used. Published as a Spotlight Paper at ICLR 2025. Top models achieve below 70%.</p>
+                <h3>6 Categories (18 Tasks)</h3>
+                <div class="cat-grid">
+                    <div class="cat-item"><strong>Math</strong> Mathematical reasoning</div>
+                    <div class="cat-item"><strong>Coding</strong> Programming tasks</div>
+                    <div class="cat-item"><strong>Reasoning</strong> Logical and analytical</div>
+                    <div class="cat-item"><strong>Data Analysis</strong> Working with data</div>
+                    <div class="cat-item"><strong>Instruction Following</strong> Precise execution</div>
+                    <div class="cat-item"><strong>Language</strong> Comprehension and processing</div>
+                </div>
+                <p><strong>Source:</strong> White et al., <a href="https://arxiv.org/abs/2406.19314" target="_blank" rel="noopener">"LiveBench: A Challenging, Contamination-Free LLM Benchmark"</a></p>
+            </div>
+
+            <!-- SEAL -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>SEAL Leaderboard (Scale AI)</h3>
+                </div>
+                <div class="platform-url"><a href="https://scale.com/leaderboard" target="_blank" rel="noopener">scale.com/leaderboard</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-hybrid">Expert + Automated</span>
+                    <span class="platform-tag tag-models">60+ Models</span>
+                </div>
+                <p>Expert-driven evaluations using private datasets and human domain specialists. Rankings use 95% confidence interval upper bounds to group models by statistical significance. Published 450+ evaluations across 50+ models.</p>
+                <h3>3 Primary Categories (20 Benchmarks)</h3>
+                <div class="cat-grid">
+                    <div class="cat-item"><strong>Agentic (5)</strong> MCP Atlas, SWE-Bench Pro (Public &amp; Private), Remote Labor Index, VisualToolBench</div>
+                    <div class="cat-item"><strong>Frontier (11)</strong> SciPredict, Humanity's Last Exam, Finance &amp; Legal Reasoning, MultiNRC, EnigmaEval, VISTA, TutorBench</div>
+                    <div class="cat-item"><strong>Safety (3)</strong> PropensityBench, Fortress (national security), MASK (honesty under pressure)</div>
+                </div>
+            </div>
+
+            <!-- HF Open LLM -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>Hugging Face Open LLM Leaderboard (v2)</h3>
+                </div>
+                <div class="platform-url"><a href="https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard" target="_blank" rel="noopener">huggingface.co</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-auto">Automated</span>
+                    <span class="platform-tag tag-models">Hundreds</span>
+                </div>
+                <p>The primary leaderboard for <strong>open-source/open-weight models</strong>. V2 launched with harder benchmarks after the original became saturated. Scores normalized to 0&ndash;100 (0 = random baseline, 100 = perfect). Community-driven &mdash; anyone can submit models.</p>
+                <h3>6 Benchmarks</h3>
+                <div class="cat-grid">
+                    <div class="cat-item"><strong>IFEval</strong> Instruction following</div>
+                    <div class="cat-item"><strong>BBH</strong> Multi-step reasoning</div>
+                    <div class="cat-item"><strong>MATH Lvl 5</strong> Competition mathematics</div>
+                    <div class="cat-item"><strong>GPQA Diamond</strong> PhD-level science</div>
+                    <div class="cat-item"><strong>MuSR</strong> Multistep soft reasoning</div>
+                    <div class="cat-item"><strong>MMLU-Pro</strong> Multitask understanding</div>
+                </div>
+            </div>
+
+            <!-- HELM -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>HELM (Stanford CRFM)</h3>
+                </div>
+                <div class="platform-url"><a href="https://crfm.stanford.edu/helm/" target="_blank" rel="noopener">crfm.stanford.edu/helm</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-auto">Automated</span>
+                    <span class="platform-tag tag-models">30+ Models</span>
+                </div>
+                <p>Stanford's comprehensive evaluation framework emphasizing <strong>transparency and reproducibility</strong>. All raw evaluation data is publicly released. Open-source framework covering both LLMs and multimodal models.</p>
+                <h3>7 Evaluation Dimensions (per scenario)</h3>
+                <div class="cat-grid">
+                    <div class="cat-item"><strong>Accuracy</strong> Correctness</div>
+                    <div class="cat-item"><strong>Calibration</strong> Confidence alignment</div>
+                    <div class="cat-item"><strong>Robustness</strong> Under perturbations</div>
+                    <div class="cat-item"><strong>Fairness</strong> Across groups</div>
+                    <div class="cat-item"><strong>Bias</strong> Stereotyping detection</div>
+                    <div class="cat-item"><strong>Toxicity</strong> Harmful content</div>
+                    <div class="cat-item"><strong>Efficiency</strong> Computational cost</div>
+                </div>
+                <p>Evaluates across <strong>42 real-world scenarios</strong> spanning medicine, finance, law, and multilingual tasks. Additional variants: HELM Safety, HELM Long Context, SEA-HELM (Southeast Asian languages).</p>
+                <p><strong>Source:</strong> Liang et al., <a href="https://arxiv.org/abs/2211.09110" target="_blank" rel="noopener">"Holistic Evaluation of Language Models"</a></p>
+            </div>
+
+            <!-- LM Council -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>LM Council</h3>
+                </div>
+                <div class="platform-url"><a href="https://lmcouncil.ai/benchmarks" target="_blank" rel="noopener">lmcouncil.ai</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-hybrid">Hybrid</span>
+                    <span class="platform-tag tag-models">50+ Models</span>
+                </div>
+                <p>Uses panels of LLMs to evaluate each other by consensus, supplemented by traditional benchmarks. Covers 20 benchmark categories across frontier models.</p>
+                <h3>20 Benchmark Categories</h3>
+                <div class="cat-grid">
+                    <div class="cat-item"><strong>Mathematics</strong> FrontierMath, MATH Level 5, OTIS Mock AIME</div>
+                    <div class="cat-item"><strong>Science</strong> GPQA Diamond, SimpleBench, Humanity's Last Exam</div>
+                    <div class="cat-item"><strong>Software Engineering</strong> SWE-bench, GSO, Terminal-Bench, Aider</div>
+                    <div class="cat-item"><strong>Machine Learning</strong> WeirdML v2</div>
+                    <div class="cat-item"><strong>Long Context</strong> Fiction.liveBench</div>
+                    <div class="cat-item"><strong>Search &amp; Research</strong> DeepResearchBench</div>
+                    <div class="cat-item"><strong>Multimodal</strong> GeoBench, WebDev Arena, VPCT</div>
+                    <div class="cat-item"><strong>Gaming</strong> BALROG, Factorio Learning Environment</div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- CODING-SPECIFIC -->
+            <!-- ============================================ -->
+
+            <h2>Coding-Specific Benchmarks</h2>
+
+            <!-- SWE-bench -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>SWE-bench</h3>
+                </div>
+                <div class="platform-url"><a href="https://www.swebench.com/" target="_blank" rel="noopener">swebench.com</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-auto">Automated</span>
+                    <span class="platform-tag tag-models">30+ Models</span>
+                </div>
+                <p>Tests whether models can resolve <strong>real GitHub issues</strong> &mdash; reading issue descriptions, navigating codebases, and producing working patches. Score is percentage of issues resolved (pass@1).</p>
+                <p><strong>Variants:</strong> SWE-bench Lite (300 problems), Verified (500 expert-confirmed), Live (updated monthly with 50 new issues), Pro (by Scale AI, private codebases), Multimodal.</p>
+                <p><strong>Languages:</strong> Python, Go, JavaScript, TypeScript, Rust.</p>
+            </div>
+
+            <!-- LiveCodeBench -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>LiveCodeBench</h3>
+                </div>
+                <div class="platform-url"><a href="https://livecodebench.github.io/" target="_blank" rel="noopener">livecodebench.github.io</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-auto">Automated</span>
+                    <span class="platform-tag tag-models">65+ Models</span>
+                </div>
+                <p>Contamination-free code generation benchmark using problems from <strong>LeetCode, AtCoder, and CodeForces</strong>. Continuously updated with new problems.</p>
+                <p><strong>Categories:</strong> Code generation, self-repair, test output prediction, code execution. Scored via unit test execution (Pass@1 %).</p>
+            </div>
+
+            <!-- Aider -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>Aider Polyglot Leaderboard</h3>
+                </div>
+                <div class="platform-url"><a href="https://aider.chat/docs/leaderboards/" target="_blank" rel="noopener">aider.chat</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-auto">Automated</span>
+                    <span class="platform-tag tag-models">40+ Models</span>
+                </div>
+                <p>Tests code editing across <strong>6 programming languages</strong> (C++, Go, Java, JavaScript, Python, Rust). 225 Exercism coding exercises. Score is percentage solved (Pass@1).</p>
+            </div>
+
+            <!-- BigCodeBench -->
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>BigCodeBench</h3>
+                </div>
+                <div class="platform-url"><a href="https://bigcode-bench.github.io/" target="_blank" rel="noopener">bigcode-bench.github.io</a></div>
+                <div class="platform-meta">
+                    <span class="platform-tag tag-auto">Automated</span>
+                </div>
+                <p>Practical programming tasks with diverse library dependencies. <strong>1,140 tasks</strong> (Full Set) and 150 tasks (Hard Set). Scored via Calibrated Pass@1. Published at ICLR 2025.</p>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- AGGREGATORS -->
+            <!-- ============================================ -->
+
+            <h2>Aggregators &amp; Meta-Platforms</h2>
+
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>LLM-Stats</h3>
+                </div>
+                <div class="platform-url"><a href="https://llm-stats.com/" target="_blank" rel="noopener">llm-stats.com</a></div>
+                <p>Meta-aggregator tracking results across all major benchmarks and arenas. Consolidates coding, math, writing, image generation, and more into one interface.</p>
+            </div>
+
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>Vellum LLM Leaderboard</h3>
+                </div>
+                <div class="platform-url"><a href="https://www.vellum.ai/llm-leaderboard" target="_blank" rel="noopener">vellum.ai/llm-leaderboard</a></div>
+                <p>Aggregates latest benchmarks for models released after April 2024. Includes cost, speed, context window alongside quality scores. Covers LiveCodeBench, Aider Polyglot, SWE-bench, BFCL tool use, and more.</p>
+            </div>
+
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>Klu AI Leaderboard</h3>
+                </div>
+                <div class="platform-url"><a href="https://klu.ai/llm-leaderboard" target="_blank" rel="noopener">klu.ai/llm-leaderboard</a></div>
+                <p>Practical comparison of 30+ frontier models across cost, speed, and quality. Tracks both frontier benchmarks (BigCodeBench, MATH, GPQA, GAIA) and standard benchmarks (MMLU, HumanEval, GSM8K).</p>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- OTHER NOTABLE -->
+            <!-- ============================================ -->
+
+            <h2>Other Notable Benchmarks</h2>
+
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>FrontierMath (Epoch AI)</h3>
+                </div>
+                <div class="platform-url"><a href="https://epoch.ai/frontiermath" target="_blank" rel="noopener">epoch.ai/frontiermath</a></div>
+                <p>Expert-level mathematics from undergraduate to research-level. 350 problems across 4 tiers (Tier 4 = unsolved research problems). Private evaluation set to prevent contamination.</p>
+            </div>
+
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>AlpacaEval 2.0</h3>
+                </div>
+                <div class="platform-url"><a href="https://tatsu-lab.github.io/alpaca_eval/" target="_blank" rel="noopener">tatsu-lab.github.io/alpaca_eval</a></div>
+                <p>Automated evaluator for instruction-following. Uses GPT-4 as auto-annotator with a <strong>Length-Controlled Win Rate</strong> metric (debiased against length preferences). 100+ models evaluated.</p>
+            </div>
+
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>MT-Bench</h3>
+                </div>
+                <div class="platform-url"><a href="https://huggingface.co/spaces/lmsys/mt-bench" target="_blank" rel="noopener">huggingface.co</a></div>
+                <p>Multi-turn conversation quality benchmark. 80 questions across 8 categories: Writing, Roleplay, Extraction, Reasoning, Math, Coding, STEM Knowledge, Humanities Knowledge. Scored 1&ndash;10 by GPT-4.</p>
+                <p><strong>Source:</strong> Zheng et al., <a href="https://arxiv.org/abs/2306.05685" target="_blank" rel="noopener">"Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena"</a>, NeurIPS 2023.</p>
+            </div>
+
+            <div class="platform-card">
+                <div class="platform-header">
+                    <h3>WildBench (Allen AI)</h3>
+                </div>
+                <div class="platform-url"><a href="https://huggingface.co/spaces/allenai/WildBench" target="_blank" rel="noopener">huggingface.co</a></div>
+                <p>Real-world challenging user queries (1,024 tasks from 1M+ conversation logs). Uses GPT-4-Turbo as judge. Scores via WB-Reward (pairwise comparison) and WB-Score (individual quality). Published at ICLR 2025.</p>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

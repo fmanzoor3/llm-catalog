@@ -410,8 +410,9 @@
                 }).join('');
 
                 const isSelfHostable = model.deployment?.selfHostable;
+                const hasApi = model.pricing && (model.pricing.inputPerMillion > 0 || model.pricing.outputPerMillion > 0);
                 const hostingTag = isSelfHostable
-                    ? '<span class="cell-tag hosting-open">Open Source</span>'
+                    ? (hasApi ? '<span class="cell-tag hosting-both">Both</span>' : '<span class="cell-tag hosting-open">Open Source</span>')
                     : '<span class="cell-tag hosting-api">Cloud API</span>';
 
                 return `<tr class="${hiddenClass}" onclick="openModelModal('${model.id}')">
