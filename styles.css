@@ -1308,7 +1308,7 @@ a:hover { color: var(--accent-hover); }
 .bg-meta { background: linear-gradient(135deg, #1877F2, #0E5FCB); }
 .bg-mistral { background: #FFF8F0; border: 2px solid #F97316; }
 .bg-cohere { background: linear-gradient(135deg, #39A275, #2D8A63); }
-.bg-amazon { background: linear-gradient(135deg, #FF9900, #E88B00); }
+.bg-amazon { background: #FFFFFF; }
 .bg-deepseek { background: linear-gradient(135deg, #6C5CE7, #5A4BD1); }
 .bg-xai { background: linear-gradient(135deg, #3D3D5C, #1A1A2E); }
 .bg-alibaba { background: linear-gradient(135deg, #7C3AED, #5B21B6); }
@@ -1316,6 +1316,7 @@ a:hover { color: var(--accent-hover); }
 .bg-nvidia { background: linear-gradient(135deg, #76B900, #5E9A00); }
 .bg-moonshot { background: linear-gradient(135deg, #6366f1, #4f46e5); }
 .bg-opensource { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+.bg-xiaomi { background: linear-gradient(135deg, #FF6900, #E05E00); }
 
 /* Score bars */
 .score-bar { height: 20px; background: var(--border); border-radius: 10px; position: relative; overflow: hidden; margin-bottom: 4px; }

@@ -24,7 +24,8 @@ function getProviderClass(providerId) {
     const map = {
         anthropic: 'bg-anthropic', openai: 'bg-openai', google: 'bg-google',
         deepseek: 'bg-deepseek', xai: 'bg-xai', moonshot: 'bg-moonshot',
-        meta: 'bg-meta', alibaba: 'bg-alibaba', mistral: 'bg-mistral'
+        meta: 'bg-meta', alibaba: 'bg-alibaba', mistral: 'bg-mistral',
+        amazon: 'bg-amazon', xiaomi: 'bg-xiaomi'
     };
     return map[providerId] || 'bg-default';
 }
@@ -33,7 +34,8 @@ function getProviderAbbrev(providerId) {
     const map = {
         anthropic: 'ANT', openai: 'OAI', google: 'GDM',
         deepseek: 'DS', xai: 'xAI', moonshot: 'MS',
-        meta: 'META', alibaba: 'QWN', mistral: 'MST'
+        meta: 'META', alibaba: 'QWN', mistral: 'MST',
+        amazon: 'AMZ', xiaomi: 'XMI'
     };
     return map[providerId] || providerId.substring(0, 3).toUpperCase();
 }
@@ -54,7 +56,9 @@ function getProviderLogo(providerId, size) {
         deepseek: 'logos/deepseek.png',
         meta: 'logos/meta.png',
         alibaba: 'logos/alibaba.png',
-        mistral: 'logos/mistral.png'
+        mistral: 'logos/mistral.png',
+        amazon: 'logos/amazon-nova.png',
+        xiaomi: 'logos/xiaomi.svg'
     };
     if (coverLogos[providerId]) {
         return '<img src="'+coverLogos[providerId]+'" alt="'+getProviderName(providerId)+'" width="'+s+'" height="'+s+'" class="provider-logo-img">';
