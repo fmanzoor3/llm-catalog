@@ -75,6 +75,7 @@
                             <span class="filter-label-tag">ENVIRONMENT</span>
                             <select class="filter-select" id="environment-filter" style="min-width:140px;">
                                 <option value="">All</option>
+                                <option value="self-hosted">Open Source</option>
                                 <option value="on-prem">On-Prem</option>
                                 <option value="azure">Azure</option>
                                 <option value="aws">AWS</option>
@@ -194,14 +195,14 @@
         };
 
         const usecaseDescs = {
-            coding: "Code generation, review, debugging, and autonomous software engineering tasks.",
-            reasoning: "Complex math, science, and multi-step analytical problems.",
-            chatbot: "Customer support, Q&A bots, and conversational assistants.",
-            documents: "Summarizing, analyzing, and extracting insights from long documents and reports.",
-            content: "Marketing copy, blog posts, emails, and creative writing.",
-            extraction: "Pulling structured data from PDFs, forms, invoices, and images.",
-            translation: "Translating and understanding content across multiple languages.",
-            vision: "Analyzing images, charts, screenshots, and visual content."
+            coding: "Code generation, review, debugging, and agentic development. e.g. Copilot, CI/CD automation, code migration.",
+            reasoning: "Complex math, logic, and multi-step analytical problems. e.g. financial modelling, root cause analysis, research.",
+            chatbot: "Conversational AI for support, Q&A, and internal assistants. e.g. help desks, HR bots, customer service.",
+            documents: "Summarizing, analyzing, and querying long documents. e.g. RAG pipelines, contract review, report analysis.",
+            content: "Generating marketing copy, emails, and written content. e.g. newsletters, proposals, social media, drafts.",
+            extraction: "Pulling structured data from unstructured sources. e.g. invoice processing, form parsing, data entry automation.",
+            translation: "Translating and localizing content across languages. e.g. multilingual support, document translation, localization.",
+            vision: "Analyzing images, charts, diagrams, and visual content. e.g. dashboard reading, defect detection, document OCR."
         };
 
         // Render use case cards
@@ -259,14 +260,10 @@
 
             // Environment filter
             if (currentEnvironment) {
-                if (currentEnvironment === 'on-prem') {
+                if (currentEnvironment === 'self-hosted') {
                     ranked = ranked.filter(r => r.model.deployment?.selfHostable);
-                    ranked.sort((a, b) => {
-                        const aOP = a.model.deployment?.hostedOnPrem ? 1 : 0;
-                        const bOP = b.model.deployment?.hostedOnPrem ? 1 : 0;
-                        if (bOP !== aOP) return bOP - aOP;
-                        return b.capabilityScore - a.capabilityScore;
-                    });
+                } else if (currentEnvironment === 'on-prem') {
+                    ranked = ranked.filter(r => r.model.deployment?.hostedOnPrem);
                 } else {
                     ranked = ranked.filter(r => matchesPlatformFilter(r.model, currentEnvironment));
                 }
@@ -281,7 +278,7 @@
 
             if (ranked.length === 0) {
                 if (currentEnvironment === 'on-prem') {
-                    resultsList.innerHTML = '<div class="empty-state"><p>No models are currently running on-prem. Select <strong>On-Prem</strong> in the environment filter to see self-hostable candidates.</p></div>';
+                    resultsList.innerHTML = '<div class="empty-state"><p>No models are currently running on-prem for this use case. Select <strong>Self-Hostable</strong> to see models that could be deployed.</p></div>';
                 } else {
                     resultsList.innerHTML = '<div class="empty-state"><p>No models match your criteria. Try adjusting filters.</p></div>';
                 }
@@ -349,7 +346,8 @@
                 const hiddenClass = idx >= initialShow ? 'hidden-rec' : '';
                 const isTop = idx === 0;
                 const tps = model.outputTokensPerSec;
-                const onPremBadge = model.deployment?.hostedOnPrem ? '<span class="badge badge-onprem">ON-PREM</span>' : '';
+                const onPremUrl = model.deployment?.onPremUrl;
+                const onPremLabel = model.deployment?.hostedOnPrem ? ' · <span class="onprem-label">On-Prem</span>' + (onPremUrl ? ' · <a href="' + onPremUrl + '" target="_blank" class="onprem-try" onclick="event.stopPropagation()">Try it &rarr;</a>' : '') : '';
 
                 // Speed: categorical label + numeric subtitle
                 const speedTier = getSpeedTier(model);
@@ -371,8 +369,8 @@
 
                 return `<tr class="${hiddenClass}" onclick="openModelModal('${model.id}')">
                     <td class="rank-cell ${isTop ? 'top' : ''}">${idx + 1}</td>
-                    <td class="model-cell">${model.name}${isTop ? '<span class="badge badge-default">TOP PICK</span>' : ''}${onPremBadge}
-                        <div class="provider-sub">${getProviderName(model.provider)}</div></td>
+                    <td class="model-cell">${model.name}${isTop ? '<span class="badge badge-default">TOP PICK</span>' : ''}
+                        <div class="provider-sub">${getProviderName(model.provider)}${onPremLabel}</div></td>
                     <td class="speed-cell"><span class="cell-tag ${speedTier.cls}">${speedTier.label}</span>${speedSub ? '<span class="cell-sub">' + speedSub + '</span>' : ''}</td>
                     <td class="cost-cell"><span class="cell-tag ${costTier.cls}">${costTier.label}</span>${costSub ? '<span class="cell-sub">' + costSub + '</span>' : ''}</td>
                     <td class="context-cell">${formatTokenCount(model.contextWindow)}</td>
