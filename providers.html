@@ -139,7 +139,8 @@
             const caps = [];
             if (providerModels.some(m => m.specs?.supportsFunctionCalling)) caps.push('Tool Calling');
             if (providerModels.some(m => m.specs?.multimodal)) caps.push('Multimodal');
-            if (providerModels.some(m => m.deployment?.selfHostable)) caps.push('Self-Hostable');
+            if (providerModels.some(m => m.deployment?.selfHostable)) caps.push('Open Source');
+            if (providerModels.some(m => m.deployment?.hostedOnPrem)) caps.push('On-Prem');
             const platforms = [...new Set(providerModels.flatMap(m => m.deployment?.cloudPlatforms || []))];
             if (platforms.includes('azure')) caps.push('Azure');
             if (platforms.includes('aws')) caps.push('AWS');

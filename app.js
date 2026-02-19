@@ -466,17 +466,21 @@ function openModelModal(modelId) {
         { label: 'Speed', value: model.outputTokensPerSec ? model.outputTokensPerSec + ' tok/s' : 'N/A' },
         { label: 'Context Window', value: formatTokenCount(model.contextWindow) },
         { label: 'Max Output', value: model.maxOutputTokens ? formatTokenCount(model.maxOutputTokens) : 'N/A' },
+        { label: 'Parameters', value: model.specs?.parameters || 'N/A' },
+        { label: 'License', value: model.specs?.license || 'N/A' },
         { label: 'Multimodal', value: model.specs?.multimodal ? model.specs.multimodalTypes.join(', ') : 'Text only' },
         { label: 'Released', value: model.specs?.releaseDate || 'N/A' },
-        { label: 'Training Cutoff', value: model.specs?.trainingDataCutoff || 'N/A' },
         { label: 'Hosting', value: getHostingLabel(model) },
         { label: 'Available via', value: (function() {
             var avail = model.specs?.apiAvailability || getCloudPlatformLabels(model).join(', ') || '';
-            // Remove standalone "API" entries since Hosting already covers that
             avail = avail.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s && s.toLowerCase() !== 'api'; }).join(', ');
             return avail || 'N/A';
         })() }
     ];
+    // Add VRAM for self-hostable models
+    if (model.deployment?.selfHostable && model.specs?.minVram) {
+        specs.push({ label: 'Min VRAM (FP16)', value: model.specs.minVram });
+    }
     document.getElementById('modalSpecs').innerHTML = specs.map(s =>
         `<div class="modal-spec"><div class="modal-spec-label">${s.label}</div><div class="modal-spec-value">${s.value}</div></div>`
     ).join('');

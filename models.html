@@ -64,6 +64,7 @@
                 </select>
                 <select class="filter-select" id="environment-filter">
                     <option value="">All Environments</option>
+                    <option value="self-hosted">Open Source</option>
                     <option value="on-prem">On-Prem</option>
                     <option value="azure">Azure</option>
                     <option value="aws">AWS</option>
@@ -185,8 +186,10 @@
             let filtered = models.filter(m => {
                 if (provFilter && m.provider !== provFilter) return false;
                 if (costVal && m.costTier !== costVal) return false;
-                if (envVal === 'on-prem') {
+                if (envVal === 'self-hosted') {
                     if (!m.deployment?.selfHostable) return false;
+                } else if (envVal === 'on-prem') {
+                    if (!m.deployment?.hostedOnPrem) return false;
                 } else if (envVal) {
                     if (!matchesPlatformFilter(m, envVal)) return false;
                 }
@@ -239,7 +242,9 @@
                 const provLogo = getProviderLogo(m.provider, 24);
                 const provName = getProviderName(m.provider);
                 const newBadge = isNew(m) ? '<span class="badge badge-new">NEW</span>' : '';
-                const onPremBadge = m.deployment?.hostedOnPrem ? '<span class="badge badge-onprem">ON-PREM</span>' : '';
+                const onPremUrl = m.deployment?.onPremUrl;
+                const onPremLabel = m.deployment?.hostedOnPrem ? ' · <span class="onprem-label">On-Prem</span>' + (onPremUrl ? ' · <a href="' + onPremUrl + '" target="_blank" class="onprem-try" onclick="event.stopPropagation()">Try it &rarr;</a>' : '') : '';
+                const paramsLabel = m.specs?.parameters ? ' · ' + m.specs.parameters : '';
                 const rd = m.specs?.releaseDate;
                 const dateLabel = rd ? new Date(rd).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
                 const strengthsHtml = (m.strengths || []).slice(0, 3).map(s => `<li>${s.split(' — ')[0]}</li>`).join("");
@@ -249,9 +254,9 @@
                     <div class="catalog-card-header">
                         <div class="catalog-card-icon ${provClass}">${provLogo}</div>
                         <div class="catalog-card-header-text">
-                            <div class="catalog-card-title">${m.name} ${newBadge}${onPremBadge}</div>
+                            <div class="catalog-card-title">${m.name} ${newBadge}</div>
                             <div class="catalog-card-meta">
-                                <span class="catalog-card-provider">${provName}</span>
+                                <span class="catalog-card-provider">${provName}${onPremLabel}${paramsLabel}</span>
                                 ${dateLabel ? `<span class="catalog-card-date">${dateLabel}</span>` : ''}
                             </div>
                         </div>

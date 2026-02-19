@@ -537,6 +537,21 @@
                 html += `<div class="cmp-value">${m.deployment?.selfHostable ? 'Yes' : 'No'}</div>`;
             });
 
+            html += `<div class="cmp-label">Parameters</div>`;
+            mods.forEach(m => {
+                html += `<div class="cmp-value">${m.specs?.parameters || '—'}</div>`;
+            });
+
+            html += `<div class="cmp-label">License</div>`;
+            mods.forEach(m => {
+                html += `<div class="cmp-value">${m.specs?.license || '—'}</div>`;
+            });
+
+            html += `<div class="cmp-label">Min VRAM (FP16)</div>`;
+            mods.forEach(m => {
+                html += `<div class="cmp-value">${m.specs?.minVram || '—'}</div>`;
+            });
+
             html += '</div>'; // close cmp-grid
             container.innerHTML = html;
         }
