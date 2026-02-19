@@ -182,7 +182,8 @@ function computeCapabilityScore(model, useCaseKey) {
 
     if (availableWeight === 0) return { score: 0, breakdown: [], completeness: 0 };
 
-    // No weight rescaling — missing metrics contribute 0, preserving relative ranking
+    // Rescale weights so available metrics fill the full score range
+    var weightScale = totalWeight / availableWeight;
     var score = 0;
 
     Object.keys(weights).forEach(function(metric) {
@@ -196,18 +197,20 @@ function computeCapabilityScore(model, useCaseKey) {
         } else {
             normalized = raw;
         }
-        var contribution = normalized * weights[metric] / 100;
+        var scaledWeight = weights[metric] * weightScale;
+        var contribution = normalized * scaledWeight / 100;
         score += contribution;
-        breakdown.push({ metric, raw, normalized: Math.round(normalized), weight: weights[metric], contribution });
+        breakdown.push({ metric, raw, normalized: Math.round(normalized), weight: scaledWeight, contribution });
     });
 
     score = Math.max(0, Math.min(100, score * 100 / totalWeight));
     var completeness = availableWeight / totalWeight;
 
-    // Gentle linear penalty for missing data — starts at 50% completeness
-    // 100% complete = no penalty, 50% = score * 0.5, below 50% floors at 0.5x
-    if (completeness < 1.0) {
-        var penalty = 0.5 + 0.5 * Math.min(1, completeness / 1.0);
+    // Confidence penalty for sparse data
+    // 60%+ data: no penalty (weight rescaling handles missing metrics)
+    // Below 60%: linear penalty down to 0.4x at 0% data
+    if (completeness < 0.6) {
+        var penalty = 0.4 + (completeness / 0.6) * 0.6;
         score = score * penalty;
     }
     score = Math.round(score);
@@ -381,6 +384,7 @@ function computeCapabilityScoreWithWeights(model, adjustedWeights, normRanges) {
 
     if (availableWeight === 0) return { score: 0, breakdown: [], completeness: 0 };
 
+    var weightScale = totalWeight / availableWeight;
     var score = 0;
 
     Object.keys(adjustedWeights).forEach(function(metric) {
@@ -394,16 +398,17 @@ function computeCapabilityScoreWithWeights(model, adjustedWeights, normRanges) {
         } else {
             normalized = raw;
         }
-        var contribution = normalized * adjustedWeights[metric] / 100;
+        var scaledWeight = adjustedWeights[metric] * weightScale;
+        var contribution = normalized * scaledWeight / 100;
         score += contribution;
-        breakdown.push({ metric: metric, raw: raw, normalized: Math.round(normalized), weight: adjustedWeights[metric], contribution: contribution });
+        breakdown.push({ metric: metric, raw: raw, normalized: Math.round(normalized), weight: scaledWeight, contribution: contribution });
     });
 
     score = Math.max(0, Math.min(100, score * 100 / totalWeight));
     var completeness = availableWeight / totalWeight;
 
-    if (completeness < 1.0) {
-        var penalty = 0.5 + 0.5 * Math.min(1, completeness / 1.0);
+    if (completeness < 0.6) {
+        var penalty = 0.4 + (completeness / 0.6) * 0.6;
         score = score * penalty;
     }
     score = Math.round(score);
