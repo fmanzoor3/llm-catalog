@@ -1,5 +1,5 @@
 /* ============================================
-   LLM Selection Guide — Application Logic
+   LLM Catalog — Application Logic
    Shared utilities + page-specific logic
    ============================================ */
 

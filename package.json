@@ -1,7 +1,7 @@
 {
   "name": "llm-catalog",
   "version": "1.0.0",
-  "description": "LLM Selection Guide - Find the right AI model for your project",
+  "description": "LLM Catalog - Find the right AI model for your project",
   "private": true,
   "scripts": {
     "update": "python auto_update.py",

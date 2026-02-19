@@ -1,5 +1,5 @@
 /* ============================================
-   LLM Selection Guide — Master Stylesheet
+   LLM Catalog — Master Stylesheet
    Dark Navy + Warm Orange Theme
    ============================================ */
 
@@ -975,6 +975,10 @@ a:hover { color: var(--accent-hover); }
 }
 
 .resource-section-label:first-child { margin-top: 0; }
+.resource-section-desc {
+    font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6;
+    margin: -6px 0 16px; padding-left: 4px; max-width: 800px;
+}
 
 /* Expandable resource cards */
 .res-expand-card {
