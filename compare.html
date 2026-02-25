@@ -434,63 +434,51 @@
             });
 
             // === Benchmarks ===
-            const visibleBenchmarks = benchmarkMetrics.filter(bm => {
-                return mods.some(m => getMetricValue(m, bm.key) !== null);
-            });
+            html += `<div class="cmp-section-header">Benchmarks <span style="font-weight:400; font-size:0.8em; color:var(--text-muted);">— means no published score available</span></div>`;
+            benchmarkMetrics.forEach(bm => {
+                const values = mods.map(m => getMetricValue(m, bm.key));
+                const numericValues = values.filter(v => v !== null);
+                const maxVal = numericValues.length > 0 ? Math.max(...numericValues) : 1;
+                const bestIdx = getBestIndex(values, 'highest');
 
-            if (visibleBenchmarks.length > 0) {
-                html += `<div class="cmp-section-header">Benchmarks</div>`;
-                visibleBenchmarks.forEach(bm => {
-                    const values = mods.map(m => getMetricValue(m, bm.key));
-                    const numericValues = values.filter(v => v !== null);
-                    const maxVal = numericValues.length > 0 ? Math.max(...numericValues) : 1;
-                    const bestIdx = getBestIndex(values, 'highest');
-
-                    html += `<div class="cmp-label cmp-tip" data-tip-desc="${(bm.desc || '').replace(/"/g, '&quot;')}">${bm.label}</div>`;
-                    mods.forEach((m, i) => {
-                        const v = values[i];
-                        const isBest = i === bestIdx;
-                        if (v === null) {
-                            html += `<div class="cmp-value"><span style="color:var(--text-muted);">—</span></div>`;
-                        } else {
-                            const display = (Math.round(v * 10) / 10) + '%';
-                            html += `<div class="cmp-value${isBest ? ' cmp-best' : ''}">
-                                ${renderBar(v, maxVal, isBest)}
-                                <span class="cmp-bar-value">${display}</span>
-                            </div>`;
-                        }
-                    });
+                html += `<div class="cmp-label cmp-tip" data-tip-desc="${(bm.desc || '').replace(/"/g, '&quot;')}">${bm.label}</div>`;
+                mods.forEach((m, i) => {
+                    const v = values[i];
+                    const isBest = i === bestIdx;
+                    if (v === null) {
+                        html += `<div class="cmp-value"><span style="color:var(--text-muted);">—</span></div>`;
+                    } else {
+                        const display = (Math.round(v * 10) / 10) + '%';
+                        html += `<div class="cmp-value${isBest ? ' cmp-best' : ''}">
+                            ${renderBar(v, maxVal, isBest)}
+                            <span class="cmp-bar-value">${display}</span>
+                        </div>`;
+                    }
                 });
-            }
+            });
 
             // === Arena Ratings ===
-            const visibleArena = arenaMetrics.filter(bm => {
-                return mods.some(m => getMetricValue(m, bm.key) !== null);
-            });
+            html += `<div class="cmp-section-header">Community Ratings (Chatbot Arena)</div>`;
+            arenaMetrics.forEach(bm => {
+                const values = mods.map(m => getMetricValue(m, bm.key));
+                const numericValues = values.filter(v => v !== null);
+                const maxVal = numericValues.length > 0 ? Math.max(...numericValues) : 1;
+                const bestIdx = getBestIndex(values, 'highest');
 
-            if (visibleArena.length > 0) {
-                html += `<div class="cmp-section-header">Community Ratings (Chatbot Arena)</div>`;
-                visibleArena.forEach(bm => {
-                    const values = mods.map(m => getMetricValue(m, bm.key));
-                    const numericValues = values.filter(v => v !== null);
-                    const maxVal = numericValues.length > 0 ? Math.max(...numericValues) : 1;
-                    const bestIdx = getBestIndex(values, 'highest');
-
-                    html += `<div class="cmp-label cmp-tip" data-tip-desc="${(bm.desc || '').replace(/"/g, '&quot;')}">${bm.label.replace('Arena ', '')}</div>`;
-                    mods.forEach((m, i) => {
-                        const v = values[i];
-                        const isBest = i === bestIdx;
-                        if (v === null) {
-                            html += `<div class="cmp-value"><span style="color:var(--text-muted);">—</span></div>`;
-                        } else {
-                            html += `<div class="cmp-value${isBest ? ' cmp-best' : ''}">
-                                ${renderBar(v, maxVal, isBest)}
-                                <span class="cmp-bar-value">${Math.round(v)}</span>
-                            </div>`;
-                        }
-                    });
+                html += `<div class="cmp-label cmp-tip" data-tip-desc="${(bm.desc || '').replace(/"/g, '&quot;')}">${bm.label.replace('Arena ', '')}</div>`;
+                mods.forEach((m, i) => {
+                    const v = values[i];
+                    const isBest = i === bestIdx;
+                    if (v === null) {
+                        html += `<div class="cmp-value"><span style="color:var(--text-muted);">—</span></div>`;
+                    } else {
+                        html += `<div class="cmp-value${isBest ? ' cmp-best' : ''}">
+                            ${renderBar(v, maxVal, isBest)}
+                            <span class="cmp-bar-value">${Math.round(v)}</span>
+                        </div>`;
+                    }
                 });
-            }
+            });
 
             // === Use Case Scores ===
             const useCaseKeys = ['coding', 'reasoning', 'chatbot', 'documents', 'content', 'extraction', 'translation', 'vision'];
