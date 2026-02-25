@@ -250,6 +250,9 @@ function populateComparisonTable() {
             if (label === 'aiderPolyglot') label = 'Aider';
             if (label === 'math500') label = 'MATH500';
             if (label === 'mmmlu') label = 'MMMLU';
+            if (label === 'liveCodeBench') label = 'LiveCode';
+            if (label === 'ifEval') label = 'IFEval';
+            if (label === 'mmluPro') label = 'MMLU-Pro';
             if (label === 'contextWindow') label = 'Context';
             if (label === 'speedProxy') label = 'Speed';
             if (label === 'multimodal') label = 'Vision';
