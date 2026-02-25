@@ -67,11 +67,11 @@
                         <div class="filter-group">
                             <span class="filter-label-tag">OPTIMIZE FOR</span>
                             <div class="chip-group" id="optimize-group">
-                                <button class="filter-chip active" data-value="balanced">Balance</button>
-                                <button class="filter-chip" data-value="quality">Performance</button>
-                                <button class="filter-chip" data-value="low-cost">Low Cost</button>
-                                <button class="filter-chip" data-value="fast">Speed</button>
-                                <button class="filter-chip" data-value="context">Context</button>
+                                <button class="filter-chip active" data-value="balanced" data-tip-desc="Weighs both capability and cost — best performance for the price.">Balance</button>
+                                <button class="filter-chip" data-value="quality" data-tip-desc="Ranks purely by capability — smartest models first, regardless of cost.">Performance</button>
+                                <button class="filter-chip" data-value="low-cost" data-tip-desc="Ranks by value — most capable models at the lowest price first.">Low Cost</button>
+                                <button class="filter-chip" data-value="fast" data-tip-desc="Weighs capability and response speed — fast models that are still good.">Speed</button>
+                                <button class="filter-chip" data-value="context" data-tip-desc="Prioritizes models with the largest context windows for long documents.">Context</button>
                             </div>
                         </div>
                         <div class="filter-group">
@@ -96,7 +96,6 @@
                 <div class="results-header">
                     <h2 class="results-title">Recommended for <span id="usecase-name">Coding</span></h2>
                     <p class="results-desc" id="results-desc"></p>
-                    <p class="results-optimize-note" id="optimize-note"></p>
                 </div>
                 <div class="ranking-disclaimer"><strong>Disclaimer:</strong> Rankings are based on community ratings and benchmarks, weighted per use case. Newly released models may rank lower until sufficient evaluation data is available.</div>
                 <div class="score-legend" id="score-legend"></div>
@@ -282,14 +281,6 @@
             document.getElementById("usecase-name").textContent = ucConfig ? ucConfig.name : currentUsecase;
             document.getElementById("results-desc").textContent = usecaseDescs[currentUsecase] || '';
 
-            const optimizeNotes = {
-                balanced: 'Balance ranks models by weighing both capability and cost — so you get the best performance for the price.',
-                quality: 'Performance ranks purely by capability — the smartest models first, regardless of cost.',
-                'low-cost': 'Low Cost ranks by value — the most capable models at the lowest price first.',
-                fast: 'Speed ranks by a mix of capability and response speed — fast models that are still good.'
-            };
-            document.getElementById("optimize-note").textContent = optimizeNotes[currentOptimize] || '';
-
             // Score and rank using advanced system (blended benchmark + community)
             let ranked = rankModelsAdvanced(currentUsecase, currentOptimize, 'balanced', currentBoosts);
 
@@ -467,25 +458,27 @@
         btn.dataset.expanded = isExpanded ? 'false' : 'true';
     }
 
-    // Column header tooltips
+    // Column header + chip tooltips
     (function() {
         const tip = document.createElement('div');
         tip.className = 'col-tooltip';
         document.body.appendChild(tip);
         document.addEventListener('mouseover', function(e) {
             const th = e.target.closest('.th-tip');
-            if (!th) { tip.classList.remove('show'); return; }
-            const title = th.dataset.tipTitle || '';
-            const desc = th.dataset.tipDesc || '';
+            const chip = !th ? e.target.closest('.filter-chip[data-tip-desc]') : null;
+            const target = th || chip;
+            if (!target) { tip.classList.remove('show'); return; }
+            const title = target.dataset.tipTitle || target.textContent || '';
+            const desc = target.dataset.tipDesc || '';
             if (!desc) { tip.classList.remove('show'); return; }
             tip.innerHTML = '<div class="tip-title">' + title + '</div><div class="tip-desc">' + desc + '</div>';
             tip.classList.add('show');
-            const rect = th.getBoundingClientRect();
+            const rect = target.getBoundingClientRect();
             tip.style.left = Math.max(8, Math.min(rect.left + rect.width / 2 - tip.offsetWidth / 2, window.innerWidth - tip.offsetWidth - 8)) + 'px';
-            tip.style.top = (rect.top - tip.offsetHeight - 8) + 'px';
+            tip.style.top = chip ? (rect.bottom + 8) + 'px' : (rect.top - tip.offsetHeight - 8) + 'px';
         });
         document.addEventListener('mouseout', function(e) {
-            if (e.target.closest('.th-tip')) tip.classList.remove('show');
+            if (e.target.closest('.th-tip') || e.target.closest('.filter-chip[data-tip-desc]')) tip.classList.remove('show');
         });
     })();
     </script>

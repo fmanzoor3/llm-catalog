@@ -365,14 +365,6 @@ a:hover { color: var(--accent-hover); }
     margin-top: 6px;
     line-height: 1.5;
 }
-.results-optimize-note {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-top: 6px;
-    font-style: italic;
-}
-.results-optimize-note:empty { display: none; }
-
 /* Score Legend */
 .score-legend {
     font-size: 0.75rem;
