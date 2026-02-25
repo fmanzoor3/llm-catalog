@@ -434,7 +434,7 @@
             });
 
             // === Benchmarks ===
-            html += `<div class="cmp-section-header">Benchmarks <span style="font-weight:400; font-size:0.8em; color:var(--text-muted);">— means no published score available</span></div>`;
+            html += `<div class="cmp-section-header">Benchmarks</div>`;
             benchmarkMetrics.forEach(bm => {
                 const values = mods.map(m => getMetricValue(m, bm.key));
                 const numericValues = values.filter(v => v !== null);
