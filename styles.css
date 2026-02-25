@@ -553,7 +553,7 @@ a:hover { color: var(--accent-hover); }
     font-size: 13px; font-weight: 700; text-decoration: none;
     transition: background 0.15s;
 }
-.qcb-compare-btn:hover { background: var(--accent-hover); }
+.qcb-compare-btn:hover { background: var(--accent-hover); color: white; }
 .qcb-compare-btn.disabled { opacity: 0.4; pointer-events: none; }
 
 /* ============================================
