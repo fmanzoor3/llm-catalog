@@ -96,6 +96,7 @@
                 <div class="results-header">
                     <h2 class="results-title">Recommended for <span id="usecase-name">Coding</span></h2>
                     <p class="results-desc" id="results-desc"></p>
+                    <p class="results-optimize-note" id="optimize-note"></p>
                 </div>
                 <div class="ranking-disclaimer"><strong>Disclaimer:</strong> Rankings are based on community ratings and benchmarks, weighted per use case. Newly released models may rank lower until sufficient evaluation data is available.</div>
                 <div class="score-legend" id="score-legend"></div>
@@ -280,6 +281,14 @@
             const ucConfig = modelData.scoringConfig[currentUsecase];
             document.getElementById("usecase-name").textContent = ucConfig ? ucConfig.name : currentUsecase;
             document.getElementById("results-desc").textContent = usecaseDescs[currentUsecase] || '';
+
+            const optimizeNotes = {
+                balanced: 'Balance ranks models by weighing both capability and cost — so you get the best performance for the price.',
+                quality: 'Performance ranks purely by capability — the smartest models first, regardless of cost.',
+                'low-cost': 'Low Cost ranks by value — the most capable models at the lowest price first.',
+                fast: 'Speed ranks by a mix of capability and response speed — fast models that are still good.'
+            };
+            document.getElementById("optimize-note").textContent = optimizeNotes[currentOptimize] || '';
 
             // Score and rank using advanced system (blended benchmark + community)
             let ranked = rankModelsAdvanced(currentUsecase, currentOptimize, 'balanced', currentBoosts);
