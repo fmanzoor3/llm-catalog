@@ -433,6 +433,7 @@ a:hover { color: var(--accent-hover); }
 .col-tooltip.show { opacity: 1; }
 .col-tooltip .tip-title { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
 .col-tooltip .tip-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.cmp-tip { cursor: help; border-bottom: 1px dashed var(--text-muted); display: inline; }
 .rec-table .hidden-rec { display: none; }
 .rec-table .hidden-rec.show { display: table-row; }
 

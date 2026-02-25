@@ -135,20 +135,20 @@
 
         // Benchmark & metric definitions for comparison
         const benchmarkMetrics = [
-            { key: 'benchmarks.sweBenchVerified', label: 'SWE-bench', suffix: '%' },
-            { key: 'benchmarks.gpqaDiamond', label: 'GPQA Diamond', suffix: '%' },
-            { key: 'benchmarks.aime2024', label: 'AIME 2024', suffix: '%' },
-            { key: 'benchmarks.aiderPolyglot', label: 'Aider Polyglot', suffix: '%' },
-            { key: 'benchmarks.math500', label: 'MATH-500', suffix: '%' },
-            { key: 'benchmarks.mmmlu', label: 'MMMLU', suffix: '%' }
+            { key: 'benchmarks.sweBenchVerified', label: 'SWE-bench', suffix: '%', desc: 'Reflects the model\'s ability to fix real-world software bugs on its own.' },
+            { key: 'benchmarks.gpqaDiamond', label: 'GPQA Diamond', suffix: '%', desc: 'Reflects expert-level science knowledge in biology, physics, and chemistry.' },
+            { key: 'benchmarks.aime2024', label: 'AIME 2024', suffix: '%', desc: 'Reflects hard math reasoning — competition-level, multi-step problems.' },
+            { key: 'benchmarks.aiderPolyglot', label: 'Aider Polyglot', suffix: '%', desc: 'Reflects the model\'s ability to edit code across multiple programming languages.' },
+            { key: 'benchmarks.math500', label: 'MATH-500', suffix: '%', desc: 'Reflects general math ability — broader and easier than AIME.' },
+            { key: 'benchmarks.mmmlu', label: 'MMMLU', suffix: '%', desc: 'Reflects breadth of knowledge across many subjects and spoken languages.' }
         ];
 
         const arenaMetrics = [
-            { key: 'arenaElo.overall', label: 'Arena Overall', suffix: '' },
-            { key: 'arenaElo.coding', label: 'Arena Coding', suffix: '' },
-            { key: 'arenaElo.math', label: 'Arena Math', suffix: '' },
-            { key: 'arenaElo.creativeWriting', label: 'Arena Creative Writing', suffix: '' },
-            { key: 'arenaElo.instructionFollowing', label: 'Arena Instruction Following', suffix: '' }
+            { key: 'arenaElo.overall', label: 'Arena Overall', suffix: '', desc: 'Based on real users picking their preferred model in blind side-by-side comparisons.' },
+            { key: 'arenaElo.coding', label: 'Arena Coding', suffix: '', desc: 'Based on user preference specifically for coding tasks.' },
+            { key: 'arenaElo.math', label: 'Arena Math', suffix: '', desc: 'Based on user preference specifically for math tasks.' },
+            { key: 'arenaElo.creativeWriting', label: 'Arena Creative Writing', suffix: '', desc: 'Based on user preference for storytelling, prose, and creative tone.' },
+            { key: 'arenaElo.instructionFollowing', label: 'Arena Instruction Following', suffix: '', desc: 'Based on how precisely the model does exactly what you ask.' }
         ];
 
 
@@ -358,7 +358,7 @@
             // Cost Tier
             const costValues = mods.map(m => getBlendedCost(m));
             const bestCost = getBestIndex(costValues, 'lowest');
-            html += `<div class="cmp-label">Cost Tier</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how expensive the model is to run. Based on direct API pricing; platform rates may differ.">Cost Tier</div>`;
             mods.forEach((m, i) => {
                 const costClass = m.costTier === 'self-hosted' ? 'self' : m.costTier;
                 html += `<div class="cmp-value${i === bestCost ? ' cmp-best' : ''}"><span class="cost-badge cost-${costClass}" style="font-size:0.7rem;padding:2px 6px;">${getCostLabel(m.costTier)}</span></div>`;
@@ -367,7 +367,7 @@
             // Context Window
             const ctxValues = mods.map(m => m.contextWindow || 0);
             const bestCtx = getBestIndex(ctxValues, 'highest');
-            html += `<div class="cmp-label">Context Window</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how much text the model can process at once — longer documents and conversations need a larger window.">Context Window</div>`;
             mods.forEach((m, i) => {
                 html += `<div class="cmp-value${i === bestCtx ? ' cmp-best' : ''}">${formatTokenCount(m.contextWindow)}</div>`;
             });
@@ -375,7 +375,7 @@
             // Max Output
             const outValues = mods.map(m => m.maxOutputTokens || 0);
             const bestOut = getBestIndex(outValues, 'highest');
-            html += `<div class="cmp-label">Max Output</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how much the model can write in one response. Matters for long code files or detailed reports.">Max Output</div>`;
             mods.forEach((m, i) => {
                 html += `<div class="cmp-value${i === bestOut ? ' cmp-best' : ''}">${m.maxOutputTokens ? formatTokenCount(m.maxOutputTokens) : '—'}</div>`;
             });
@@ -383,7 +383,7 @@
             // Speed
             const speedValues = mods.map(m => m.outputTokensPerSec || 0);
             const bestSpeed = getBestIndex(speedValues, 'highest');
-            html += `<div class="cmp-label">Speed</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how fast the model generates text. Faster models feel more responsive and finish large tasks quicker.">Speed</div>`;
             mods.forEach((m, i) => {
                 const tier = getSpeedTier(m);
                 html += `<div class="cmp-value${i === bestSpeed ? ' cmp-best' : ''}">${formatSpeed(m)}${tier.label !== '—' ? ' <span style="font-size:0.7rem;opacity:0.7;">(' + tier.label + ')</span>' : ''}</div>`;
@@ -398,14 +398,14 @@
             });
 
             // Multimodal
-            html += `<div class="cmp-label">Multimodal</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Whether the model can process images, audio, or video in addition to text.">Multimodal</div>`;
             mods.forEach(m => {
                 const mm = m.specs?.multimodal;
                 html += `<div class="cmp-value">${mm ? 'Yes — ' + (m.specs.multimodalTypes || []).join(', ') : 'Text only'}</div>`;
             });
 
             // Tool Calling
-            html += `<div class="cmp-label">Tool Calling</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Whether the model can trigger external tools, APIs, and actions on its own.">Tool Calling</div>`;
             mods.forEach(m => {
                 html += `<div class="cmp-value">${m.specs?.supportsFunctionCalling ? 'Yes' : 'No'}</div>`;
             });
@@ -418,13 +418,13 @@
             const bestInput = getBestIndex(inputCosts, 'lowest');
             const bestOutput = getBestIndex(outputCosts, 'lowest');
 
-            html += `<div class="cmp-label">Input / 1M tokens</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="What you pay for the text you send. 1M tokens ≈ 750k words.">Input / 1M tokens</div>`;
             mods.forEach((m, i) => {
                 const v = m.pricing?.inputPerMillion;
                 html += `<div class="cmp-value${i === bestInput ? ' cmp-best' : ''}">${v != null ? '$' + v.toFixed(2) : 'Self-hosted'}</div>`;
             });
 
-            html += `<div class="cmp-label">Output / 1M tokens</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="What you pay for the text the model writes back. Usually 2–4x more than input.">Output / 1M tokens</div>`;
             mods.forEach((m, i) => {
                 const v = m.pricing?.outputPerMillion;
                 html += `<div class="cmp-value${i === bestOutput ? ' cmp-best' : ''}">${v != null ? '$' + v.toFixed(2) : 'Self-hosted'}</div>`;
@@ -443,7 +443,7 @@
                     const maxVal = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                     const bestIdx = getBestIndex(values, 'highest');
 
-                    html += `<div class="cmp-label">${bm.label}</div>`;
+                    html += `<div class="cmp-label cmp-tip" data-tip-desc="${(bm.desc || '').replace(/"/g, '&quot;')}">${bm.label}</div>`;
                     mods.forEach((m, i) => {
                         const v = values[i];
                         const isBest = i === bestIdx;
@@ -473,7 +473,7 @@
                     const maxVal = numericValues.length > 0 ? Math.max(...numericValues) : 1;
                     const bestIdx = getBestIndex(values, 'highest');
 
-                    html += `<div class="cmp-label">${bm.label.replace('Arena ', '')}</div>`;
+                    html += `<div class="cmp-label cmp-tip" data-tip-desc="${(bm.desc || '').replace(/"/g, '&quot;')}">${bm.label.replace('Arena ', '')}</div>`;
                     mods.forEach((m, i) => {
                         const v = values[i];
                         const isBest = i === bestIdx;
@@ -491,14 +491,25 @@
 
             // === Use Case Scores ===
             const useCaseKeys = ['coding', 'reasoning', 'chatbot', 'documents', 'content', 'extraction', 'translation', 'vision'];
+            const useCaseDescs = {
+                coding: 'Reflects ability to write, debug, and review code.',
+                reasoning: 'Reflects ability to handle complex logic, analysis, and multi-step problems.',
+                chatbot: 'Reflects ability to hold natural conversations and handle customer support.',
+                documents: 'Reflects ability to read, summarize, and analyze long documents.',
+                content: 'Reflects ability to write articles, marketing copy, and creative content.',
+                extraction: 'Reflects ability to pull structured data from PDFs, forms, and tables.',
+                translation: 'Reflects ability to translate and work across multiple languages.',
+                vision: 'Reflects ability to understand and analyze images. Only applies to multimodal models.'
+            };
             html += `<div class="cmp-section-header">Use Case Scores <span class="cmp-section-info">Composite 0–100 scores based on weighted benchmarks and community ratings. <a href="resources.html" style="color:var(--accent);">Learn more</a></span></div>`;
             useCaseKeys.forEach(uc => {
                 const config = modelData.scoringConfig[uc];
                 if (!config) return;
                 const scores = mods.map(m => computeCapabilityScore(m, uc).score);
                 const bestIdx = getBestIndex(scores, 'highest');
+                const ucDesc = useCaseDescs[uc] || '';
 
-                html += `<div class="cmp-label">${config.name}</div>`;
+                html += `<div class="cmp-label cmp-tip" data-tip-desc="${ucDesc.replace(/"/g, '&quot;')}">${config.name}</div>`;
                 mods.forEach((m, i) => {
                     const isBest = i === bestIdx;
                     html += `<div class="cmp-value${isBest ? ' cmp-best' : ''}">
@@ -529,28 +540,28 @@
             html += `<div class="cmp-label">Hosting</div>`;
             mods.forEach(m => { html += `<div class="cmp-value">${getHostingLabel(m)}</div>`; });
 
-            html += `<div class="cmp-label">Cloud Platforms</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Which cloud platforms offer this model — useful if you have an existing cloud provider.">Cloud Platforms</div>`;
             mods.forEach(m => {
                 const platforms = getCloudPlatformLabels(m);
                 html += `<div class="cmp-value">${platforms.length > 0 ? platforms.join(', ') : '—'}</div>`;
             });
 
-            html += `<div class="cmp-label">Self-Hostable</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Whether you can download and run this model on your own servers for full data privacy.">Self-Hostable</div>`;
             mods.forEach(m => {
                 html += `<div class="cmp-value">${m.deployment?.selfHostable ? 'Yes' : 'No'}</div>`;
             });
 
-            html += `<div class="cmp-label">Parameters</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects the model\'s size. Larger models are generally smarter but need more hardware to run.">Parameters</div>`;
             mods.forEach(m => {
                 html += `<div class="cmp-value">${m.specs?.parameters || '—'}</div>`;
             });
 
-            html += `<div class="cmp-label">License</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Determines what you can legally do with the model. Apache 2.0 and MIT are the most permissive.">License</div>`;
             mods.forEach(m => {
                 html += `<div class="cmp-value">${m.specs?.license || '—'}</div>`;
             });
 
-            html += `<div class="cmp-label">Min VRAM (FP16)</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how much GPU memory you need to self-host this model.">Min VRAM (FP16)</div>`;
             mods.forEach(m => {
                 html += `<div class="cmp-value">${m.specs?.minVram || '—'}</div>`;
             });
@@ -617,6 +628,30 @@
 
         // Make the compare section position:relative for dropdown positioning
         document.querySelector('.compare-section').style.position = 'relative';
+
+        // Tooltip system for .cmp-tip labels (delegated for dynamic content)
+        const tipEl = document.createElement('div');
+        tipEl.className = 'col-tooltip';
+        tipEl.innerHTML = '<div class="tip-desc"></div>';
+        document.body.appendChild(tipEl);
+
+        document.getElementById('cmp-comparison').addEventListener('mouseenter', (e) => {
+            const target = e.target.closest('.cmp-tip');
+            if (!target) return;
+            const desc = target.getAttribute('data-tip-desc');
+            if (!desc) return;
+            tipEl.querySelector('.tip-desc').textContent = desc;
+            const rect = target.getBoundingClientRect();
+            tipEl.style.left = rect.left + 'px';
+            tipEl.style.top = (rect.bottom + 8) + 'px';
+            tipEl.classList.add('show');
+        }, true);
+
+        document.getElementById('cmp-comparison').addEventListener('mouseleave', (e) => {
+            const target = e.target.closest('.cmp-tip');
+            if (!target) return;
+            tipEl.classList.remove('show');
+        }, true);
     });
     </script>
 </body>
