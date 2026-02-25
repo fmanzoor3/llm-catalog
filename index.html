@@ -107,6 +107,18 @@
                 </div>
             </div>
         </section>
+
+        <!-- Quick Compare Floating Bar -->
+        <div class="quick-compare-bar" id="quickCompareBar">
+            <div class="container qcb-inner">
+                <div class="qcb-chips" id="qcbChips"></div>
+                <div class="qcb-actions">
+                    <span class="qcb-count" id="qcbCount">0 of 3</span>
+                    <button class="qcb-clear" id="qcbClear">Clear</button>
+                    <a class="qcb-compare-btn disabled" id="qcbCompareBtn" href="compare.html">Compare <svg viewBox="0 0 16 16" width="14" height="14"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2"/></svg></a>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Model Detail Modal -->
@@ -274,6 +286,9 @@
         // Initial render
         renderUsecaseCards();
 
+        // Quick Compare state
+        const compareSelection = new Set();
+
         function render() {
             updateURL();
             // Update header
@@ -379,6 +394,7 @@
             const benchHeaders = scoreColumns.map(k => `<th class="score-col-th th-tip" data-tip-title="${(metricFullNames[k] || metricNames[k] || k).replace(/"/g, '&quot;')}" data-tip-desc="${(metricDescs[k] || '').replace(/"/g, '&quot;')}">${metricNames[k] || k}</th>`).join('');
 
             let html = `<table class="rec-table"><thead><tr>
+                <th class="cmp-check-col"></th>
                 <th>Rank</th><th>Model</th>
                 ${isAllView ? `<th class="th-tip" data-tip-title="Availability" data-tip-desc="How you can access this model: open source (self-hostable), cloud API only, or both.">Availability</th>` : ''}
                 <th class="th-tip" data-tip-title="Speed" data-tip-desc="Output tokens generated per second. Measured via Artificial Analysis using standardized prompts.">Speed</th>
@@ -422,7 +438,8 @@
                     ? '<span class="cell-tag hosting-open">Open Source</span>' + (hasApi ? '<span class="cell-sub">API also available</span>' : '')
                     : '<span class="cell-tag hosting-api">Cloud API</span>';
 
-                return `<tr class="${hiddenClass}" onclick="openModelModal('${model.id}')">
+                return `<tr class="${hiddenClass}${compareSelection.has(model.id) ? ' cmp-selected' : ''}" data-model-id="${model.id}" onclick="openModelModal('${model.id}')">
+                    <td class="cmp-check-cell" onclick="event.stopPropagation()"><input type="checkbox" class="cmp-check" data-model-id="${model.id}" ${compareSelection.has(model.id) ? 'checked' : ''} ${!compareSelection.has(model.id) && compareSelection.size >= 3 ? 'disabled' : ''}></td>
                     <td class="rank-cell ${isTop ? 'top' : ''}">${idx + 1}</td>
                     <td class="model-cell">${model.name}${isTop ? '<span class="badge badge-default">TOP PICK</span>' : ''}
                         <div class="provider-sub">${getProviderName(model.provider)}${onPremLabel}</div></td>
@@ -444,7 +461,86 @@
             }
 
             resultsList.innerHTML = html;
+            updateCompareUI();
         }
+
+        // --- Quick Compare Logic ---
+        const qcBar = document.getElementById('quickCompareBar');
+        const qcChips = document.getElementById('qcbChips');
+        const qcCount = document.getElementById('qcbCount');
+        const qcClear = document.getElementById('qcbClear');
+        const qcBtn = document.getElementById('qcbCompareBtn');
+        const footerLink = document.querySelector('.results-footer .btn-outline');
+
+        function updateCompareUI() {
+            const n = compareSelection.size;
+            // Toggle bar visibility
+            qcBar.classList.toggle('visible', n > 0);
+            // Render chips
+            qcChips.innerHTML = Array.from(compareSelection).map(id => {
+                const m = getModelById(id);
+                const name = m ? m.name : id;
+                return `<span class="qcb-chip">${name}<button class="qcb-chip-remove" data-id="${id}">&times;</button></span>`;
+            }).join('');
+            // Count
+            qcCount.textContent = n + ' of 3';
+            // Compare button state
+            if (n >= 2) {
+                qcBtn.classList.remove('disabled');
+                qcBtn.href = 'compare.html?models=' + Array.from(compareSelection).join(',');
+            } else {
+                qcBtn.classList.add('disabled');
+                qcBtn.href = 'compare.html';
+            }
+            // Sync checkboxes (for re-renders)
+            document.querySelectorAll('.cmp-check').forEach(cb => {
+                const id = cb.dataset.modelId;
+                cb.checked = compareSelection.has(id);
+                cb.disabled = !compareSelection.has(id) && n >= 3;
+            });
+            // Highlight selected rows
+            document.querySelectorAll('.rec-table tbody tr').forEach(tr => {
+                const id = tr.dataset.modelId;
+                if (id) tr.classList.toggle('cmp-selected', compareSelection.has(id));
+            });
+            // Update footer link
+            if (footerLink) {
+                if (n >= 2) {
+                    footerLink.innerHTML = 'COMPARE SELECTED (' + n + ') <svg viewBox="0 0 16 16" width="14" height="14"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+                    footerLink.href = 'compare.html?models=' + Array.from(compareSelection).join(',');
+                } else {
+                    footerLink.innerHTML = 'SEE FULL COMPARISON <svg viewBox="0 0 16 16" width="14" height="14"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+                    footerLink.href = 'compare.html';
+                }
+            }
+        }
+
+        // Delegated checkbox change handler
+        document.getElementById('results-list').addEventListener('change', function(e) {
+            if (!e.target.classList.contains('cmp-check')) return;
+            const id = e.target.dataset.modelId;
+            if (e.target.checked) {
+                if (compareSelection.size < 3) compareSelection.add(id);
+                else e.target.checked = false;
+            } else {
+                compareSelection.delete(id);
+            }
+            updateCompareUI();
+        });
+
+        // Chip remove handler (delegated)
+        qcChips.addEventListener('click', function(e) {
+            const btn = e.target.closest('.qcb-chip-remove');
+            if (!btn) return;
+            compareSelection.delete(btn.dataset.id);
+            updateCompareUI();
+        });
+
+        // Clear all
+        qcClear.addEventListener('click', function() {
+            compareSelection.clear();
+            updateCompareUI();
+        });
 
         render();
     });
