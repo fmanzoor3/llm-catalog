@@ -245,7 +245,6 @@
                 const newBadge = isNew(m) ? '<span class="badge badge-new">NEW</span>' : '';
                 const onPremUrl = m.deployment?.onPremUrl;
                 const onPremLabel = m.deployment?.hostedOnPrem ? ' · <span class="onprem-label">On-Prem</span>' + (onPremUrl ? ' · <a href="' + onPremUrl + '" target="_blank" class="onprem-try" onclick="event.stopPropagation()">Try it &rarr;</a>' : '') : '';
-                const paramsLabel = m.specs?.parameters ? ' · ' + m.specs.parameters : '';
                 const rd = m.specs?.releaseDate;
                 const dateLabel = rd ? new Date(rd).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
                 const strengthsHtml = (m.strengths || []).slice(0, 3).map(s => `<li>${s.split(' — ')[0]}</li>`).join("");
@@ -257,7 +256,7 @@
                         <div class="catalog-card-header-text">
                             <div class="catalog-card-title">${m.name} ${newBadge}</div>
                             <div class="catalog-card-meta">
-                                <span class="catalog-card-provider">${provName}${onPremLabel}${paramsLabel}</span>
+                                <span class="catalog-card-provider">${provName}${onPremLabel}</span>
                                 ${dateLabel ? `<span class="catalog-card-date">${dateLabel}</span>` : ''}
                             </div>
                         </div>
