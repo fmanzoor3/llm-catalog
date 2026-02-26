@@ -56,10 +56,10 @@ function getProviderLogo(providerId, size) {
     var containLogos = {
         google: 'logos/gemini-logo.png',
         deepseek: 'logos/deepseek.png',
-        meta: 'logos/meta.png',
+        meta: 'logos/llama-ai.png',
         alibaba: 'logos/alibaba.png',
         mistral: 'logos/mistral.png',
-        amazon: 'logos/amazon-nova.png',
+        amazon: 'logos/nova-ai.png',
         xiaomi: 'logos/xiaomi.svg',
         zhipu: 'logos/Z.ai_(company_logo).svg.png',
         cohere: 'logos/cohere.png',

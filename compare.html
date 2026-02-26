@@ -415,7 +415,7 @@
                 return tps ? (m.ttft || 0) + (100 / tps) : 9999;
             });
             const bestSpeed = getBestIndex(totalTimeValues, 'lowest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Combines Latency (TTFT) and Output Speed into a single metric — the estimated time to receive a 100-token response.">Response Time</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Combines Time to First Token and Output Speed — the estimated time to receive a 100-token response.">Latency</div>`;
             mods.forEach((m, i) => {
                 const tier = getSpeedTier(m);
                 html += `<div class="cmp-value${bestSpeed.includes(i) ? ' cmp-best' : ''}">${formatSpeed(m)}${tier.label !== '—' ? ' <span style="font-size:0.7rem;opacity:0.7;">(' + tier.label + ')</span>' : ''}</div>`;
@@ -424,7 +424,7 @@
             // Latency (TTFT)
             const ttftValues = mods.map(m => m.ttft || 0);
             const bestTtft = getBestIndex(ttftValues.map(v => v || 9999), 'lowest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Time to First Token — how long before the model starts responding. For reasoning models, this includes thinking time.">Latency (TTFT)</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="How long before the model starts responding. For reasoning models, this includes thinking time.">Time to First Token</div>`;
             mods.forEach((m, i) => {
                 if (m.ttft) {
                     const label = m.ttft >= 10 ? m.ttft.toFixed(1) + 's' : m.ttft.toFixed(2) + 's';
