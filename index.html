@@ -398,7 +398,7 @@
                 <th class="cmp-check-col"></th>
                 <th>Rank</th><th>Model</th>
                 ${isAllView ? `<th class="th-tip" data-tip-title="Availability" data-tip-desc="How you can access this model: open source (self-hostable), cloud API only, or both.">Availability</th>` : ''}
-                <th class="th-tip" data-tip-title="Speed" data-tip-desc="Output tokens generated per second. Measured via Artificial Analysis using standardized prompts.">Speed</th>
+                <th class="th-tip" data-tip-title="Speed" data-tip-desc="Output tokens generated per second. For initial response latency (TTFT), see the Compare page. Source: Artificial Analysis.">Speed</th>
                 ${isSelfHostView
                     ? `<th class="th-tip" data-tip-title="Parameters" data-tip-desc="Total model parameters and active parameters per forward pass for MoE models.">Params</th>
                        <th class="th-tip" data-tip-title="Min VRAM" data-tip-desc="Minimum GPU memory required for FP16 inference. INT4/INT8 quantization can reduce this by 2-4x.">VRAM</th>`
