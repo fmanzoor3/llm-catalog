@@ -8,7 +8,7 @@ function getModelById(id) { return modelData.models.find(m => m.id === id); }
 function getProviderName(providerId) { return modelData.providers[providerId]?.displayName || providerId; }
 
 function formatTokenCount(n) {
-    if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + 'M';
+    if (n >= 1000000) { var m = n / 1000000; return (Math.round(m * 10) / 10 === Math.round(m) ? Math.round(m) : (Math.round(m * 10) / 10)) + 'M'; }
     if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
     return n.toString();
 }
