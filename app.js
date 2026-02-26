@@ -25,7 +25,8 @@ function getProviderClass(providerId) {
         anthropic: 'bg-anthropic', openai: 'bg-openai', google: 'bg-google',
         deepseek: 'bg-deepseek', xai: 'bg-xai', moonshot: 'bg-moonshot',
         meta: 'bg-meta', alibaba: 'bg-alibaba', mistral: 'bg-mistral',
-        amazon: 'bg-amazon', xiaomi: 'bg-xiaomi'
+        amazon: 'bg-amazon', xiaomi: 'bg-xiaomi', zhipu: 'bg-zhipu',
+        minimax: 'bg-minimax', cohere: 'bg-cohere', microsoft: 'bg-microsoft'
     };
     return map[providerId] || 'bg-default';
 }
@@ -35,7 +36,8 @@ function getProviderAbbrev(providerId) {
         anthropic: 'ANT', openai: 'OAI', google: 'GDM',
         deepseek: 'DS', xai: 'xAI', moonshot: 'MS',
         meta: 'META', alibaba: 'QWN', mistral: 'MST',
-        amazon: 'AMZ', xiaomi: 'XMI'
+        amazon: 'AMZ', xiaomi: 'XMI', zhipu: 'ZHP',
+        minimax: 'MMX', cohere: 'COH', microsoft: 'MSF'
     };
     return map[providerId] || providerId.substring(0, 3).toUpperCase();
 }

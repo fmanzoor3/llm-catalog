@@ -1433,6 +1433,8 @@ a:hover { color: var(--accent-hover); }
 .bg-moonshot { background: linear-gradient(135deg, #6366f1, #4f46e5); }
 .bg-opensource { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
 .bg-xiaomi { background: linear-gradient(135deg, #FF6900, #E05E00); }
+.bg-zhipu { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
+.bg-minimax { background: linear-gradient(135deg, #EC4899, #DB2777); }
 
 /* Score bars */
 .score-bar { height: 20px; background: var(--border); border-radius: 10px; position: relative; overflow: hidden; margin-bottom: 4px; }
