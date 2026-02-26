@@ -1,31 +1,30 @@
-# Temporary files
-~$*
-nul
+# Dependencies
+node_modules/
+package-lock.json
 
-# Python
-__pycache__/
-*.pyc
+# Dev/temp files
+screenshot-*.png
+models-*.png
+test-*.js
+patch-*.js
+audit-*.js
+verify-*.js
+check-*.js
+temp-*.js
+analyze-*.js
+take-screenshots.js
+convo*.txt
+*.pptx
+
+# OS files
+.DS_Store
+Thumbs.db
+nul
 
 # IDE
 .vscode/
 .idea/
 
-# Dependencies
-node_modules/
-package-lock.json
-
-# Generated files
-screenshots/
-*.pptx
-
-# Backup/test files
-data/backups/
-data/test_old_data.json
-
-# Analysis/verification scripts (dev only)
-analyze-page.js
-verify-*.js
-
-# OS files
-.DS_Store
-Thumbs.db
+# Python
+__pycache__/
+*.pyc

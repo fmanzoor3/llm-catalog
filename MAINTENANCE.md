@@ -1,243 +1,199 @@
-# LLM Catalog Maintenance Guide
+# LLM Catalog — Maintenance Guide
 
-## Overview
-This catalog uses a data-driven architecture. All model information lives in a single JSON file (`data/models.json`), which feeds the HTML page and can be used to update other formats.
+## Architecture
 
-## File Structure
+A static, manually curated website. No build step — open `index.html` in a browser.
+
 ```
 LLM Catalog/
-├── data/
-│   ├── models.json        ← Single source of truth (edit this!)
-│   └── backups/           ← Auto-created backups
-├── index.html             ← Reads from models.json (data embedded)
-├── llm-selection-guide.md ← Manual markdown version
-├── create_presentation.py ← Generates PowerPoint
-├── auto_update.py         ← Update tool (see below)
-└── MAINTENANCE.md         ← This file
+├── index.html          ← Find Your LLM page (main entry)
+├── models.html         ← All Models page
+├── providers.html      ← All Providers page
+├── compare.html        ← Side-by-side comparison (URL params: ?models=id1,id2)
+├── resources.html      ← Learning resources & community links
+├── research-scoring.html    ← How scoring works (internal reference)
+├── research-platforms.html  ← Deployment platforms guide
+├── data.js             ← SOURCE OF TRUTH — all model/provider data
+├── app.js              ← Shared application logic (scoring, formatting, modals)
+├── engine.js           ← Scoring engine (weighted benchmarks per use case)
+├── styles.css          ← All styles
+├── logos/              ← Provider logo images
+├── screenshots/        ← Portfolio screenshots (numbered, for sharing)
+├── MAINTENANCE.md      ← This file
+├── CATALOG_STRATEGY.md ← Data sources, procedures, inclusion criteria
+└── RESEARCH_NOTES.md   ← Detailed research notes per model
+```
+
+### How data flows
+
+`data.js` exports a single `const modelData = {...}` object containing:
+- `models[]` — array of 38 model objects with specs, benchmarks, pricing, descriptions
+- `providers{}` — provider metadata (display names, logos, descriptions)
+- `scoringConfig{}` — per-use-case benchmark weights and normalization ranges
+- `lastUpdated`, `dataSources` — metadata
+
+Every HTML page loads `data.js` via `<script src="data.js">`. The `app.js` and `engine.js` scripts read from `modelData` at runtime — no JSON parsing, no fetch calls.
+
+### Editing data.js
+
+`data.js` is a single minified line. Do NOT edit it by hand. Use Node.js patch scripts:
+
+```js
+// Example: add a field to a model
+const fs = require('fs');
+let src = fs.readFileSync('data.js', 'utf8');
+// Find the model by ID, manipulate the string, write back
+fs.writeFileSync('data.js', src);
+```
+
+After editing, verify with:
+```js
+eval(src.replace('const ', 'var '));
+console.log(modelData.models.length); // should be 38
 ```
 
 ---
 
-## Quick Start: Check for Updates
+## Key Metrics
 
-The easiest way to check for updates:
+### Latency (Total Response Time)
+The "Latency" column on the Find Your LLM page shows **Total Response Time** — the estimated time to receive a 100-token response:
 
-1. Open `index.html` in your browser
-2. Click the **"Check for Updates"** button (bottom-right corner)
-3. Click **"Open All Sources"** to view the latest benchmark leaderboards
-4. Review the latest rankings on each site
-5. Run `python auto_update.py` in your terminal to update the data
-
----
-
-## Alternative: Using the CLI Tool
-
-You can also use `auto_update.py` from the command line:
-
-```bash
-# Interactive menu (recommended)
-python auto_update.py
-
-# Or use specific commands:
-python auto_update.py list              # List all models
-python auto_update.py validate          # Check for errors
-python auto_update.py sync-html         # Sync JSON to HTML
-python auto_update.py set-date          # Update to today's date
-python auto_update.py open-sources      # Open benchmark sites in browser
-python auto_update.py add-model         # Add a new model interactively
-python auto_update.py update-benchmark  # Update a benchmark score
+```
+Total Response Time = TTFT + (100 / outputTokensPerSec)
 ```
 
-### Updating a Benchmark Score
-```bash
-# Interactive
-python auto_update.py update-benchmark
+- **TTFT** (Time to First Token): seconds before the model starts responding
+- **outputTokensPerSec**: tokens generated per second once streaming starts
+- Source: [Artificial Analysis](https://artificialanalysis.ai)
 
-# Direct command
-python auto_update.py update-benchmark claude-opus-4.5 sweBenchVerified 81.5
-```
+**Speed tiers:**
+- Fast: ≤ 2s
+- Medium: ≤ 5s
+- Slower: > 5s
 
-### Monthly Update Workflow
-1. Run `python auto_update.py open-sources benchmarks` to open leaderboards
-2. Check for any score changes
-3. Run `python auto_update.py` and use option 3 to update scores
-4. Use option 4 to update the date
-5. Run `python auto_update.py validate` to check for errors
+### Scoring Engine
+Each model gets a Capability score (0-100) and Value score per use case, computed from weighted benchmarks. Configuration lives in `modelData.scoringConfig`. See `engine.js` for the algorithm and `research-scoring.html` for documentation.
 
 ---
 
 ## Monthly Update Checklist
 
-### Option A: Using the Update Tool (Recommended)
+### 1. Check for new models
 
-```bash
-# 1. Open all sources in browser
-python auto_update.py open-sources
+**Cross-reference these sites against our catalog:**
 
-# 2. Run interactive menu
-python auto_update.py
+| Site | What to check |
+|------|---------------|
+| [Artificial Analysis](https://artificialanalysis.ai/leaderboards/models) | New models in their leaderboard |
+| [Arena.ai](https://arena.ai/leaderboard) | New entries in human preference rankings |
+| [llm-stats.com](https://llm-stats.com) | Model comparisons we might be missing |
 
-# 3. Use menu options to:
-#    - Add new models (option 2)
-#    - Update benchmark scores (option 3)
-#    - Update date (option 4)
-#    - Validate changes (option 6)
+**Check provider blogs:**
+- [OpenAI Blog](https://openai.com/blog/)
+- [Anthropic News](https://www.anthropic.com/news)
+- [Google AI Blog](https://blog.google/technology/ai/)
+- [DeepSeek GitHub](https://github.com/deepseek-ai)
+- [Meta AI Blog](https://ai.meta.com/blog/)
+- [Mistral Blog](https://mistral.ai/news/)
+
+Evaluate new models against inclusion criteria (see CATALOG_STRATEGY.md).
+
+### 2. Update benchmark scores
+
+**Where to find each data point:**
+
+| Data | Primary source | Secondary source |
+|------|---------------|-----------------|
+| AIME, GPQA, SWE-bench, MATH 500, MMMLU | [Vellum LLM Leaderboard](https://www.vellum.ai/llm-leaderboard) | [Artificial Analysis](https://artificialanalysis.ai) |
+| Arena Elo (Overall, Coding, Math, etc.) | [LMArena](https://lmarena.ai/) | [Arena.ai](https://arena.ai/leaderboard) |
+| Output speed (tok/s), TTFT | [Artificial Analysis](https://artificialanalysis.ai) | — |
+| Pricing (input/output per 1M tokens) | Official provider pricing pages | [Artificial Analysis](https://artificialanalysis.ai) |
+| Context window, max output | Official API docs | [Artificial Analysis](https://artificialanalysis.ai) |
+| Aider Polyglot (coding) | [aider.chat/leaderboard](https://aider.chat/docs/leaderboards/) | — |
+
+### 3. Verify pricing
+
+Check official pricing pages — these change frequently:
+- [OpenAI](https://openai.com/api/pricing/)
+- [Anthropic](https://www.anthropic.com/pricing)
+- [Google](https://ai.google.dev/pricing)
+- [DeepSeek](https://api-docs.deepseek.com/quick_start/pricing)
+- [Mistral](https://mistral.ai/pricing)
+- [xAI](https://x.ai/api)
+
+### 4. Review aging descriptions
+
+Some model descriptions contain claims that will become stale (e.g., "most capable", "top-scoring"). When updating data, scan the `description` and `strengths` fields for superlatives and update if they're no longer accurate.
+
+**Guidelines for descriptions:**
+- Focus on what the model IS, not where it RANKS
+- Good: "Optimized for speed and cost efficiency with strong multilingual support"
+- Bad: "The fastest model available, beating all competitors on AIME"
+
+### 5. Update metadata
+
+After making changes, update `lastUpdated` and `dataSources.lastVerified` in `data.js`.
+
+### 6. Test
+
+Open each page in a browser and verify:
+- [ ] Index page loads, models display correctly
+- [ ] Sorting and filtering work
+- [ ] Model modal opens with correct data
+- [ ] Compare page works (try `?models=claude-sonnet-4.6,gpt-4o`)
+- [ ] All Models and All Providers pages render
+
+---
+
+## Adding a New Model
+
+1. **Research the model** using the data sources above
+2. **Write a patch script** to add the model object to `data.js`:
+   - Required fields: `id`, `name`, `provider`, `costTier`, `contextWindow`, `maxOutputTokens`, `pricingInput`, `pricingOutput`, `outputTokensPerSec`, `ttft`, `description`, `strengths[]`, `benchmarks{}`, `availability{}`
+3. **Run the patch script**: `node patch-new-model.js`
+4. **Update scoring config** if the model introduces a new benchmark range
+5. **Add provider logo** to `logos/` if it's a new provider
+6. **Test** all pages
+
+### Bullet points (strengths) guidelines
+
+The `strengths` array appears on the All Models page as bullet points. Keep them:
+- **Intuitive** — describe real-world capabilities, not benchmark numbers
+- **Format**: "Headline — supporting detail" (use em dash)
+- **No benchmarks** — don't say "92% on SWE-bench", say "Top-tier code generation"
+- **3-5 bullets** per model
+- **Unique** — each bullet should highlight something distinct about the model
+
+Good example:
+```
+"strengths": [
+  "Advanced reasoning — handles multi-step logic and research tasks",
+  "Strong code generation — excels at complex software engineering",
+  "Extended thinking — can show step-by-step reasoning process"
+]
 ```
 
-### Option B: Manual Checklist
-
-#### 1. Check Benchmark Sources
-- [ ] [Artificial Analysis Leaderboard](https://artificialanalysis.ai/leaderboards/models) - Check top rankings
-- [ ] [Vellum LLM Leaderboard](https://www.vellum.ai/llm-leaderboard) - Check benchmark scores
-- [ ] [LMArena](https://lmarena.ai/) - Check human preference rankings
-
-#### 2. Cross-Reference Comparison Sites for New Models
-- [ ] [Artificial Analysis](https://artificialanalysis.ai/leaderboards/models) - Compare their model list against ours
-- [ ] [Arena.ai Leaderboard](https://arena.ai/leaderboard) - Check for new models in rankings
-- [ ] [llm-stats.com](https://llm-stats.com) - Check for models we're missing
-- Evaluate any gaps against our inclusion criteria (see RESEARCH_NOTES.md §4)
-
-#### 3. Check Provider Blogs for New Releases
-- [ ] [OpenAI Blog](https://openai.com/blog/) - New GPT models?
-- [ ] [Anthropic News](https://www.anthropic.com/news) - New Claude models?
-- [ ] [Google AI Blog](https://blog.google/technology/ai/) - New Gemini models?
-- [ ] [DeepSeek GitHub](https://github.com/deepseek-ai) - New releases?
-
-#### 3. Verify Pricing
-- [ ] [Anthropic Pricing](https://www.anthropic.com/pricing)
-- [ ] [OpenAI Pricing](https://openai.com/api/pricing/)
-- [ ] [Google AI Pricing](https://ai.google.dev/pricing)
-- [ ] [DeepSeek Pricing](https://api-docs.deepseek.com/quick_start/pricing)
-
-#### 4. Update data/models.json
-- Update `lastUpdated` field
-- Update `dataSources.lastVerified` field
-- Add new models if released
-- Update benchmark scores if changed
-- Update recommendations if rankings changed
-
-#### 5. Sync HTML
-```bash
-python auto_update.py sync-html
+Bad example:
 ```
-
-#### 6. Test Changes
-- Open `index.html` in browser
-- Verify data loads correctly
-- Test filtering works
-- Check all references links work
-
-#### 7. Commit Changes
-```bash
-git add data/models.json index.html
-git commit -m "Monthly update: [describe changes]"
+"strengths": [
+  "92% on SWE-bench Verified",
+  "Best model for coding",
+  "1M token context window"
+]
 ```
 
 ---
 
-## How to Update
+## Compare Page
 
-### Adding a New Model
+URL format: `compare.html?models=id1,id2,id3` (up to 4 models)
 
-**Using the tool (recommended):**
-```bash
-python auto_update.py add-model
-```
-
-**Manually:**
-1. Open `data/models.json`
-2. Add entry to the `models` array:
-```json
-{
-  "id": "model-id",
-  "name": "Display Name",
-  "provider": "provider-id",
-  "costTier": "low|mid|high|self-hosted",
-  "contextWindow": 128000,
-  "benchmarks": {
-    "sweBenchVerified": 80.0
-  },
-  "bestFor": ["coding", "reasoning"],
-  "description": "Short description"
-}
-```
-3. Run `python auto_update.py sync-html` to update the HTML
-4. Update relevant `useCases` recommendations if the model should be recommended
-
-### Updating Benchmark Scores
-
-**Using the tool (recommended):**
-```bash
-python auto_update.py update-benchmark gpt-5.2 aime2025 100
-```
-
-**Manually:**
-1. Find the model in `data/models.json`
-2. Update the `benchmarks` object
-3. Update `lastUpdated` and `dataSources.lastVerified`
-4. Run `python auto_update.py sync-html`
-
-### Updating Recommendations
-1. Find the use case in `useCases` section
-2. Update the `models` array with model IDs in order of preference
-3. Update `topPick` to the best model ID
-4. Update `reason` text if needed
-5. Run `python auto_update.py sync-html`
-
-### Updating Provider Info
-1. Find the provider in `providers` section
-2. Update `strengths`, `tradeoffs`, `tagline` as needed
-3. Run `python auto_update.py sync-html`
+The compare page shows three speed-related rows:
+- **Response Time** — Total Response Time (best = lowest)
+- **Output Speed** — Raw tok/s (best = highest)
+- **Latency (TTFT)** — Time to first token (best = lowest)
 
 ---
 
-## Regenerating PowerPoint
-After updating the JSON, regenerate the PowerPoint:
-```bash
-python create_presentation.py
-```
-Note: The PowerPoint currently uses hardcoded data. For a fully automated workflow, the script would need to be updated to read from models.json.
-
----
-
-## Validation
-
-Always validate after making changes:
-```bash
-python auto_update.py validate
-```
-
-This checks:
-- Required fields are present
-- All model IDs are unique
-- Use case recommendations reference valid models
-- Providers are properly defined
-
----
-
-## Backups
-
-The update tool automatically creates backups in `data/backups/` before saving changes. To restore from a backup:
-```bash
-cp data/backups/models_YYYYMMDD_HHMMSS.json data/models.json
-python auto_update.py sync-html
-```
-
----
-
-## Future Improvements
-
-### API Integration
-If Artificial Analysis or similar services offer APIs, integrate them for real-time data fetching.
-
-### CI/CD
-- GitHub Action to remind maintainers monthly
-- Automated link checking
-- JSON schema validation
-
----
-
-## Contact
-For questions about this catalog, contact the team that maintains it.
-
-*Last updated: 2026-02-02*
+*Last updated: 2026-02-26*

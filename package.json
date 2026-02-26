@@ -3,24 +3,12 @@
   "version": "1.0.0",
   "description": "LLM Catalog - Find the right AI model for your project",
   "private": true,
-  "scripts": {
-    "update": "python auto_update.py",
-    "validate": "python auto_update.py validate",
-    "sync": "python auto_update.py sync-html"
-  },
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fmanzoor3/llm-catalog.git"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/fmanzoor3/llm-catalog/issues"
-  },
-  "homepage": "https://github.com/fmanzoor3/llm-catalog#readme",
-  "dependencies": {
+  "devDependencies": {
     "playwright": "^1.58.1"
   }
 }
