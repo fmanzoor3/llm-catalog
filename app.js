@@ -479,7 +479,7 @@ function openModelModal(modelId) {
     const specs = [
         { label: 'Context Window', value: formatTokenCount(model.contextWindow) },
         { label: 'Max Output', value: model.maxOutputTokens ? formatTokenCount(model.maxOutputTokens) : 'N/A' },
-        { label: 'Latency', value: formatSpeed(model) !== '—' ? formatSpeed(model) + ' (100 tokens)' : 'N/A' },
+        { label: 'Latency', value: formatSpeed(model) !== '—' ? formatSpeed(model) : 'N/A' },
         { label: 'Output Speed', value: model.outputTokensPerSec ? model.outputTokensPerSec + ' tok/s' : 'N/A' },
         { label: 'Time to First Token', value: model.ttft ? (model.ttft >= 10 ? model.ttft.toFixed(1) + 's' : model.ttft.toFixed(2) + 's') : 'N/A' },
     ];
