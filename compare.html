@@ -383,13 +383,24 @@
                 html += `<div class="cmp-value${i === bestOut ? ' cmp-best' : ''}">${m.maxOutputTokens ? formatTokenCount(m.maxOutputTokens) : '—'}</div>`;
             });
 
-            // Speed
-            const speedValues = mods.map(m => m.outputTokensPerSec || 0);
-            const bestSpeed = getBestIndex(speedValues, 'highest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Output tokens generated per second once the model starts responding. Faster means quicker results for long outputs.">Speed</div>`;
+            // Speed (Total Response Time)
+            const totalTimeValues = mods.map(m => {
+                var tps = m.outputTokensPerSec;
+                return tps ? (m.ttft || 0) + (100 / tps) : 9999;
+            });
+            const bestSpeed = getBestIndex(totalTimeValues, 'lowest');
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Estimated time to receive a 100-token response, combining startup latency and output speed. Lower is better. Source: Artificial Analysis.">Response Time</div>`;
             mods.forEach((m, i) => {
                 const tier = getSpeedTier(m);
                 html += `<div class="cmp-value${i === bestSpeed ? ' cmp-best' : ''}">${formatSpeed(m)}${tier.label !== '—' ? ' <span style="font-size:0.7rem;opacity:0.7;">(' + tier.label + ')</span>' : ''}</div>`;
+            });
+
+            // Output Speed (tok/s)
+            const tpsValues = mods.map(m => m.outputTokensPerSec || 0);
+            const bestTps = getBestIndex(tpsValues, 'highest');
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Output tokens generated per second once the model starts responding. Higher means faster streaming for long outputs.">Output Speed</div>`;
+            mods.forEach((m, i) => {
+                html += `<div class="cmp-value${i === bestTps ? ' cmp-best' : ''}">${m.outputTokensPerSec ? m.outputTokensPerSec + ' tok/s' : '—'}</div>`;
             });
 
             // TTFT (Time to First Token)
@@ -584,7 +595,7 @@
                 { label: 'Best Reasoning', finder: () => rankModelsForUseCase('reasoning', 'capability')[0]?.model },
                 { label: 'Best Value', finder: () => rankModelsForUseCase('coding', 'cost')[0]?.model },
                 { label: 'Lowest Cost', finder: () => { const a = models.filter(m => m.pricing); return a.sort((a, b) => getBlendedCost(a) - getBlendedCost(b))[0]; } },
-                { label: 'Fastest', finder: () => [...models].sort((a, b) => (b.outputTokensPerSec || 0) - (a.outputTokensPerSec || 0))[0] },
+                { label: 'Fastest', finder: () => [...models].filter(m => m.outputTokensPerSec).sort((a, b) => { var ta = (a.ttft || 0) + 100 / a.outputTokensPerSec; var tb = (b.ttft || 0) + 100 / b.outputTokensPerSec; return ta - tb; })[0] },
                 { label: 'Longest Context', finder: () => [...models].sort((a, b) => (b.contextWindow || 0) - (a.contextWindow || 0))[0] },
                 { label: 'Best Open Source', finder: () => { const oss = models.filter(m => m.costTier === 'self-hosted'); return oss.map(m => ({ model: m, score: computeCapabilityScore(m, 'coding').score })).sort((a, b) => b.score - a.score)[0]?.model; } },
                 { label: 'Best for Documents', finder: () => rankModelsForUseCase('documents', 'capability')[0]?.model }

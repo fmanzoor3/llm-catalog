@@ -398,7 +398,7 @@
                 <th class="cmp-check-col"></th>
                 <th>Rank</th><th>Model</th>
                 ${isAllView ? `<th class="th-tip" data-tip-title="Availability" data-tip-desc="How you can access this model: open source (self-hostable), cloud API only, or both.">Availability</th>` : ''}
-                <th class="th-tip" data-tip-title="Speed" data-tip-desc="Output tokens generated per second. For initial response latency (TTFT), see the Compare page. Source: Artificial Analysis.">Speed</th>
+                <th class="th-tip" data-tip-title="Speed" data-tip-desc="Estimated time to receive a 100-token response, combining startup latency and output speed. Reasoning models are slower because they &quot;think&quot; before answering. See the Compare page for a detailed breakdown. Source: Artificial Analysis.">Speed</th>
                 ${isSelfHostView
                     ? `<th class="th-tip" data-tip-title="Parameters" data-tip-desc="Total model parameters and active parameters per forward pass for MoE models.">Params</th>
                        <th class="th-tip" data-tip-title="Min VRAM" data-tip-desc="Minimum GPU memory required for FP16 inference. INT4/INT8 quantization can reduce this by 2-4x.">VRAM</th>`
@@ -411,13 +411,12 @@
                 const model = r.model;
                 const hiddenClass = idx >= initialShow ? 'hidden-rec' : '';
                 const isTop = idx === 0;
-                const tps = model.outputTokensPerSec;
                 const onPremUrl = model.deployment?.onPremUrl;
                 const onPremLabel = model.deployment?.hostedOnPrem ? ' · <span class="onprem-label">On-Prem</span>' + (onPremUrl ? ' · <a href="' + onPremUrl + '" target="_blank" class="onprem-try" onclick="event.stopPropagation()">Try it &rarr;</a>' : '') : '';
 
-                // Speed: categorical label + numeric subtitle
+                // Speed: total response time (TTFT + 100 tokens / output speed)
                 const speedTier = getSpeedTier(model);
-                const speedSub = tps ? tps + ' tok/s' : '';
+                const speedSub = formatSpeed(model);
 
                 // Cost: categorical label + blended cost subtitle
                 const costTier = getCostTier(model);
@@ -445,7 +444,7 @@
                     <td class="model-cell">${model.name}${isTop ? '<span class="badge badge-default">TOP PICK</span>' : ''}
                         <div class="provider-sub">${getProviderName(model.provider)}${onPremLabel}</div></td>
                     ${isAllView ? `<td class="hosting-cell">${hostingTag}</td>` : ''}
-                    <td class="speed-cell"><span class="cell-tag ${speedTier.cls}">${speedTier.label}</span>${speedSub ? '<span class="cell-sub">' + speedSub + '</span>' : ''}</td>
+                    <td class="speed-cell"><span class="cell-tag ${speedTier.cls}">${speedTier.label}</span>${speedSub !== '—' ? '<span class="cell-sub">' + speedSub + '</span>' : ''}</td>
                     ${isSelfHostView
                         ? `<td class="metric-cell">${model.specs?.parameters || '—'}</td>
                            <td class="metric-cell">${model.specs?.minVram || '—'}</td>`

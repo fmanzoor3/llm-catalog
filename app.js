@@ -87,18 +87,25 @@ function getCostTier(model) {
     return { label: '$$$', cls: 'cost-high' };
 }
 
-function getSpeedTier(model) {
+function getTotalResponseTime(model) {
     var tps = model.outputTokensPerSec;
-    if (!tps) return { label: '—', cls: '' };
-    if (tps >= 200) return { label: 'Fast', cls: 'speed-fast' };
-    if (tps >= 80) return { label: 'Medium', cls: 'speed-med' };
+    if (!tps) return null;
+    return (model.ttft || 0) + (100 / tps);
+}
+
+function getSpeedTier(model) {
+    var totalTime = getTotalResponseTime(model);
+    if (totalTime === null) return { label: '—', cls: '' };
+    if (totalTime <= 2) return { label: 'Fast', cls: 'speed-fast' };
+    if (totalTime <= 5) return { label: 'Medium', cls: 'speed-med' };
     return { label: 'Slower', cls: 'speed-slow' };
 }
 
 function formatSpeed(model) {
-    var tps = model.outputTokensPerSec;
-    if (!tps) return '—';
-    return tps + ' tok/s';
+    var totalTime = getTotalResponseTime(model);
+    if (totalTime === null) return '—';
+    if (totalTime >= 10) return '~' + Math.round(totalTime) + 's';
+    return '~' + totalTime.toFixed(1) + 's';
 }
 
 // ===== DEPLOYMENT HELPERS =====
@@ -146,10 +153,10 @@ function normalizeContextWindow(tokens) {
 }
 
 function getSpeedProxy(model) {
-    var tps = model.outputTokensPerSec;
-    if (!tps) return null; // missing data should not contribute
-    // 30 tok/s -> ~35, 80 tok/s -> ~52, 150 tok/s -> ~70, 300+ tok/s -> ~97
-    return Math.min(100, Math.round(30 + (tps / 450) * 70));
+    var totalTime = getTotalResponseTime(model);
+    if (totalTime === null) return null; // missing data should not contribute
+    // 0.5s -> ~97, 2s -> ~87, 5s -> ~68, 20s -> ~30, 60s+ -> ~5
+    return Math.max(5, Math.min(100, Math.round(100 - totalTime * 1.5)));
 }
 
 function getMetricValue(model, metricKey) {
@@ -472,7 +479,8 @@ function openModelModal(modelId) {
     const specs = [
         { label: 'Context Window', value: formatTokenCount(model.contextWindow) },
         { label: 'Max Output', value: model.maxOutputTokens ? formatTokenCount(model.maxOutputTokens) : 'N/A' },
-        { label: 'Speed', value: model.outputTokensPerSec ? model.outputTokensPerSec + ' tok/s' : 'N/A' },
+        { label: 'Response Time', value: formatSpeed(model) !== '—' ? formatSpeed(model) + ' (100 tokens)' : 'N/A' },
+        { label: 'Output Speed', value: model.outputTokensPerSec ? model.outputTokensPerSec + ' tok/s' : 'N/A' },
     ];
     // Pricing
     if (model.pricing?.inputPerMillion != null) {
