@@ -60,7 +60,11 @@ function getProviderLogo(providerId, size) {
         alibaba: 'logos/alibaba.png',
         mistral: 'logos/mistral.png',
         amazon: 'logos/amazon-nova.png',
-        xiaomi: 'logos/xiaomi.svg'
+        xiaomi: 'logos/xiaomi.svg',
+        zhipu: 'logos/Z.ai_(company_logo).svg.png',
+        cohere: 'logos/cohere.png',
+        minimax: 'logos/minimax_small.svg',
+        microsoft: 'logos/microsoft_small.svg'
     };
     if (coverLogos[providerId]) {
         return '<img src="'+coverLogos[providerId]+'" alt="'+getProviderName(providerId)+'" width="'+s+'" height="'+s+'" class="provider-logo-img">';

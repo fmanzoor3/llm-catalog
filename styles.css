@@ -1423,18 +1423,18 @@ a:hover { color: var(--accent-hover); }
 .bg-google { background: linear-gradient(135deg, #4285F4, #2563EB); }
 .bg-meta { background: linear-gradient(135deg, #1877F2, #0E5FCB); }
 .bg-mistral { background: #FFF8F0; border: 2px solid #F97316; }
-.bg-cohere { background: linear-gradient(135deg, #39A275, #2D8A63); }
+.bg-cohere { background: #FFFFFF; border: 2px solid #39A275; }
 .bg-amazon { background: #FFFFFF; }
 .bg-deepseek { background: linear-gradient(135deg, #6C5CE7, #5A4BD1); }
 .bg-xai { background: linear-gradient(135deg, #3D3D5C, #1A1A2E); }
 .bg-alibaba { background: linear-gradient(135deg, #7C3AED, #5B21B6); }
-.bg-microsoft { background: linear-gradient(135deg, #00BCF2, #0095D9); }
+.bg-microsoft { background: #FFFFFF; border: 2px solid #00A4EF; }
 .bg-nvidia { background: linear-gradient(135deg, #76B900, #5E9A00); }
 .bg-moonshot { background: linear-gradient(135deg, #6366f1, #4f46e5); }
 .bg-opensource { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
 .bg-xiaomi { background: linear-gradient(135deg, #FF6900, #E05E00); }
-.bg-zhipu { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
-.bg-minimax { background: linear-gradient(135deg, #EC4899, #DB2777); }
+.bg-zhipu { background: #FFFFFF; border: 2px solid #3D3D3D; }
+.bg-minimax { background: #FFFFFF; border: 2px solid #E2167E; }
 
 /* Score bars */
 .score-bar { height: 20px; background: var(--border); border-radius: 10px; position: relative; overflow: hidden; margin-bottom: 4px; }
