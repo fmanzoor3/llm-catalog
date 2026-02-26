@@ -407,10 +407,25 @@
                 ${benchHeaders}
             </tr></thead><tbody>`;
 
+            // Compute competition ranks (tied scores share same rank: 1,1,3,4,4,6...)
+            const getSortScore = (r) => {
+                if (currentOptimize === 'fast') return r.speedAdjustedScore;
+                if (currentOptimize === 'context') return r.contextAdjustedScore;
+                if (currentOptimize === 'low-cost') return r.valueScore;
+                if (currentOptimize === 'balanced') return r.overallScore;
+                return r.capabilityScore;
+            };
+            const ranks = [];
+            ranked.forEach((r, i) => {
+                if (i === 0) { ranks.push(1); }
+                else if (getSortScore(r) === getSortScore(ranked[i - 1])) { ranks.push(ranks[i - 1]); }
+                else { ranks.push(i + 1); }
+            });
+
             html += ranked.map((r, idx) => {
                 const model = r.model;
                 const hiddenClass = idx >= initialShow ? 'hidden-rec' : '';
-                const isTop = idx === 0;
+                const isTop = ranks[idx] === 1;
                 const onPremUrl = model.deployment?.onPremUrl;
                 const onPremLabel = model.deployment?.hostedOnPrem ? ' · <span class="onprem-label">On-Prem</span>' + (onPremUrl ? ' · <a href="' + onPremUrl + '" target="_blank" class="onprem-try" onclick="event.stopPropagation()">Try it &rarr;</a>' : '') : '';
 
@@ -440,7 +455,7 @@
 
                 return `<tr class="${hiddenClass}${compareSelection.has(model.id) ? ' cmp-selected' : ''}" data-model-id="${model.id}" onclick="openModelModal('${model.id}')">
                     <td class="cmp-check-cell" onclick="event.stopPropagation()"><input type="checkbox" class="cmp-check" data-model-id="${model.id}" ${compareSelection.has(model.id) ? 'checked' : ''} ${!compareSelection.has(model.id) && compareSelection.size >= 3 ? 'disabled' : ''}></td>
-                    <td class="rank-cell ${isTop ? 'top' : ''}">${idx + 1}</td>
+                    <td class="rank-cell ${isTop ? 'top' : ''}">${ranks[idx]}</td>
                     <td class="model-cell">${model.name}${isTop ? '<span class="badge badge-default">TOP PICK</span>' : ''}
                         <div class="provider-sub">${getProviderName(model.provider)}${onPremLabel}</div></td>
                     ${isAllView ? `<td class="hosting-cell">${hostingTag}</td>` : ''}

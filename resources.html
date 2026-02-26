@@ -94,6 +94,7 @@
                     <span class="res-expand-chevron">&#9660;</span>
                 </div>
                 <div class="res-expand-body">
+                    <p class="res-scoring-intro" style="margin-bottom:16px;"><strong>Used in scoring</strong> &mdash; these benchmarks directly contribute to use case scores.</p>
                     <div class="res-bench-grid">
                         <div class="res-bench-card">
                             <h4>SWE-bench Verified</h4>
@@ -101,14 +102,24 @@
                             <a href="https://www.swebench.com/" target="_blank" rel="noopener">swebench.com &#8599;</a>
                         </div>
                         <div class="res-bench-card">
+                            <h4>LiveCodeBench</h4>
+                            <p>Fresh coding problems rotated regularly so models can't memorize answers. Tests real-world code generation ability resistant to data contamination.</p>
+                            <a href="https://livecodebench.github.io/" target="_blank" rel="noopener">livecodebench.github.io &#8599;</a>
+                        </div>
+                        <div class="res-bench-card">
                             <h4>GPQA Diamond</h4>
                             <p>PhD-level science questions in biology, physics, and chemistry. Designed to be hard even for domain experts. Score is % correct.</p>
                             <a href="https://arxiv.org/abs/2311.12022" target="_blank" rel="noopener">Research paper &#8599;</a>
                         </div>
                         <div class="res-bench-card">
-                            <h4>AIME 2024</h4>
-                            <p>Problems from the American Invitational Mathematics Examination. Tests advanced math reasoning &mdash; algebra, geometry, number theory, combinatorics.</p>
-                            <a href="https://artofproblemsolving.com/wiki/index.php/2024_AIME_I" target="_blank" rel="noopener">Problem set &#8599;</a>
+                            <h4>IFEval</h4>
+                            <p>Instruction Following Evaluation. Tests how precisely the model follows specific formatting and structural constraints like "write exactly 3 paragraphs" or "respond in JSON".</p>
+                            <a href="https://arxiv.org/abs/2311.07911" target="_blank" rel="noopener">Research paper &#8599;</a>
+                        </div>
+                        <div class="res-bench-card">
+                            <h4>MMLU-Pro</h4>
+                            <p>Harder version of MMLU with 10 answer choices instead of 4, covering 57 subjects. Requires deeper knowledge and resists lucky guessing.</p>
+                            <a href="https://arxiv.org/abs/2406.01574" target="_blank" rel="noopener">Research paper &#8599;</a>
                         </div>
                         <div class="res-bench-card">
                             <h4>Aider Polyglot</h4>
@@ -116,22 +127,25 @@
                             <a href="https://aider.chat/docs/leaderboards/" target="_blank" rel="noopener">Leaderboard &#8599;</a>
                         </div>
                         <div class="res-bench-card">
-                            <h4>MATH-500</h4>
-                            <p>500 math problems spanning algebra, geometry, number theory, and calculus. A broad test of mathematical problem-solving ability.</p>
-                        </div>
-                        <div class="res-bench-card">
                             <h4>MMMLU</h4>
                             <p>Massive Multilingual Language Understanding. Tests knowledge and reasoning across 50+ languages and many academic subjects.</p>
+                        </div>
+                    </div>
+                    <p class="res-scoring-intro" style="margin-top:24px;margin-bottom:16px;"><strong>Additional benchmarks</strong> &mdash; displayed in model profiles but not currently used in scoring.</p>
+                    <div class="res-bench-grid">
+                        <div class="res-bench-card">
+                            <h4>AIME 2024</h4>
+                            <p>Problems from the American Invitational Mathematics Examination. Tests advanced math reasoning &mdash; algebra, geometry, number theory, combinatorics.</p>
+                            <a href="https://artofproblemsolving.com/wiki/index.php/2024_AIME_I" target="_blank" rel="noopener">Problem set &#8599;</a>
+                        </div>
+                        <div class="res-bench-card">
+                            <h4>MATH-500</h4>
+                            <p>500 math problems spanning algebra, geometry, number theory, and calculus. A broad test of mathematical problem-solving ability.</p>
                         </div>
                         <div class="res-bench-card">
                             <h4>ARC-AGI-1</h4>
                             <p>Abstract reasoning puzzles testing fluid intelligence. Novel visual patterns that can't be solved by memorization alone.</p>
                             <a href="https://arcprize.org/" target="_blank" rel="noopener">arcprize.org &#8599;</a>
-                        </div>
-                        <div class="res-bench-card">
-                            <h4>Chatbot Arena ELO</h4>
-                            <p>Crowd-sourced ratings from blind pairwise human evaluations. Separate scores for overall, coding, math, creative writing, instruction following, and longer queries.</p>
-                            <a href="https://lmarena.ai/" target="_blank" rel="noopener">LM Arena &#8599;</a>
                         </div>
                     </div>
                 </div>
@@ -156,8 +170,41 @@
                         These pairwise comparisons are aggregated into Elo ratings (the same system used in chess) using a statistical model called Bradley&ndash;Terry that controls for response style and length bias. With over 3.5 million votes, Arena Elo scores are a strong signal for real-world quality &mdash; especially for subjective tasks like creative writing, chatbots, and instruction following where automated benchmarks fall short.
                     </p>
                     <p class="res-scoring-intro" style="margin-top:12px;">
-                        We incorporate Arena scores alongside traditional benchmarks because they capture dimensions that automated tests miss: helpfulness, coherence, tone, and the ability to follow nuanced instructions. Our scoring weights Arena metrics for use cases where human judgement matters most.
+                        We incorporate Arena scores alongside traditional benchmarks because they capture dimensions that automated tests miss: helpfulness, coherence, tone, and the ability to follow nuanced instructions. Each use case uses the most relevant Arena sub-category rather than just the overall score.
                     </p>
+                    <p class="res-scoring-intro" style="margin-top:16px;margin-bottom:12px;"><strong>Arena categories we use in scoring:</strong></p>
+                    <div class="res-bench-grid">
+                        <div class="res-bench-card">
+                            <h4>Arena Overall</h4>
+                            <p>The general-purpose Elo rating across all prompt types. Captures broad conversational quality and is used as a baseline signal across most use cases.</p>
+                            <a href="https://lmarena.ai/" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                        </div>
+                        <div class="res-bench-card">
+                            <h4>Arena Coding</h4>
+                            <p>Elo rating from code-related prompts only &mdash; generation, debugging, refactoring. Used in our Coding and Data Extraction scores.</p>
+                            <a href="https://lmarena.ai/leaderboard/text/coding" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                        </div>
+                        <div class="res-bench-card">
+                            <h4>Arena Math</h4>
+                            <p>Elo rating from mathematical and quantitative prompts. Captures real-world problem solving that structured benchmarks like AIME can miss. Drives our Reasoning score.</p>
+                            <a href="https://lmarena.ai/leaderboard/text/math" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                        </div>
+                        <div class="res-bench-card">
+                            <h4>Arena Creative Writing</h4>
+                            <p>Elo rating from creative and expressive writing prompts &mdash; stories, essays, marketing copy. The primary signal for our Content Writing score.</p>
+                            <a href="https://lmarena.ai/leaderboard/text/creative_writing" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                        </div>
+                        <div class="res-bench-card">
+                            <h4>Arena Instruction Following</h4>
+                            <p>Elo rating for prompts with specific constraints &mdash; format requirements, multi-step instructions, style guidelines. Used in Chatbot, Extraction, and Translation scores.</p>
+                            <a href="https://lmarena.ai/leaderboard/text/instruction_following" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                        </div>
+                        <div class="res-bench-card">
+                            <h4>Arena Longer Query</h4>
+                            <p>Elo rating for handling long, detailed prompts. Tests the model's ability to process complex context &mdash; the key community signal for our Document Analysis score.</p>
+                            <a href="https://lmarena.ai/leaderboard/text/longer_query" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -265,6 +312,9 @@
             'benchmarks.gpqaDiamond': 'GPQA Diamond',
             'benchmarks.aime2024': 'AIME 2024',
             'benchmarks.aiderPolyglot': 'Aider Polyglot',
+            'benchmarks.liveCodeBench': 'LiveCodeBench',
+            'benchmarks.ifEval': 'IFEval',
+            'benchmarks.mmluPro': 'MMLU-Pro',
             'benchmarks.math500': 'MATH-500',
             'benchmarks.mmmlu': 'MMMLU',
             'benchmarks.bigLawBench': 'BigLaw Bench',
