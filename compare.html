@@ -255,17 +255,19 @@
             if (e.key === 'Escape' && searchOpen) closeSearch();
         });
 
-        // Helper: find best index (only highlights when 2+ models)
+        // Helper: find all best indices (highlights ties when 2+ models)
         function getBestIndex(values, mode) {
-            if (values.length < 2) return -1;
-            let bestIdx = -1;
+            if (values.length < 2) return [];
             let bestVal = mode === 'lowest' ? Infinity : -Infinity;
             values.forEach((v, i) => {
                 if (v === null || v === undefined) return;
-                if (mode === 'lowest' && v < bestVal) { bestVal = v; bestIdx = i; }
-                if (mode === 'highest' && v > bestVal) { bestVal = v; bestIdx = i; }
+                if (mode === 'lowest' && v < bestVal) { bestVal = v; }
+                if (mode === 'highest' && v > bestVal) { bestVal = v; }
             });
-            return bestIdx;
+            if (bestVal === Infinity || bestVal === -Infinity) return [];
+            const indices = [];
+            values.forEach((v, i) => { if (v === bestVal) indices.push(i); });
+            return indices;
         }
 
         // Helper: render bar
@@ -364,7 +366,7 @@
             html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how expensive the model is to run. Based on direct API pricing; platform rates may differ.">Cost Tier</div>`;
             mods.forEach((m, i) => {
                 const costClass = m.costTier === 'self-hosted' ? 'self' : m.costTier;
-                html += `<div class="cmp-value${i === bestCost ? ' cmp-best' : ''}"><span class="cost-badge cost-${costClass}" style="font-size:0.7rem;padding:2px 6px;">${getCostLabel(m.costTier)}</span></div>`;
+                html += `<div class="cmp-value${bestCost.includes(i) ? ' cmp-best' : ''}"><span class="cost-badge cost-${costClass}" style="font-size:0.7rem;padding:2px 6px;">${getCostLabel(m.costTier)}</span></div>`;
             });
 
             // Context Window
@@ -372,7 +374,7 @@
             const bestCtx = getBestIndex(ctxValues, 'highest');
             html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how much text the model can process at once — longer documents and conversations need a larger window.">Context Window</div>`;
             mods.forEach((m, i) => {
-                html += `<div class="cmp-value${i === bestCtx ? ' cmp-best' : ''}">${formatTokenCount(m.contextWindow)}</div>`;
+                html += `<div class="cmp-value${bestCtx.includes(i) ? ' cmp-best' : ''}">${formatTokenCount(m.contextWindow)}</div>`;
             });
 
             // Max Output
@@ -380,41 +382,7 @@
             const bestOut = getBestIndex(outValues, 'highest');
             html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how much the model can write in one response. Matters for long code files or detailed reports.">Max Output</div>`;
             mods.forEach((m, i) => {
-                html += `<div class="cmp-value${i === bestOut ? ' cmp-best' : ''}">${m.maxOutputTokens ? formatTokenCount(m.maxOutputTokens) : '—'}</div>`;
-            });
-
-            // Speed (Total Response Time)
-            const totalTimeValues = mods.map(m => {
-                var tps = m.outputTokensPerSec;
-                return tps ? (m.ttft || 0) + (100 / tps) : 9999;
-            });
-            const bestSpeed = getBestIndex(totalTimeValues, 'lowest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Estimated time to receive a 100-token response, combining startup latency and output speed. Lower is better. Source: Artificial Analysis.">Response Time</div>`;
-            mods.forEach((m, i) => {
-                const tier = getSpeedTier(m);
-                html += `<div class="cmp-value${i === bestSpeed ? ' cmp-best' : ''}">${formatSpeed(m)}${tier.label !== '—' ? ' <span style="font-size:0.7rem;opacity:0.7;">(' + tier.label + ')</span>' : ''}</div>`;
-            });
-
-            // Output Speed (tok/s)
-            const tpsValues = mods.map(m => m.outputTokensPerSec || 0);
-            const bestTps = getBestIndex(tpsValues, 'highest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Output tokens generated per second once the model starts responding. Higher means faster streaming for long outputs.">Output Speed</div>`;
-            mods.forEach((m, i) => {
-                html += `<div class="cmp-value${i === bestTps ? ' cmp-best' : ''}">${m.outputTokensPerSec ? m.outputTokensPerSec + ' tok/s' : '—'}</div>`;
-            });
-
-            // TTFT (Time to First Token)
-            const ttftValues = mods.map(m => m.ttft || 0);
-            const bestTtft = getBestIndex(ttftValues.map(v => v || 9999), 'lowest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Time to First Token — how quickly the model starts responding after you send a request. For reasoning models, this includes thinking time. Source: Artificial Analysis.">Latency (TTFT)</div>`;
-            mods.forEach((m, i) => {
-                if (m.ttft) {
-                    const label = m.ttft >= 10 ? m.ttft.toFixed(1) + 's' : m.ttft.toFixed(2) + 's';
-                    const note = m.ttft >= 5 ? ' <span style="font-size:0.7rem;opacity:0.7;">(incl. thinking)</span>' : '';
-                    html += `<div class="cmp-value${i === bestTtft ? ' cmp-best' : ''}">${label}${note}</div>`;
-                } else {
-                    html += `<div class="cmp-value">—</div>`;
-                }
+                html += `<div class="cmp-value${bestOut.includes(i) ? ' cmp-best' : ''}">${m.maxOutputTokens ? formatTokenCount(m.maxOutputTokens) : '—'}</div>`;
             });
 
             // Released
@@ -438,6 +406,43 @@
                 html += `<div class="cmp-value">${m.specs?.supportsFunctionCalling ? 'Yes' : 'No'}</div>`;
             });
 
+            // === Speed ===
+            html += `<div class="cmp-section-header">Speed</div>`;
+
+            // Response Time (Total)
+            const totalTimeValues = mods.map(m => {
+                var tps = m.outputTokensPerSec;
+                return tps ? (m.ttft || 0) + (100 / tps) : 9999;
+            });
+            const bestSpeed = getBestIndex(totalTimeValues, 'lowest');
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Combines Latency (TTFT) and Output Speed into a single metric — the estimated time to receive a 100-token response.">Response Time</div>`;
+            mods.forEach((m, i) => {
+                const tier = getSpeedTier(m);
+                html += `<div class="cmp-value${bestSpeed.includes(i) ? ' cmp-best' : ''}">${formatSpeed(m)}${tier.label !== '—' ? ' <span style="font-size:0.7rem;opacity:0.7;">(' + tier.label + ')</span>' : ''}</div>`;
+            });
+
+            // Latency (TTFT)
+            const ttftValues = mods.map(m => m.ttft || 0);
+            const bestTtft = getBestIndex(ttftValues.map(v => v || 9999), 'lowest');
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Time to First Token — how long before the model starts responding. For reasoning models, this includes thinking time.">Latency (TTFT)</div>`;
+            mods.forEach((m, i) => {
+                if (m.ttft) {
+                    const label = m.ttft >= 10 ? m.ttft.toFixed(1) + 's' : m.ttft.toFixed(2) + 's';
+                    const note = m.ttft >= 5 ? ' <span style="font-size:0.7rem;opacity:0.7;">(incl. thinking)</span>' : '';
+                    html += `<div class="cmp-value${bestTtft.includes(i) ? ' cmp-best' : ''}">${label}${note}</div>`;
+                } else {
+                    html += `<div class="cmp-value">—</div>`;
+                }
+            });
+
+            // Output Speed (tok/s)
+            const tpsValues = mods.map(m => m.outputTokensPerSec || 0);
+            const bestTps = getBestIndex(tpsValues, 'highest');
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="Tokens generated per second once the model starts responding. Higher means faster streaming.">Output Speed</div>`;
+            mods.forEach((m, i) => {
+                html += `<div class="cmp-value${bestTps.includes(i) ? ' cmp-best' : ''}">${m.outputTokensPerSec ? m.outputTokensPerSec + ' tok/s' : '—'}</div>`;
+            });
+
             // === Pricing ===
             html += `<div class="cmp-section-header">Pricing</div>`;
 
@@ -449,13 +454,13 @@
             html += `<div class="cmp-label cmp-tip" data-tip-desc="What you pay for the text you send. 1M tokens ≈ 750k words.">Input / 1M tokens</div>`;
             mods.forEach((m, i) => {
                 const v = m.pricing?.inputPerMillion;
-                html += `<div class="cmp-value${i === bestInput ? ' cmp-best' : ''}">${v != null ? '$' + v.toFixed(2) : 'Self-hosted'}</div>`;
+                html += `<div class="cmp-value${bestInput.includes(i) ? ' cmp-best' : ''}">${v != null ? '$' + v.toFixed(2) : 'Self-hosted'}</div>`;
             });
 
             html += `<div class="cmp-label cmp-tip" data-tip-desc="What you pay for the text the model writes back. Usually 2–4x more than input.">Output / 1M tokens</div>`;
             mods.forEach((m, i) => {
                 const v = m.pricing?.outputPerMillion;
-                html += `<div class="cmp-value${i === bestOutput ? ' cmp-best' : ''}">${v != null ? '$' + v.toFixed(2) : 'Self-hosted'}</div>`;
+                html += `<div class="cmp-value${bestOutput.includes(i) ? ' cmp-best' : ''}">${v != null ? '$' + v.toFixed(2) : 'Self-hosted'}</div>`;
             });
 
             // === Benchmarks ===
@@ -469,7 +474,7 @@
                 html += `<div class="cmp-label cmp-tip" data-tip-desc="${(bm.desc || '').replace(/"/g, '&quot;')}">${bm.label}</div>`;
                 mods.forEach((m, i) => {
                     const v = values[i];
-                    const isBest = i === bestIdx;
+                    const isBest = bestIdx.includes(i);
                     if (v === null) {
                         html += `<div class="cmp-value"><span style="color:var(--text-muted);">—</span></div>`;
                     } else {
@@ -493,7 +498,7 @@
                 html += `<div class="cmp-label cmp-tip" data-tip-desc="${(bm.desc || '').replace(/"/g, '&quot;')}">${bm.label.replace('Arena ', '')}</div>`;
                 mods.forEach((m, i) => {
                     const v = values[i];
-                    const isBest = i === bestIdx;
+                    const isBest = bestIdx.includes(i);
                     if (v === null) {
                         html += `<div class="cmp-value"><span style="color:var(--text-muted);">—</span></div>`;
                     } else {
@@ -527,7 +532,7 @@
 
                 html += `<div class="cmp-label cmp-tip" data-tip-desc="${ucDesc.replace(/"/g, '&quot;')}">${config.name}</div>`;
                 mods.forEach((m, i) => {
-                    const isBest = i === bestIdx;
+                    const isBest = bestIdx.includes(i);
                     html += `<div class="cmp-value${isBest ? ' cmp-best' : ''}">
                         ${renderBar(scores[i], 100, isBest)}
                         <span class="cmp-bar-value">${scores[i]}<span style="opacity:0.5;font-weight:400;">/100</span></span>
