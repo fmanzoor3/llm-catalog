@@ -398,7 +398,7 @@
                 <th class="cmp-check-col"></th>
                 <th>Rank</th><th>Model</th>
                 ${isAllView ? `<th class="th-tip" data-tip-title="Availability" data-tip-desc="How you can access this model: open source (self-hostable), cloud API only, or both.">Availability</th>` : ''}
-                <th class="th-tip" data-tip-title="Speed" data-tip-desc="Estimated time to receive a 100-token response, combining startup latency and output speed. Reasoning models are slower because they &quot;think&quot; before answering. See the Compare page for a detailed breakdown. Source: Artificial Analysis.">Speed</th>
+                <th class="th-tip" data-tip-title="Response Time" data-tip-desc="How long until you get a short reply (~100 tokens). Reasoning models are slower because they think before answering.">Response</th>
                 ${isSelfHostView
                     ? `<th class="th-tip" data-tip-title="Parameters" data-tip-desc="Total model parameters and active parameters per forward pass for MoE models.">Params</th>
                        <th class="th-tip" data-tip-title="Min VRAM" data-tip-desc="Minimum GPU memory required for FP16 inference. INT4/INT8 quantization can reduce this by 2-4x.">VRAM</th>`
