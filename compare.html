@@ -595,7 +595,14 @@
         function renderAwards() {
             const awardsEl = document.getElementById('cmp-awards');
             const picks = [
-                { label: 'Best Overall', finder: () => rankModelsForUseCase('coding', 'best')[0]?.model },
+                { label: 'Best Overall', finder: () => {
+                    const useCases = Object.keys(modelData.scoringConfig);
+                    const avg = models.map(m => {
+                        const total = useCases.reduce((s, uc) => s + computeCapabilityScore(m, uc).score, 0);
+                        return { model: m, avg: total / useCases.length };
+                    });
+                    return avg.sort((a, b) => b.avg - a.avg)[0]?.model;
+                }},
                 { label: 'Best for Coding', finder: () => rankModelsForUseCase('coding', 'capability')[0]?.model },
                 { label: 'Best Reasoning', finder: () => rankModelsForUseCase('reasoning', 'capability')[0]?.model },
                 { label: 'Best Value', finder: () => rankModelsForUseCase('coding', 'cost')[0]?.model },
