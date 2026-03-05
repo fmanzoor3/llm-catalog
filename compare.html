@@ -14,7 +14,7 @@
         <div class="nav-container">
             <a href="index.html" class="nav-brand">
                 <svg class="brand-icon" viewBox="0 0 32 32" width="28" height="28">
-                    <rect width="32" height="32" rx="8" fill="#e8853b"/>
+                    <rect width="32" height="32" rx="8" fill="#f8bb2c"/>
                     <path d="M16 9 L16 24" stroke="white" stroke-width="1.5" opacity="0.5"/>
                     <path d="M16 10 Q12 8 8 10 L8 22 Q12 20 16 22" fill="white" opacity="0.85"/>
                     <path d="M16 10 Q20 8 24 10 L24 22 Q20 20 16 22" fill="white" opacity="0.6"/>
@@ -114,7 +114,7 @@
     <footer class="site-footer">
         <div class="container footer-inner">
             <div class="footer-brand">
-                <svg viewBox="0 0 32 32" width="20" height="20"><rect width="32" height="32" rx="8" fill="#e8853b"/><path d="M16 9 L16 24" stroke="white" stroke-width="1.5" opacity="0.5"/><path d="M16 10 Q12 8 8 10 L8 22 Q12 20 16 22" fill="white" opacity="0.85"/><path d="M16 10 Q20 8 24 10 L24 22 Q20 20 16 22" fill="white" opacity="0.6"/><path d="M22 7 L22.6 8.8 L24.4 9.4 L22.6 10 L22 11.8 L21.4 10 L19.6 9.4 L21.4 8.8 Z" fill="white"/></svg>
+                <svg viewBox="0 0 32 32" width="20" height="20"><rect width="32" height="32" rx="8" fill="#f8bb2c"/><path d="M16 9 L16 24" stroke="white" stroke-width="1.5" opacity="0.5"/><path d="M16 10 Q12 8 8 10 L8 22 Q12 20 16 22" fill="white" opacity="0.85"/><path d="M16 10 Q20 8 24 10 L24 22 Q20 20 16 22" fill="white" opacity="0.6"/><path d="M22 7 L22.6 8.8 L24.4 9.4 L22.6 10 L22 11.8 L21.4 10 L19.6 9.4 L21.4 8.8 Z" fill="white"/></svg>
                 <span>LLM Catalog</span>
             </div>
             <div class="footer-links">
@@ -522,7 +522,7 @@
                 translation: 'Reflects ability to translate and work across multiple languages.',
                 vision: 'Reflects ability to understand and analyze images. Only applies to multimodal models.'
             };
-            html += `<div class="cmp-section-header">Use Case Scores <span class="cmp-section-info">Composite 0–100 scores based on weighted benchmarks and community ratings. <a href="resources.html" style="color:var(--accent);">Learn more</a></span></div>`;
+            html += `<div class="cmp-section-header">Use Case Scores <span class="cmp-section-info">Composite 0–100 scores based on weighted benchmarks and community ratings. <a href="resources.html" style="color:var(--accent-text);">Learn more</a></span></div>`;
             useCaseKeys.forEach(uc => {
                 const config = modelData.scoringConfig[uc];
                 if (!config) return;

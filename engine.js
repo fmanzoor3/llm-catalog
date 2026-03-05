@@ -21,7 +21,7 @@ function populateComparisonTable() {
 
     function buildDetailContent(priority) {
         const details = categoryDetails[priority];
-        if (!details) return '<p style="color:#888">No detailed information available for this category.</p>';
+        if (!details) return '<p style="color:var(--text-muted)">No detailed information available for this category.</p>';
 
         let html = '<div class="detail-content">';
         html += '<div class="detail-header">';
@@ -342,15 +342,15 @@ function populateComparisonTable() {
         if (effectivePriority === 'best') {
             legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot overall"></span> <strong>Overall</strong> = quality + cost efficiency combined</span>' +
                 '<span class="legend-item"><span class="legend-dot efficiency"></span> <strong>Cost Efficiency</strong> = quality relative to price</span>' +
-                '<span style="color:#666;font-size:0.75rem;">Scores 0\u2013100, based on benchmarks and human preference rankings for ' + ucName + '</span>';
+                '<span style="color:var(--text-muted);font-size:0.75rem;">Scores 0\u2013100, based on benchmarks and human preference rankings for ' + ucName + '</span>';
         } else if (effectivePriority === 'cost') {
             legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot efficiency"></span> <strong>Cost Efficiency</strong> = quality you get per dollar spent</span>' +
                 '<span class="legend-item"><span class="legend-dot quality"></span> <strong>Quality</strong> = benchmark performance for ' + ucName + '</span>' +
-                '<span style="color:#666;font-size:0.75rem;">Sorted by cost efficiency</span>';
+                '<span style="color:var(--text-muted);font-size:0.75rem;">Sorted by cost efficiency</span>';
         } else {
             legendEl.innerHTML = '<span class="legend-item"><span class="legend-dot quality"></span> <strong>Quality</strong> = benchmark performance for ' + ucName + '</span>' +
                 '<span class="legend-item"><span class="legend-dot efficiency"></span> <strong>Cost Efficiency</strong> = quality relative to price</span>' +
-                '<span style="color:#666;font-size:0.75rem;">Sorted by quality</span>';
+                '<span style="color:var(--text-muted);font-size:0.75rem;">Sorted by quality</span>';
         }
 
         var initialShow = 10;
@@ -449,18 +449,18 @@ function populateComparisonTable() {
             pricingEl.innerHTML =
                 '<div class="pricing-item"><div class="pricing-label">Input / 1M tokens</div><div class="pricing-value">$' + model.pricing.inputPerMillion.toFixed(2) + '</div></div>' +
                 '<div class="pricing-item"><div class="pricing-label">Output / 1M tokens</div><div class="pricing-value">$' + model.pricing.outputPerMillion.toFixed(2) + '</div></div>' +
-                (model.pricing.notes ? '<div class="pricing-item"><div class="pricing-label">Note</div><div style="color:#aaa;font-size:0.85rem">' + model.pricing.notes + '</div></div>' : '');
+                (model.pricing.notes ? '<div class="pricing-item"><div class="pricing-label">Note</div><div style="color:var(--text-muted);font-size:0.85rem">' + model.pricing.notes + '</div></div>' : '');
             document.getElementById('modalPricingSection').style.display = '';
         } else {
-            pricingEl.innerHTML = '<div class="pricing-item"><div class="pricing-value" style="color:#aaa;font-size:0.95rem">Self-hosted - cost depends on your infrastructure</div></div>';
+            pricingEl.innerHTML = '<div class="pricing-item"><div class="pricing-value" style="color:var(--text-muted);font-size:0.95rem">Self-hosted - cost depends on your infrastructure</div></div>';
             document.getElementById('modalPricingSection').style.display = '';
         }
 
         // Strengths
-        document.getElementById('modalStrengths').innerHTML = (model.strengths || []).map(s => '<li>' + s + '</li>').join('') || '<li style="color:#888">No detailed data available</li>';
+        document.getElementById('modalStrengths').innerHTML = (model.strengths || []).map(s => '<li>' + s + '</li>').join('') || '<li style="color:var(--text-muted)">No detailed data available</li>';
 
         // Weaknesses
-        document.getElementById('modalWeaknesses').innerHTML = (model.weaknesses || []).map(w => '<li>' + w + '</li>').join('') || '<li style="color:#888">No detailed data available</li>';
+        document.getElementById('modalWeaknesses').innerHTML = (model.weaknesses || []).map(w => '<li>' + w + '</li>').join('') || '<li style="color:var(--text-muted)">No detailed data available</li>';
 
         // Use cases
         const ucEl = document.getElementById('modalUseCases');
@@ -470,7 +470,7 @@ function populateComparisonTable() {
             ).join('');
             document.getElementById('modalUseCasesSection').style.display = '';
         } else {
-            ucEl.innerHTML = '<p style="color:#888">Best for: ' + (model.bestFor || []).join(', ') + '</p>';
+            ucEl.innerHTML = '<p style="color:var(--text-muted)">Best for: ' + (model.bestFor || []).join(', ') + '</p>';
             document.getElementById('modalUseCasesSection').style.display = '';
         }
 

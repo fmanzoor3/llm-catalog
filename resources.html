@@ -14,7 +14,7 @@
         <div class="nav-container">
             <a href="index.html" class="nav-brand">
                 <svg class="brand-icon" viewBox="0 0 32 32" width="28" height="28">
-                    <rect width="32" height="32" rx="8" fill="#e8853b"/>
+                    <rect width="32" height="32" rx="8" fill="#f8bb2c"/>
                     <path d="M16 9 L16 24" stroke="white" stroke-width="1.5" opacity="0.5"/>
                     <path d="M16 10 Q12 8 8 10 L8 22 Q12 20 16 22" fill="white" opacity="0.85"/>
                     <path d="M16 10 Q20 8 24 10 L24 22 Q20 20 16 22" fill="white" opacity="0.6"/>
@@ -56,7 +56,7 @@
 
             <div class="res-expand-card" id="scoring-card">
                 <div class="res-expand-header" onclick="this.parentElement.classList.toggle('open')">
-                    <div class="resource-card-icon" style="background:rgba(232,133,59,0.12);">
+                    <div class="resource-card-icon" style="background:rgba(248,187,44,0.12);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="14" width="4" height="7" rx="1" fill="var(--accent)"/><rect x="10" y="8" width="4" height="13" rx="1" fill="var(--accent)" opacity="0.7"/><rect x="17" y="3" width="4" height="18" rx="1" fill="var(--accent)" opacity="0.4"/></svg>
                     </div>
                     <div class="res-expand-header-text">
@@ -70,7 +70,7 @@
                         Each use case gets a composite score from 0 to 100 based on a weighted blend of community ratings (Chatbot Arena Elo) and benchmarks (SWE-bench, GPQA, AIME, etc.). Each metric is normalized to a 0&ndash;100 scale using fixed bounds, then multiplied by its weight.
                     </p>
                     <p class="res-scoring-intro" style="margin-top:12px;">
-                        <strong>Why these weights?</strong> We blend two complementary signal types: <em>benchmarks</em> measure specific, reproducible skills (coding, math, science), while <em>community ratings</em> capture real-world usability that benchmarks miss (tone, helpfulness, instruction-following). Metrics that directly test the use case get the highest weight &mdash; for example, SWE-bench and Arena Coding together drive 65% of the coding score. Context window and multimodal capability are included where they meaningfully affect the task. Speed is shown separately and does not influence quality scores. For a deeper discussion of these trade-offs, see our <a href="research-scoring.html" style="color:var(--accent);">scoring research page</a>.
+                        <strong>Why these weights?</strong> We blend two complementary signal types: <em>benchmarks</em> measure specific, reproducible skills (coding, math, science), while <em>community ratings</em> capture real-world usability that benchmarks miss (tone, helpfulness, instruction-following). Metrics that directly test the use case get the highest weight &mdash; for example, SWE-bench and Arena Coding together drive 65% of the coding score. Context window and multimodal capability are included where they meaningfully affect the task. Speed is shown separately and does not influence quality scores. For a deeper discussion of these trade-offs, see our <a href="research-scoring.html" style="color:var(--accent-text);">scoring research page</a>.
                     </p>
                     <p class="res-scoring-intro" style="margin-top:12px;">
                         <strong>Missing data handling:</strong> When a model has 60% or more of the weighted metrics available, scores are rescaled so available data fills the full range. Below 60%, missing metrics contribute zero &mdash; naturally lowering the score. This means newly released models with limited evaluation data will score lower until more benchmarks and community ratings are published.
@@ -84,7 +84,7 @@
 
             <div class="res-expand-card" id="benchmark-card">
                 <div class="res-expand-header" onclick="this.parentElement.classList.toggle('open')">
-                    <div class="resource-card-icon" style="background:rgba(96,165,250,0.12);">
+                    <div class="resource-card-icon" style="background:rgba(37,99,235,0.08);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><path d="M9 3 L9 21 M15 3 L15 21 M3 9 L21 9 M3 15 L21 15" fill="none" stroke="var(--blue)" stroke-width="2" opacity="0.6"/><circle cx="12" cy="12" r="3" fill="var(--blue)"/></svg>
                     </div>
                     <div class="res-expand-header-text">
@@ -153,7 +153,7 @@
 
             <div class="res-expand-card" id="community-card">
                 <div class="res-expand-header" onclick="this.parentElement.classList.toggle('open')">
-                    <div class="resource-card-icon" style="background:rgba(52,211,153,0.12);">
+                    <div class="resource-card-icon" style="background:rgba(22,163,74,0.08);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="var(--green)" stroke-width="2"/><circle cx="9" cy="7" r="4" fill="none" stroke="var(--green)" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" fill="none" stroke="var(--green)" stroke-width="2" opacity="0.6"/><circle cx="16" cy="3" r="4" fill="none" stroke="var(--green)" stroke-width="2" opacity="0.6"/></svg>
                     </div>
                     <div class="res-expand-header-text">
@@ -212,7 +212,7 @@
             <div class="resource-section-label">Benchmark Leaderboards</div>
             <div class="resources-grid">
                 <a class="resource-card" href="https://artificialanalysis.ai/" target="_blank" rel="noopener">
-                    <div class="resource-card-icon" style="background:rgba(139,92,246,0.12);">
+                    <div class="resource-card-icon" style="background:rgba(124,58,237,0.08);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><polyline points="4,18 8,12 12,15 16,8 20,11" fill="none" stroke="#8b5cf6" stroke-width="2"/><circle cx="4" cy="18" r="2" fill="#8b5cf6" opacity="0.5"/><circle cx="20" cy="11" r="2" fill="#8b5cf6" opacity="0.5"/></svg>
                     </div>
                     <h3>Artificial Analysis</h3>
@@ -220,7 +220,7 @@
                     <span class="resource-link">Compare Models &#8599;</span>
                 </a>
                 <a class="resource-card" href="https://scale.com/leaderboard" target="_blank" rel="noopener">
-                    <div class="resource-card-icon" style="background:rgba(52,211,153,0.12);">
+                    <div class="resource-card-icon" style="background:rgba(22,163,74,0.08);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z" fill="none" stroke="var(--green)" stroke-width="2"/></svg>
                     </div>
                     <h3>Scale SEAL Leaderboards</h3>
@@ -228,7 +228,7 @@
                     <span class="resource-link">View Evaluations &#8599;</span>
                 </a>
                 <a class="resource-card" href="https://llm-stats.com/leaderboards/llm-leaderboard" target="_blank" rel="noopener">
-                    <div class="resource-card-icon" style="background:rgba(232,133,59,0.12);">
+                    <div class="resource-card-icon" style="background:rgba(248,187,44,0.12);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="14" width="4" height="7" rx="1" fill="var(--accent)"/><rect x="10" y="8" width="4" height="13" rx="1" fill="var(--accent)" opacity="0.7"/><rect x="17" y="3" width="4" height="18" rx="1" fill="var(--accent)" opacity="0.4"/></svg>
                     </div>
                     <h3>LLM Stats</h3>
@@ -236,7 +236,7 @@
                     <span class="resource-link">Browse Stats &#8599;</span>
                 </a>
                 <a class="resource-card" href="https://www.vellum.ai/llm-leaderboard" target="_blank" rel="noopener">
-                    <div class="resource-card-icon" style="background:rgba(96,165,250,0.12);">
+                    <div class="resource-card-icon" style="background:rgba(37,99,235,0.08);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 6h16M4 12h16M4 18h10" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/></svg>
                     </div>
                     <h3>Vellum LLM Leaderboard</h3>
@@ -249,7 +249,7 @@
             <div class="resource-section-label">Community Leaderboards</div>
             <div class="resources-grid">
                 <a class="resource-card" href="https://lmarena.ai/" target="_blank" rel="noopener">
-                    <div class="resource-card-icon" style="background:rgba(96,165,250,0.12);">
+                    <div class="resource-card-icon" style="background:rgba(37,99,235,0.08);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="12" width="4" height="9" rx="1" fill="var(--blue)"/><rect x="10" y="6" width="4" height="15" rx="1" fill="var(--blue)" opacity="0.7"/><rect x="17" y="2" width="4" height="19" rx="1" fill="var(--blue)" opacity="0.4"/></svg>
                     </div>
                     <h3>LM Arena (Chatbot Arena)</h3>
@@ -257,7 +257,7 @@
                     <span class="resource-link">Visit Leaderboard &#8599;</span>
                 </a>
                 <a class="resource-card" href="https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard" target="_blank" rel="noopener">
-                    <div class="resource-card-icon" style="background:rgba(232,133,59,0.12);">
+                    <div class="resource-card-icon" style="background:rgba(248,187,44,0.12);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="10" fill="none" stroke="var(--accent)" stroke-width="2"/><path d="M8 14 Q12 18 16 14" fill="none" stroke="var(--accent)" stroke-width="2"/><circle cx="9" cy="10" r="1.5" fill="var(--accent)"/><circle cx="15" cy="10" r="1.5" fill="var(--accent)"/></svg>
                     </div>
                     <h3>Open LLM Leaderboard</h3>
@@ -279,7 +279,7 @@
     <footer class="site-footer">
         <div class="container footer-inner">
             <div class="footer-brand">
-                <svg viewBox="0 0 32 32" width="20" height="20"><rect width="32" height="32" rx="8" fill="#e8853b"/><path d="M16 9 L16 24" stroke="white" stroke-width="1.5" opacity="0.5"/><path d="M16 10 Q12 8 8 10 L8 22 Q12 20 16 22" fill="white" opacity="0.85"/><path d="M16 10 Q20 8 24 10 L24 22 Q20 20 16 22" fill="white" opacity="0.6"/><path d="M22 7 L22.6 8.8 L24.4 9.4 L22.6 10 L22 11.8 L21.4 10 L19.6 9.4 L21.4 8.8 Z" fill="white"/></svg>
+                <svg viewBox="0 0 32 32" width="20" height="20"><rect width="32" height="32" rx="8" fill="#f8bb2c"/><path d="M16 9 L16 24" stroke="white" stroke-width="1.5" opacity="0.5"/><path d="M16 10 Q12 8 8 10 L8 22 Q12 20 16 22" fill="white" opacity="0.85"/><path d="M16 10 Q20 8 24 10 L24 22 Q20 20 16 22" fill="white" opacity="0.6"/><path d="M22 7 L22.6 8.8 L24.4 9.4 L22.6 10 L22 11.8 L21.4 10 L19.6 9.4 L21.4 8.8 Z" fill="white"/></svg>
                 <span>LLM Catalog</span>
             </div>
             <div class="footer-links">
