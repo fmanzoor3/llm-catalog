@@ -204,7 +204,7 @@
                     if (!matchesPlatformFilter(m, envVal)) return false;
                 }
                 if (query) {
-                    const haystack = (m.name + " " + m.description + " " + getProviderName(m.provider) + " " + (m.bestFor || []).join(" ")).toLowerCase();
+                    const haystack = (m.name + " " + ml(m, 'description') + " " + getProviderName(m.provider) + " " + (m.bestFor || []).join(" ")).toLowerCase();
                     return haystack.includes(query);
                 }
                 return true;
@@ -256,7 +256,7 @@
                 const onPremLabel = m.deployment?.hostedOnPrem ? ' · <span class="onprem-label">' + t('cell.onPrem') + '</span>' + (onPremUrl ? ' · <a href="' + onPremUrl + '" target="_blank" class="onprem-try" onclick="event.stopPropagation()">' + t('cell.tryIt') + '</a>' : '') : '';
                 const rd = m.specs?.releaseDate;
                 const dateLabel = rd ? new Date(rd).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '';
-                const strengthsHtml = (m.strengths || []).slice(0, 3).map(s => `<li>${s.split(' — ')[0]}</li>`).join("");
+                const strengthsHtml = (ml(m, 'strengths') || []).slice(0, 3).map(s => `<li>${s.split(' — ')[0]}</li>`).join("");
 
                 return `
                 <div class="catalog-card" onclick="openModelModal('${m.id}')">
@@ -270,7 +270,7 @@
                             </div>
                         </div>
                     </div>
-                    <p class="catalog-card-desc">${m.description}</p>
+                    <p class="catalog-card-desc">${ml(m, 'description')}</p>
                     <ul class="catalog-card-strengths">${strengthsHtml}</ul>
                     <div class="catalog-card-footer">
                         <a href="compare.html?models=${m.id}" class="catalog-compare-btn" onclick="event.stopPropagation();">${t('models.compare')}</a>

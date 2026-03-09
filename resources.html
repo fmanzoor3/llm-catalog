@@ -361,8 +361,8 @@
             return '<a class="resource-card" href="' + url + '" target="_blank" rel="noopener">' +
                 '<div class="provider-logo ' + getProviderClass(key) + '" style="width:42px;height:42px;margin-bottom:12px;">' + getProviderLogo(key, 42) + '</div>' +
                 '<h3>' + name + '</h3>' +
-                '<p>' + p.tagline + '</p>' +
-                '<span class="resource-link">Documentation &#8599;</span>' +
+                '<p>' + providerTagline(key) + '</p>' +
+                '<span class="resource-link">' + t('providers.docs') + ' &#8599;</span>' +
             '</a>';
         }).join("");
     });

@@ -551,13 +551,13 @@
             html += `<div class="cmp-section-header">${t('compare.strengths')}</div>`;
             html += `<div class="cmp-label"></div>`;
             mods.forEach(m => {
-                html += `<div class="cmp-value"><ul class="cmp-list cmp-strengths">${(m.strengths || []).map(s => `<li>${s}</li>`).join('')}</ul></div>`;
+                html += `<div class="cmp-value"><ul class="cmp-list cmp-strengths">${(ml(m, 'strengths') || []).map(s => `<li>${s}</li>`).join('')}</ul></div>`;
             });
 
             html += `<div class="cmp-section-header">${t('compare.weaknesses')}</div>`;
             html += `<div class="cmp-label"></div>`;
             mods.forEach(m => {
-                html += `<div class="cmp-value"><ul class="cmp-list cmp-weaknesses">${(m.weaknesses || []).map(w => `<li>${w}</li>`).join('')}</ul></div>`;
+                html += `<div class="cmp-value"><ul class="cmp-list cmp-weaknesses">${(ml(m, 'weaknesses') || []).map(w => `<li>${w}</li>`).join('')}</ul></div>`;
             });
 
             // === Deployment ===

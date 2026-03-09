@@ -14,6 +14,19 @@
 function getModelById(id) { return modelData.models.find(m => m.id === id); }
 function getProviderName(providerId) { return modelData.providers[providerId]?.displayName || providerId; }
 
+// Localized model/provider field getters
+function getLang() { return document.documentElement.getAttribute('data-lang') || 'en'; }
+function ml(model, field) {
+    if (getLang() === 'tr' && model[field + '_tr']) return model[field + '_tr'];
+    return model[field];
+}
+function providerTagline(key) {
+    var p = modelData.providers[key];
+    if (!p) return '';
+    if (getLang() === 'tr' && p.tagline_tr) return p.tagline_tr;
+    return p.tagline || '';
+}
+
 function formatTokenCount(n) {
     if (n >= 1000000) { var m = n / 1000000; return (Math.round(m * 10) / 10 === Math.round(m) ? Math.round(m) : (Math.round(m * 10) / 10)) + 'M'; }
     if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
@@ -486,7 +499,7 @@ function openModelModal(modelId) {
     costBadge.textContent = getCostLabel(model.costTier);
     costBadge.className = 'cost-badge cost-' + (model.costTier === 'self-hosted' ? 'self' : model.costTier);
 
-    document.getElementById('modalOverview').textContent = model.overview || model.description;
+    document.getElementById('modalOverview').textContent = model.overview || ml(model, 'description');
 
     // Specs — numeric first, then categorical
     const na = t('modal.na');
@@ -529,8 +542,8 @@ function openModelModal(modelId) {
     if (pricingSection) pricingSection.style.display = 'none';
 
     // Strengths & Weaknesses
-    document.getElementById('modalStrengths').innerHTML = (model.strengths || []).map(s => `<li>${s}</li>`).join('') || '<li>' + t('modal.noData') + '</li>';
-    document.getElementById('modalWeaknesses').innerHTML = (model.weaknesses || []).map(w => `<li>${w}</li>`).join('') || '<li>' + t('modal.noData') + '</li>';
+    document.getElementById('modalStrengths').innerHTML = (ml(model, 'strengths') || []).map(s => `<li>${s}</li>`).join('') || '<li>' + t('modal.noData') + '</li>';
+    document.getElementById('modalWeaknesses').innerHTML = (ml(model, 'weaknesses') || []).map(w => `<li>${w}</li>`).join('') || '<li>' + t('modal.noData') + '</li>';
 
     // Use Cases
     const ucEl = document.getElementById('modalUseCases');
