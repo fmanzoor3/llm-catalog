@@ -83,169 +83,169 @@
     <main>
         <section class="page-header">
             <div class="container">
-                <h1>Blind Community Scoring vs Benchmarks</h1>
-                <p>Which approach better represents real LLM capability? A research-backed analysis.</p>
+                <h1 data-i18n="rscore.title">Blind Community Scoring vs Benchmarks</h1>
+                <p data-i18n="rscore.subtitle">Which approach better represents real LLM capability? A research-backed analysis.</p>
             </div>
         </section>
 
         <div class="research-content">
 
             <div class="tldr">
-                <p><strong>TL;DR:</strong> Neither approach alone is sufficient. Blind community scoring (like Chatbot Arena) better captures holistic user-perceived quality, while benchmarks better measure specific technical capabilities. Both are gameable. The emerging consensus is that a multi-signal hybrid approach &mdash; combining human preference data with diverse, contamination-resistant benchmarks &mdash; is the most reliable way to evaluate LLMs.</p>
+                <p data-i18n="rscore.tldr"><strong>TL;DR:</strong> Neither approach alone is sufficient. Blind community scoring (like Chatbot Arena) better captures holistic user-perceived quality, while benchmarks better measure specific technical capabilities. Both are gameable. The emerging consensus is that a multi-signal hybrid approach &mdash; combining human preference data with diverse, contamination-resistant benchmarks &mdash; is the most reliable way to evaluate LLMs.</p>
             </div>
 
             <!-- ============================================ -->
-            <h2>1. How Blind Community Scoring Works</h2>
+            <h2 data-i18n="rscore.h2_1">1. How Blind Community Scoring Works</h2>
 
-            <p>The most prominent blind community scoring system is <strong>Chatbot Arena</strong> (now LM Arena), developed by the LMSYS team at UC Berkeley. Users submit any prompt of their choosing, receive two anonymous model responses side-by-side, and vote for which they prefer. No prompts are preset &mdash; users bring their own real-world queries.</p>
+            <p data-i18n="rscore.s1p1">The most prominent blind community scoring system is <strong>Chatbot Arena</strong> (now LM Arena), developed by the LMSYS team at UC Berkeley. Users submit any prompt of their choosing, receive two anonymous model responses side-by-side, and vote for which they prefer. No prompts are preset &mdash; users bring their own real-world queries.</p>
 
-            <p>Votes are aggregated using a <strong>Bradley-Terry model</strong> to estimate latent strength parameters for each model, presented on an Elo-like scale with uncertainty intervals. By 2024, the platform had collected over <strong>1,000,000 votes</strong> across 190+ models. Models need at least 3,000 votes before rankings are considered converged.<sup><a href="#src-1">[1]</a><a href="#src-2">[2]</a></sup></p>
+            <p data-i18n="rscore.s1p2">Votes are aggregated using a <strong>Bradley-Terry model</strong> to estimate latent strength parameters for each model, presented on an Elo-like scale with uncertainty intervals. By 2024, the platform had collected over <strong>1,000,000 votes</strong> across 190+ models. Models need at least 3,000 votes before rankings are considered converged.<sup><a href="#src-1">[1]</a><a href="#src-2">[2]</a></sup></p>
 
-            <p>Arena now spans 9 separate arenas (Text, Code, Vision, Search, Text-to-Image, Image Edit, Text-to-Video, Image-to-Video) with the Text leaderboard broken into subcategories including Coding, Math, Creative Writing, Instruction Following, and 8 occupational domains.<sup><a href="#src-3">[3]</a></sup></p>
-
-            <!-- ============================================ -->
-            <h2>2. The Case for Community Scoring</h2>
-
-            <h3>Human preference is the gold standard</h3>
-            <p>The LMSYS team frames human preference as the gold standard for LLM evaluation, noting it is "notoriously slow and expensive to collect." Their research found 72&ndash;83% agreement between crowdsourced Arena votes and expert fact-checkers &mdash; comparable to inter-annotator agreement between two human judges.<sup><a href="#src-2">[2]</a></sup></p>
-
-            <h3>Captures qualities benchmarks miss</h3>
-            <p>Users can holistically assess response quality &mdash; helpfulness, tone, factual accuracy, reasoning coherence, and instruction-following &mdash; in ways that individual benchmarks targeting narrow capabilities cannot capture. Arena-Hard-Auto, a derivative benchmark built from Arena data, achieves <strong>98.6% correlation</strong> with human preference rankings, demonstrating the signal's internal consistency.<sup><a href="#src-4">[4]</a></sup></p>
-
-            <h3>Resistant to data contamination</h3>
-            <p>Because users bring their own dynamic prompts rather than drawing from a fixed test set, community scoring is inherently resistant to the data contamination that plagues static benchmarks. A model cannot "memorize the test" when the test is whatever question a random user decides to ask.</p>
-
-            <h3>Statistically rigorous methodology</h3>
-            <p>Arena uses bootstrapped confidence intervals (1,000 permutation samples) and requires models to collect sufficient votes before rankings are published. Arena-Hard-Auto introduced three novel metrics &mdash; Separability with Confidence, Agreement with Confidence, and Pair Rank Brier &mdash; replacing traditional Spearman correlation, which the authors showed can be misleading.<sup><a href="#src-4">[4]</a><a href="#src-5">[5]</a></sup></p>
+            <p data-i18n="rscore.s1p3">Arena now spans 9 separate arenas (Text, Code, Vision, Search, Text-to-Image, Image Edit, Text-to-Video, Image-to-Video) with the Text leaderboard broken into subcategories including Coding, Math, Creative Writing, Instruction Following, and 8 occupational domains.<sup><a href="#src-3">[3]</a></sup></p>
 
             <!-- ============================================ -->
-            <h2>3. The Problems with Community Scoring</h2>
+            <h2 data-i18n="rscore.h2_2">2. The Case for Community Scoring</h2>
 
-            <h3>Warm-up period for new models</h3>
-            <p>New models require thousands of votes before rankings converge, making timely evaluation impossible. Pre-release-tested models must collect 2,000 fresh votes after public release. Benchmarks, by contrast, provide immediate results.<sup><a href="#src-6">[6]</a></sup></p>
+            <h3 data-i18n="rscore.s2h1">Human preference is the gold standard</h3>
+            <p data-i18n="rscore.s2p1">The LMSYS team frames human preference as the gold standard for LLM evaluation, noting it is "notoriously slow and expensive to collect." Their research found 72&ndash;83% agreement between crowdsourced Arena votes and expert fact-checkers &mdash; comparable to inter-annotator agreement between two human judges.<sup><a href="#src-2">[2]</a></sup></p>
 
-            <h3>Verbosity and style bias</h3>
-            <p>A well-documented bias: <strong>bulleted lists and longer responses tend to score better</strong> regardless of actual content quality. Models optimized for verbose, markdown-formatted responses gain an unfair advantage. All votes carry equal weight regardless of the margin of preference.<sup><a href="#src-7">[7]</a><a href="#src-6">[6]</a></sup></p>
+            <h3 data-i18n="rscore.s2h2">Captures qualities benchmarks miss</h3>
+            <p data-i18n="rscore.s2p2">Users can holistically assess response quality &mdash; helpfulness, tone, factual accuracy, reasoning coherence, and instruction-following &mdash; in ways that individual benchmarks targeting narrow capabilities cannot capture. Arena-Hard-Auto, a derivative benchmark built from Arena data, achieves <strong>98.6% correlation</strong> with human preference rankings, demonstrating the signal's internal consistency.<sup><a href="#src-4">[4]</a></sup></p>
 
-            <h3>Self-selection and domain bias</h3>
-            <p>Arena's user base skews toward tech-savvy early adopters, making it unlikely to represent the broader population. The data "might not accurately reflect real-world usage of LLMs in production environments or specialized domains, potentially leading to a skewed prompt distribution."<sup><a href="#src-1">[1]</a><a href="#src-7">[7]</a></sup></p>
+            <h3 data-i18n="rscore.s2h3">Resistant to data contamination</h3>
+            <p data-i18n="rscore.s2p3">Because users bring their own dynamic prompts rather than drawing from a fixed test set, community scoring is inherently resistant to the data contamination that plagues static benchmarks. A model cannot "memorize the test" when the test is whatever question a random user decides to ask.</p>
 
-            <h3>Vote manipulation is possible</h3>
-            <p>Research accepted at <strong>ICML 2025</strong> demonstrated that Arena's crowdsourced voting can be rigged. An "omnipresent rigging" strategy exploits the Elo mechanism so that <strong>any new vote on any battle can influence the ranking of any model</strong>, even one not directly involved. Just 10% poor-quality votes from apathetic or adversarial annotators can change rankings.<sup><a href="#src-8">[8]</a><a href="#src-9">[9]</a></sup></p>
-
-            <h3>The Leaderboard Illusion</h3>
-            <p>A major study found that <strong>Meta tested 27 private LLM variants</strong> on Arena before the Llama-4 release, announcing only the one that topped the leaderboard as if it were a single model. Proprietary models were sampled at higher rates and had fewer models removed compared to open-weight alternatives. This selective disclosure turns the Arena into a target to optimize &mdash; exactly the Goodhart's Law dynamic it was supposed to avoid.<sup><a href="#src-10">[10]</a><a href="#src-11">[11]</a><a href="#src-12">[12]</a></sup></p>
+            <h3 data-i18n="rscore.s2h4">Statistically rigorous methodology</h3>
+            <p data-i18n="rscore.s2p4">Arena uses bootstrapped confidence intervals (1,000 permutation samples) and requires models to collect sufficient votes before rankings are published. Arena-Hard-Auto introduced three novel metrics &mdash; Separability with Confidence, Agreement with Confidence, and Pair Rank Brier &mdash; replacing traditional Spearman correlation, which the authors showed can be misleading.<sup><a href="#src-4">[4]</a><a href="#src-5">[5]</a></sup></p>
 
             <!-- ============================================ -->
-            <h2>4. The Case for Benchmarks</h2>
+            <h2 data-i18n="rscore.h2_3">3. The Problems with Community Scoring</h2>
 
-            <h3>Objective, reproducible, and verifiable</h3>
-            <p>Benchmarks provide <strong>deterministic, repeatable measurements</strong> that can be independently verified. Stanford's HELM framework exemplifies this: measuring 7 metrics across 42 scenarios with all raw prompts and completions released publicly. This transparency is impossible with subjective crowd-voting.<sup><a href="#src-13">[13]</a></sup></p>
+            <h3 data-i18n="rscore.s3h1">Warm-up period for new models</h3>
+            <p data-i18n="rscore.s3p1">New models require thousands of votes before rankings converge, making timely evaluation impossible. Pre-release-tested models must collect 2,000 fresh votes after public release. Benchmarks, by contrast, provide immediate results.<sup><a href="#src-6">[6]</a></sup></p>
 
-            <h3>Domain-specific precision</h3>
-            <p>Benchmarks can test capabilities that crowd-voting struggles with. GPQA Diamond tests PhD-level science where even domain experts achieve only 65%. SimpleQA tests factual accuracy with single indisputable answers where even top models achieve less than 50%. Humanity's Last Exam, published in Nature, revealed that frontier models exhibit overconfidence with 80%+ calibration error paired with under 10% accuracy.<sup><a href="#src-14">[14]</a><a href="#src-15">[15]</a><a href="#src-16">[16]</a></sup></p>
+            <h3 data-i18n="rscore.s3h2">Verbosity and style bias</h3>
+            <p data-i18n="rscore.s3p2">A well-documented bias: <strong>bulleted lists and longer responses tend to score better</strong> regardless of actual content quality. Models optimized for verbose, markdown-formatted responses gain an unfair advantage. All votes carry equal weight regardless of the margin of preference.<sup><a href="#src-7">[7]</a><a href="#src-6">[6]</a></sup></p>
 
-            <h3>Immediate evaluation on release</h3>
-            <p>Benchmarks can evaluate a model the moment it launches. In a landscape where multiple major releases occur per month, this speed advantage is significant compared to waiting weeks for Arena votes to converge.</p>
+            <h3 data-i18n="rscore.s3h3">Self-selection and domain bias</h3>
+            <p data-i18n="rscore.s3p3">Arena's user base skews toward tech-savvy early adopters, making it unlikely to represent the broader population. The data "might not accurately reflect real-world usage of LLMs in production environments or specialized domains, potentially leading to a skewed prompt distribution."<sup><a href="#src-1">[1]</a><a href="#src-7">[7]</a></sup></p>
 
-            <h3>Contamination-resistant dynamic benchmarks</h3>
-            <p>The benchmark community has responded to contamination concerns with innovative designs. <strong>LiveBench</strong> releases new questions monthly from recent sources, scoring against objective ground truth &mdash; top models achieve below 70%. <strong>SWE-bench Live</strong> adds 50 newly verified issues monthly from real GitHub repos created since 2024, now spanning 1,890 tasks across 223 repositories.<sup><a href="#src-17">[17]</a><a href="#src-18">[18]</a></sup></p>
+            <h3 data-i18n="rscore.s3h4">Vote manipulation is possible</h3>
+            <p data-i18n="rscore.s3p4">Research accepted at <strong>ICML 2025</strong> demonstrated that Arena's crowdsourced voting can be rigged. An "omnipresent rigging" strategy exploits the Elo mechanism so that <strong>any new vote on any battle can influence the ranking of any model</strong>, even one not directly involved. Just 10% poor-quality votes from apathetic or adversarial annotators can change rankings.<sup><a href="#src-8">[8]</a><a href="#src-9">[9]</a></sup></p>
 
-            <!-- ============================================ -->
-            <h2>5. The Problems with Benchmarks</h2>
-
-            <h3>Data contamination is pervasive</h3>
-            <p>A systematic review of 225 papers found approximately <strong>4.7 million benchmark samples across 263 benchmarks</strong> were leaked to closed-source models. On the APPS benchmark, StarCoder-7B achieves a Pass@1 score that is 4.9x higher on leaked samples than non-leaked samples. Over 94% of SWE-bench issues were created before LLM knowledge cutoff dates.<sup><a href="#src-19">[19]</a><a href="#src-20">[20]</a></sup></p>
-
-            <h3>Benchmark saturation</h3>
-            <p>MMLU is the canonical example. Since GPT-4 achieved 86.4% in 2023, leading systems score nearly 90%, and the benchmark loses discriminative power. MMLU-Pro was created to address this &mdash; expanding to 10 answer options, removing trivial questions &mdash; and the top model drops from <strong>88.7% to 72.6%</strong>, restoring useful signal.<sup><a href="#src-21">[21]</a></sup></p>
-
-            <h3>Goodhart's Law</h3>
-            <p>"When a measure becomes a target, it ceases to be a good measure." OpenAI's own research demonstrated that optimizing an imperfect proxy reward leads to <strong>reward hacking</strong>: beyond a certain point, the true objective decreases even as the proxy continues improving. Once companies focus on beating a benchmark, the benchmark becomes misleading.<sup><a href="#src-22">[22]</a><a href="#src-23">[23]</a></sup></p>
-
-            <h3>Solution leakage in practice</h3>
-            <p>SWE-bench+ analysis found that <strong>60.83% of successfully resolved issues involved "solution leakage"</strong> where solutions were hinted at in the issue report, and 47.93% were incorrectly marked as resolved due to weak test cases. When filtering these out, resolution rates dropped from 42.1% to 21.8%.<sup><a href="#src-24">[24]</a></sup></p>
+            <h3 data-i18n="rscore.s3h5">The Leaderboard Illusion</h3>
+            <p data-i18n="rscore.s3p5">A major study found that <strong>Meta tested 27 private LLM variants</strong> on Arena before the Llama-4 release, announcing only the one that topped the leaderboard as if it were a single model. Proprietary models were sampled at higher rates and had fewer models removed compared to open-weight alternatives. This selective disclosure turns the Arena into a target to optimize &mdash; exactly the Goodhart's Law dynamic it was supposed to avoid.<sup><a href="#src-10">[10]</a><a href="#src-11">[11]</a><a href="#src-12">[12]</a></sup></p>
 
             <!-- ============================================ -->
-            <h2>6. Head-to-Head Comparison</h2>
+            <h2 data-i18n="rscore.h2_4">4. The Case for Benchmarks</h2>
+
+            <h3 data-i18n="rscore.s4h1">Objective, reproducible, and verifiable</h3>
+            <p data-i18n="rscore.s4p1">Benchmarks provide <strong>deterministic, repeatable measurements</strong> that can be independently verified. Stanford's HELM framework exemplifies this: measuring 7 metrics across 42 scenarios with all raw prompts and completions released publicly. This transparency is impossible with subjective crowd-voting.<sup><a href="#src-13">[13]</a></sup></p>
+
+            <h3 data-i18n="rscore.s4h2">Domain-specific precision</h3>
+            <p data-i18n="rscore.s4p2">Benchmarks can test capabilities that crowd-voting struggles with. GPQA Diamond tests PhD-level science where even domain experts achieve only 65%. SimpleQA tests factual accuracy with single indisputable answers where even top models achieve less than 50%. Humanity's Last Exam, published in Nature, revealed that frontier models exhibit overconfidence with 80%+ calibration error paired with under 10% accuracy.<sup><a href="#src-14">[14]</a><a href="#src-15">[15]</a><a href="#src-16">[16]</a></sup></p>
+
+            <h3 data-i18n="rscore.s4h3">Immediate evaluation on release</h3>
+            <p data-i18n="rscore.s4p3">Benchmarks can evaluate a model the moment it launches. In a landscape where multiple major releases occur per month, this speed advantage is significant compared to waiting weeks for Arena votes to converge.</p>
+
+            <h3 data-i18n="rscore.s4h4">Contamination-resistant dynamic benchmarks</h3>
+            <p data-i18n="rscore.s4p4">The benchmark community has responded to contamination concerns with innovative designs. <strong>LiveBench</strong> releases new questions monthly from recent sources, scoring against objective ground truth &mdash; top models achieve below 70%. <strong>SWE-bench Live</strong> adds 50 newly verified issues monthly from real GitHub repos created since 2024, now spanning 1,890 tasks across 223 repositories.<sup><a href="#src-17">[17]</a><a href="#src-18">[18]</a></sup></p>
+
+            <!-- ============================================ -->
+            <h2 data-i18n="rscore.h2_5">5. The Problems with Benchmarks</h2>
+
+            <h3 data-i18n="rscore.s5h1">Data contamination is pervasive</h3>
+            <p data-i18n="rscore.s5p1">A systematic review of 225 papers found approximately <strong>4.7 million benchmark samples across 263 benchmarks</strong> were leaked to closed-source models. On the APPS benchmark, StarCoder-7B achieves a Pass@1 score that is 4.9x higher on leaked samples than non-leaked samples. Over 94% of SWE-bench issues were created before LLM knowledge cutoff dates.<sup><a href="#src-19">[19]</a><a href="#src-20">[20]</a></sup></p>
+
+            <h3 data-i18n="rscore.s5h2">Benchmark saturation</h3>
+            <p data-i18n="rscore.s5p2">MMLU is the canonical example. Since GPT-4 achieved 86.4% in 2023, leading systems score nearly 90%, and the benchmark loses discriminative power. MMLU-Pro was created to address this &mdash; expanding to 10 answer options, removing trivial questions &mdash; and the top model drops from <strong>88.7% to 72.6%</strong>, restoring useful signal.<sup><a href="#src-21">[21]</a></sup></p>
+
+            <h3 data-i18n="rscore.s5h3">Goodhart's Law</h3>
+            <p data-i18n="rscore.s5p3">"When a measure becomes a target, it ceases to be a good measure." OpenAI's own research demonstrated that optimizing an imperfect proxy reward leads to <strong>reward hacking</strong>: beyond a certain point, the true objective decreases even as the proxy continues improving. Once companies focus on beating a benchmark, the benchmark becomes misleading.<sup><a href="#src-22">[22]</a><a href="#src-23">[23]</a></sup></p>
+
+            <h3 data-i18n="rscore.s5h4">Solution leakage in practice</h3>
+            <p data-i18n="rscore.s5p4">SWE-bench+ analysis found that <strong>60.83% of successfully resolved issues involved "solution leakage"</strong> where solutions were hinted at in the issue report, and 47.93% were incorrectly marked as resolved due to weak test cases. When filtering these out, resolution rates dropped from 42.1% to 21.8%.<sup><a href="#src-24">[24]</a></sup></p>
+
+            <!-- ============================================ -->
+            <h2 data-i18n="rscore.h2_6">6. Head-to-Head Comparison</h2>
 
             <table class="comparison-table">
                 <thead>
                     <tr>
-                        <th>Dimension</th>
-                        <th>Blind Community Scoring</th>
-                        <th>Automated Benchmarks</th>
+                        <th data-i18n="rscore.tDim">Dimension</th>
+                        <th data-i18n="rscore.tCommunity">Blind Community Scoring</th>
+                        <th data-i18n="rscore.tBench">Automated Benchmarks</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>What it measures</strong></td>
-                        <td>Holistic user preference, helpfulness, style</td>
-                        <td>Specific capabilities (reasoning, coding, factual recall)</td>
+                        <td><strong data-i18n="rscore.tMeasures">What it measures</strong></td>
+                        <td data-i18n="rscore.tMeasuresC">Holistic user preference, helpfulness, style</td>
+                        <td data-i18n="rscore.tMeasuresB">Specific capabilities (reasoning, coding, factual recall)</td>
                     </tr>
                     <tr>
-                        <td><strong>Speed of evaluation</strong></td>
-                        <td>Slow (weeks for convergence)</td>
-                        <td>Immediate on release</td>
+                        <td><strong data-i18n="rscore.tSpeed">Speed of evaluation</strong></td>
+                        <td data-i18n="rscore.tSpeedC">Slow (weeks for convergence)</td>
+                        <td data-i18n="rscore.tSpeedB">Immediate on release</td>
                     </tr>
                     <tr>
-                        <td><strong>Contamination risk</strong></td>
-                        <td>Low (dynamic user prompts)</td>
-                        <td>High for static benchmarks; low for dynamic ones (LiveBench, SWE-bench Live)</td>
+                        <td><strong data-i18n="rscore.tContam">Contamination risk</strong></td>
+                        <td data-i18n="rscore.tContamC">Low (dynamic user prompts)</td>
+                        <td data-i18n="rscore.tContamB">High for static benchmarks; low for dynamic ones (LiveBench, SWE-bench Live)</td>
                     </tr>
                     <tr>
-                        <td><strong>Reproducibility</strong></td>
-                        <td>Low (stochastic votes)</td>
-                        <td>High (deterministic)</td>
+                        <td><strong data-i18n="rscore.tRepro">Reproducibility</strong></td>
+                        <td data-i18n="rscore.tReproC">Low (stochastic votes)</td>
+                        <td data-i18n="rscore.tReproB">High (deterministic)</td>
                     </tr>
                     <tr>
-                        <td><strong>Domain coverage</strong></td>
-                        <td>Narrow (self-selected prompts)</td>
-                        <td>Can be designed for any domain</td>
+                        <td><strong data-i18n="rscore.tDomain">Domain coverage</strong></td>
+                        <td data-i18n="rscore.tDomainC">Narrow (self-selected prompts)</td>
+                        <td data-i18n="rscore.tDomainB">Can be designed for any domain</td>
                     </tr>
                     <tr>
-                        <td><strong>Gaming vulnerability</strong></td>
-                        <td>Private variant testing, vote manipulation, style bias</td>
-                        <td>Training on test data, format exploitation, solution leakage</td>
+                        <td><strong data-i18n="rscore.tGaming">Gaming vulnerability</strong></td>
+                        <td data-i18n="rscore.tGamingC">Private variant testing, vote manipulation, style bias</td>
+                        <td data-i18n="rscore.tGamingB">Training on test data, format exploitation, solution leakage</td>
                     </tr>
                     <tr>
-                        <td><strong>Ecological validity</strong></td>
-                        <td>High (real users, real tasks)</td>
-                        <td>Low to medium (artificial settings)</td>
+                        <td><strong data-i18n="rscore.tEco">Ecological validity</strong></td>
+                        <td data-i18n="rscore.tEcoC">High (real users, real tasks)</td>
+                        <td data-i18n="rscore.tEcoB">Low to medium (artificial settings)</td>
                     </tr>
                     <tr>
-                        <td><strong>Coding evaluation</strong></td>
-                        <td>Conversational coding preference (Chatbot Arena) + agentic execution (Code Arena)</td>
-                        <td>Actual code execution and test-suite pass rates (SWE-bench, Aider, LiveCodeBench)</td>
+                        <td><strong data-i18n="rscore.tCode">Coding evaluation</strong></td>
+                        <td data-i18n="rscore.tCodeC">Conversational coding preference (Chatbot Arena) + agentic execution (Code Arena)</td>
+                        <td data-i18n="rscore.tCodeB">Actual code execution and test-suite pass rates (SWE-bench, Aider, LiveCodeBench)</td>
                     </tr>
                 </tbody>
             </table>
 
             <!-- ============================================ -->
-            <h2>7. The Emerging Consensus</h2>
+            <h2 data-i18n="rscore.h2_7">7. The Emerging Consensus</h2>
 
             <div class="verdict-box">
-                <h3>Neither alone is sufficient</h3>
-                <p>The research consistently converges on one conclusion: <strong>neither pure benchmarks nor pure crowd-voting are sufficient</strong>. Despite Arena's flaws, it "surpasses the traditional approach of optimizing for multiple-choice benchmarks, which are often saturated and not directly applicable to real-world scenarios." But Arena itself is susceptible to its own category of gaming and bias.</p>
-                <p style="margin-top:12px;">The "Benchmark Illusion" paper revealed that even among top-performing frontier models achieving comparable benchmark accuracy, <strong>they still disagree on 16&ndash;38% of items</strong>. When models are used for scientific annotation, switching models can change estimated treatment effects by more than 80%.<sup><a href="#src-25">[25]</a></sup></p>
+                <h3 data-i18n="rscore.s7h1">Neither alone is sufficient</h3>
+                <p data-i18n="rscore.s7p1">The research consistently converges on one conclusion: <strong>neither pure benchmarks nor pure crowd-voting are sufficient</strong>. Despite Arena's flaws, it "surpasses the traditional approach of optimizing for multiple-choice benchmarks, which are often saturated and not directly applicable to real-world scenarios." But Arena itself is susceptible to its own category of gaming and bias.</p>
+                <p style="margin-top:12px;" data-i18n="rscore.s7p2">The "Benchmark Illusion" paper revealed that even among top-performing frontier models achieving comparable benchmark accuracy, <strong>they still disagree on 16&ndash;38% of items</strong>. When models are used for scientific annotation, switching models can change estimated treatment effects by more than 80%.<sup><a href="#src-25">[25]</a></sup></p>
             </div>
 
-            <h3>Hybrid approaches are the future</h3>
-            <p>Leading evaluation platforms already combine both signals:</p>
+            <h3 data-i18n="rscore.s7h2">Hybrid approaches are the future</h3>
+            <p data-i18n="rscore.s7p3">Leading evaluation platforms already combine both signals:</p>
             <ul>
-                <li><strong>Scale AI SEAL</strong> uses automated benchmarks with human annotation, LLM-as-judge panels aligned to 93% agreement with human raters, and multi-stage expert review.<sup><a href="#src-26">[26]</a></sup></li>
-                <li><strong>Artificial Analysis</strong> synthesizes 10 benchmark evaluations into a composite Intelligence Index (0&ndash;100) with &plusmn;1% confidence intervals.<sup><a href="#src-27">[27]</a></sup></li>
-                <li><strong>Arena-Hard-Auto</strong>, built by the LMSYS team themselves, uses human preference data to inform benchmark construction &mdash; bridging the gap between the two paradigms at a cost of only $20.<sup><a href="#src-4">[4]</a></sup></li>
+                <li data-i18n="rscore.s7li1"><strong>Scale AI SEAL</strong> uses automated benchmarks with human annotation, LLM-as-judge panels aligned to 93% agreement with human raters, and multi-stage expert review.<sup><a href="#src-26">[26]</a></sup></li>
+                <li data-i18n="rscore.s7li2"><strong>Artificial Analysis</strong> synthesizes 10 benchmark evaluations into a composite Intelligence Index (0&ndash;100) with &plusmn;1% confidence intervals.<sup><a href="#src-27">[27]</a></sup></li>
+                <li data-i18n="rscore.s7li3"><strong>Arena-Hard-Auto</strong>, built by the LMSYS team themselves, uses human preference data to inform benchmark construction &mdash; bridging the gap between the two paradigms at a cost of only $20.<sup><a href="#src-4">[4]</a></sup></li>
             </ul>
 
-            <h3>The most important lesson</h3>
+            <h3 data-i18n="rscore.s7h3">The most important lesson</h3>
             <blockquote>
-                <p>Any single metric, whether crowd-voted or automated, will be optimized against once it becomes a target. The only reliable defense is methodological diversity.</p>
+                <p data-i18n="rscore.s7bq">Any single metric, whether crowd-voted or automated, will be optimized against once it becomes a target. The only reliable defense is methodological diversity.</p>
             </blockquote>
-            <p>This is why the LLM Catalog uses a <strong>weighted blend</strong> of community ratings and benchmarks for each use case, rather than relying on any single signal. For more details on our scoring methodology, see <a href="resources.html">Resources &amp; Methodology</a>.</p>
+            <p data-i18n="rscore.s7p4">This is why the LLM Catalog uses a <strong>weighted blend</strong> of community ratings and benchmarks for each use case, rather than relying on any single signal. For more details on our scoring methodology, see <a href="resources.html">Resources &amp; Methodology</a>.</p>
 
             <!-- ============================================ -->
-            <h2>Sources</h2>
+            <h2 data-i18n="rscore.sources">Sources</h2>
 
             <ul class="source-list">
                 <li id="src-1"><span class="source-tag paper">Paper</span> <strong>[1]</strong> Chiang et al., "Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference," ICML 2024. <a href="https://arxiv.org/abs/2403.04132" target="_blank" rel="noopener">arxiv.org/abs/2403.04132</a></li>
