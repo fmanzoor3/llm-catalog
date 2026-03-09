@@ -428,7 +428,7 @@ function populateComparisonTable() {
         const costBadge = document.getElementById('modalCostBadge');
         costBadge.textContent = getCostLabel(model.costTier);
         costBadge.className = 'cost-badge cost-' + (model.costTier === 'self-hosted' ? 'self' : model.costTier);
-        document.getElementById('modalOverview').textContent = model.overview || model.description;
+        document.getElementById('modalOverview').textContent = (typeof ml === 'function' ? ml(model, 'overview') : model.overview) || (typeof ml === 'function' ? ml(model, 'description') : model.description);
 
         // Specs grid
         const specs = [
@@ -457,15 +457,16 @@ function populateComparisonTable() {
         }
 
         // Strengths
-        document.getElementById('modalStrengths').innerHTML = (model.strengths || []).map(s => '<li>' + s + '</li>').join('') || '<li style="color:var(--text-muted)">No detailed data available</li>';
+        document.getElementById('modalStrengths').innerHTML = ((typeof ml === 'function' ? ml(model, 'strengths') : model.strengths) || []).map(s => '<li>' + s + '</li>').join('') || '<li style="color:var(--text-muted)">No detailed data available</li>';
 
         // Weaknesses
-        document.getElementById('modalWeaknesses').innerHTML = (model.weaknesses || []).map(w => '<li>' + w + '</li>').join('') || '<li style="color:var(--text-muted)">No detailed data available</li>';
+        document.getElementById('modalWeaknesses').innerHTML = ((typeof ml === 'function' ? ml(model, 'weaknesses') : model.weaknesses) || []).map(w => '<li>' + w + '</li>').join('') || '<li style="color:var(--text-muted)">No detailed data available</li>';
 
         // Use cases
         const ucEl = document.getElementById('modalUseCases');
-        if (model.useCaseDetails && model.useCaseDetails.length > 0) {
-            ucEl.innerHTML = model.useCaseDetails.map(uc =>
+        var ucData = (typeof ml === 'function' ? ml(model, 'useCaseDetails') : model.useCaseDetails) || [];
+        if (ucData.length > 0) {
+            ucEl.innerHTML = ucData.map(uc =>
                 '<div class="use-case-item"><h4>' + uc.name + '</h4><p>' + uc.explanation + '</p></div>'
             ).join('');
             document.getElementById('modalUseCasesSection').style.display = '';

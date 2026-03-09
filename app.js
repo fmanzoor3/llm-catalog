@@ -499,7 +499,7 @@ function openModelModal(modelId) {
     costBadge.textContent = getCostLabel(model.costTier);
     costBadge.className = 'cost-badge cost-' + (model.costTier === 'self-hosted' ? 'self' : model.costTier);
 
-    document.getElementById('modalOverview').textContent = model.overview || ml(model, 'description');
+    document.getElementById('modalOverview').textContent = ml(model, 'overview') || ml(model, 'description');
 
     // Specs — numeric first, then categorical
     const na = t('modal.na');
@@ -548,8 +548,9 @@ function openModelModal(modelId) {
     // Use Cases
     const ucEl = document.getElementById('modalUseCases');
     const ucSection = document.getElementById('modalUseCasesSection');
-    if (model.useCaseDetails?.length > 0) {
-        ucEl.innerHTML = model.useCaseDetails.map(uc => `<div style="margin-bottom:10px;"><strong style="color:var(--text-primary);font-size:0.85rem;">${uc.name}</strong><p style="color:var(--text-muted);font-size:0.8rem;margin:2px 0 0;">${uc.explanation}</p></div>`).join('');
+    const ucData = ml(model, 'useCaseDetails') || [];
+    if (ucData.length > 0) {
+        ucEl.innerHTML = ucData.map(uc => `<div style="margin-bottom:10px;"><strong style="color:var(--text-primary);font-size:0.85rem;">${uc.name}</strong><p style="color:var(--text-muted);font-size:0.8rem;margin:2px 0 0;">${uc.explanation}</p></div>`).join('');
         ucSection.style.display = '';
     } else if (model.bestFor?.length > 0) {
         ucEl.innerHTML = `<p style="color:var(--text-muted);">Best for: ${model.bestFor.join(', ')}</p>`;
