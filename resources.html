@@ -60,7 +60,7 @@
         <section class="container">
 
             <!-- Methodology -->
-            <div class="resource-section-label">Methodology</div>
+            <div class="resource-section-label" data-i18n="res.methodology">Methodology</div>
 
             <div class="res-expand-card" id="scoring-card">
                 <div class="res-expand-header" onclick="this.parentElement.classList.toggle('open')">
@@ -68,22 +68,22 @@
                         <svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="14" width="4" height="7" rx="1" fill="var(--accent)"/><rect x="10" y="8" width="4" height="13" rx="1" fill="var(--accent)" opacity="0.7"/><rect x="17" y="3" width="4" height="18" rx="1" fill="var(--accent)" opacity="0.4"/></svg>
                     </div>
                     <div class="res-expand-header-text">
-                        <h3>Model Scoring</h3>
-                        <p>How the 0&ndash;100 use case scores are calculated, and which metrics drive each score.</p>
+                        <h3 data-i18n="res.modelScoring">Model Scoring</h3>
+                        <p data-i18n="res.modelScoringDesc">How the 0&ndash;100 use case scores are calculated, and which metrics drive each score.</p>
                     </div>
                     <span class="res-expand-chevron">&#9660;</span>
                 </div>
                 <div class="res-expand-body">
-                    <p class="res-scoring-intro">
+                    <p class="res-scoring-intro" data-i18n="res.scoringIntro1">
                         Each use case gets a composite score from 0 to 100 based on a weighted blend of community ratings (Chatbot Arena Elo) and benchmarks (SWE-bench, GPQA, AIME, etc.). Each metric is normalized to a 0&ndash;100 scale using fixed bounds, then multiplied by its weight.
                     </p>
-                    <p class="res-scoring-intro" style="margin-top:12px;">
+                    <p class="res-scoring-intro" style="margin-top:12px;" data-i18n="res.scoringIntro2">
                         <strong>Why these weights?</strong> We blend two complementary signal types: <em>benchmarks</em> measure specific, reproducible skills (coding, math, science), while <em>community ratings</em> capture real-world usability that benchmarks miss (tone, helpfulness, instruction-following). Metrics that directly test the use case get the highest weight &mdash; for example, SWE-bench and Arena Coding together drive 65% of the coding score. Context window and multimodal capability are included where they meaningfully affect the task. Speed is shown separately and does not influence quality scores. For a deeper discussion of these trade-offs, see our <a href="research-scoring.html" style="color:var(--accent-text);">scoring research page</a>.
                     </p>
-                    <p class="res-scoring-intro" style="margin-top:12px;">
+                    <p class="res-scoring-intro" style="margin-top:12px;" data-i18n="res.scoringIntro3">
                         <strong>Missing data handling:</strong> When a model has 60% or more of the weighted metrics available, scores are rescaled so available data fills the full range. Below 60%, missing metrics contribute zero &mdash; naturally lowering the score. This means newly released models with limited evaluation data will score lower until more benchmarks and community ratings are published.
                     </p>
-                    <p class="res-scoring-intro" style="margin-top:12px;">
+                    <p class="res-scoring-intro" style="margin-top:12px;" data-i18n="res.scoringIntro4">
                         <strong>Practical factors:</strong> Context window is log-scaled (larger windows have diminishing returns). Multimodal capability is treated as a bonus factor for relevant use cases.
                     </p>
                     <div id="res-scoring"></div>
@@ -96,63 +96,63 @@
                         <svg viewBox="0 0 24 24" width="24" height="24"><path d="M9 3 L9 21 M15 3 L15 21 M3 9 L21 9 M3 15 L21 15" fill="none" stroke="var(--blue)" stroke-width="2" opacity="0.6"/><circle cx="12" cy="12" r="3" fill="var(--blue)"/></svg>
                     </div>
                     <div class="res-expand-header-text">
-                        <h3>Benchmark Reference</h3>
-                        <p>What each benchmark measures, how to interpret the scores, and where to find the original data.</p>
+                        <h3 data-i18n="res.benchRef">Benchmark Reference</h3>
+                        <p data-i18n="res.benchRefDesc">What each benchmark measures, how to interpret the scores, and where to find the original data.</p>
                     </div>
                     <span class="res-expand-chevron">&#9660;</span>
                 </div>
                 <div class="res-expand-body">
-                    <p class="res-scoring-intro" style="margin-bottom:16px;"><strong>Used in scoring</strong> &mdash; these benchmarks directly contribute to use case scores.</p>
+                    <p class="res-scoring-intro" style="margin-bottom:16px;" data-i18n="res.usedInScoring"><strong>Used in scoring</strong> &mdash; these benchmarks directly contribute to use case scores.</p>
                     <div class="res-bench-grid">
                         <div class="res-bench-card">
                             <h4>SWE-bench Verified</h4>
-                            <p>Can the model resolve real GitHub issues? It reads an issue, navigates the codebase, and must produce a working patch. Score is % of issues resolved.</p>
+                            <p data-i18n="res.bench.swe">Can the model resolve real GitHub issues? It reads an issue, navigates the codebase, and must produce a working patch. Score is % of issues resolved.</p>
                             <a href="https://www.swebench.com/" target="_blank" rel="noopener">swebench.com &#8599;</a>
                         </div>
                         <div class="res-bench-card">
                             <h4>LiveCodeBench</h4>
-                            <p>Fresh coding problems rotated regularly so models can't memorize answers. Tests real-world code generation ability resistant to data contamination.</p>
+                            <p data-i18n="res.bench.livecode">Fresh coding problems rotated regularly so models can't memorize answers. Tests real-world code generation ability resistant to data contamination.</p>
                             <a href="https://livecodebench.github.io/" target="_blank" rel="noopener">livecodebench.github.io &#8599;</a>
                         </div>
                         <div class="res-bench-card">
                             <h4>GPQA Diamond</h4>
-                            <p>PhD-level science questions in biology, physics, and chemistry. Designed to be hard even for domain experts. Score is % correct.</p>
-                            <a href="https://arxiv.org/abs/2311.12022" target="_blank" rel="noopener">Research paper &#8599;</a>
+                            <p data-i18n="res.bench.gpqa">PhD-level science questions in biology, physics, and chemistry. Designed to be hard even for domain experts. Score is % correct.</p>
+                            <a href="https://arxiv.org/abs/2311.12022" target="_blank" rel="noopener" data-i18n="res.researchPaper">Research paper &#8599;</a>
                         </div>
                         <div class="res-bench-card">
                             <h4>IFEval</h4>
-                            <p>Instruction Following Evaluation. Tests how precisely the model follows specific formatting and structural constraints like "write exactly 3 paragraphs" or "respond in JSON".</p>
-                            <a href="https://arxiv.org/abs/2311.07911" target="_blank" rel="noopener">Research paper &#8599;</a>
+                            <p data-i18n="res.bench.ifeval">Instruction Following Evaluation. Tests how precisely the model follows specific formatting and structural constraints like "write exactly 3 paragraphs" or "respond in JSON".</p>
+                            <a href="https://arxiv.org/abs/2311.07911" target="_blank" rel="noopener" data-i18n="res.researchPaper">Research paper &#8599;</a>
                         </div>
                         <div class="res-bench-card">
                             <h4>MMLU-Pro</h4>
-                            <p>Harder version of MMLU with 10 answer choices instead of 4, covering 57 subjects. Requires deeper knowledge and resists lucky guessing.</p>
-                            <a href="https://arxiv.org/abs/2406.01574" target="_blank" rel="noopener">Research paper &#8599;</a>
+                            <p data-i18n="res.bench.mmlu">Harder version of MMLU with 10 answer choices instead of 4, covering 57 subjects. Requires deeper knowledge and resists lucky guessing.</p>
+                            <a href="https://arxiv.org/abs/2406.01574" target="_blank" rel="noopener" data-i18n="res.researchPaper">Research paper &#8599;</a>
                         </div>
                         <div class="res-bench-card">
                             <h4>Aider Polyglot</h4>
-                            <p>Multi-language code editing. The model must follow instructions to produce correct code changes across Python, JavaScript, Go, Java, and more.</p>
-                            <a href="https://aider.chat/docs/leaderboards/" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                            <p data-i18n="res.bench.aider">Multi-language code editing. The model must follow instructions to produce correct code changes across Python, JavaScript, Go, Java, and more.</p>
+                            <a href="https://aider.chat/docs/leaderboards/" target="_blank" rel="noopener" data-i18n="res.leaderboard">Leaderboard &#8599;</a>
                         </div>
                         <div class="res-bench-card">
                             <h4>MMMLU</h4>
-                            <p>Massive Multilingual Language Understanding. Tests knowledge and reasoning across 50+ languages and many academic subjects.</p>
+                            <p data-i18n="res.bench.mmmlu">Massive Multilingual Language Understanding. Tests knowledge and reasoning across 50+ languages and many academic subjects.</p>
                         </div>
                     </div>
-                    <p class="res-scoring-intro" style="margin-top:24px;margin-bottom:16px;"><strong>Additional benchmarks</strong> &mdash; displayed in model profiles but not currently used in scoring.</p>
+                    <p class="res-scoring-intro" style="margin-top:24px;margin-bottom:16px;" data-i18n="res.additionalBench"><strong>Additional benchmarks</strong> &mdash; displayed in model profiles but not currently used in scoring.</p>
                     <div class="res-bench-grid">
                         <div class="res-bench-card">
                             <h4>AIME 2024</h4>
-                            <p>Problems from the American Invitational Mathematics Examination. Tests advanced math reasoning &mdash; algebra, geometry, number theory, combinatorics.</p>
-                            <a href="https://artofproblemsolving.com/wiki/index.php/2024_AIME_I" target="_blank" rel="noopener">Problem set &#8599;</a>
+                            <p data-i18n="res.bench.aime">Problems from the American Invitational Mathematics Examination. Tests advanced math reasoning &mdash; algebra, geometry, number theory, combinatorics.</p>
+                            <a href="https://artofproblemsolving.com/wiki/index.php/2024_AIME_I" target="_blank" rel="noopener" data-i18n="res.problemSet">Problem set &#8599;</a>
                         </div>
                         <div class="res-bench-card">
                             <h4>MATH-500</h4>
-                            <p>500 math problems spanning algebra, geometry, number theory, and calculus. A broad test of mathematical problem-solving ability.</p>
+                            <p data-i18n="res.bench.math500">500 math problems spanning algebra, geometry, number theory, and calculus. A broad test of mathematical problem-solving ability.</p>
                         </div>
                         <div class="res-bench-card">
                             <h4>ARC-AGI-1</h4>
-                            <p>Abstract reasoning puzzles testing fluid intelligence. Novel visual patterns that can't be solved by memorization alone.</p>
+                            <p data-i18n="res.bench.arcagi">Abstract reasoning puzzles testing fluid intelligence. Novel visual patterns that can't be solved by memorization alone.</p>
                             <a href="https://arcprize.org/" target="_blank" rel="noopener">arcprize.org &#8599;</a>
                         </div>
                     </div>
@@ -165,117 +165,117 @@
                         <svg viewBox="0 0 24 24" width="24" height="24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="var(--green)" stroke-width="2"/><circle cx="9" cy="7" r="4" fill="none" stroke="var(--green)" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" fill="none" stroke="var(--green)" stroke-width="2" opacity="0.6"/><circle cx="16" cy="3" r="4" fill="none" stroke="var(--green)" stroke-width="2" opacity="0.6"/></svg>
                     </div>
                     <div class="res-expand-header-text">
-                        <h3>Community Votes Reference</h3>
-                        <p>Why blind human preference votes are a credible signal, and how we use them alongside benchmarks.</p>
+                        <h3 data-i18n="res.communityVotes">Community Votes Reference</h3>
+                        <p data-i18n="res.communityVotesDesc">Why blind human preference votes are a credible signal, and how we use them alongside benchmarks.</p>
                     </div>
                     <span class="res-expand-chevron">&#9660;</span>
                 </div>
                 <div class="res-expand-body">
-                    <p class="res-scoring-intro">
+                    <p class="res-scoring-intro" data-i18n="res.communityIntro1">
                         Community leaderboards like <a href="https://lmarena.ai/" target="_blank" rel="noopener">LM Arena</a> rank models using blind human preference votes rather than automated tests. Users submit a prompt and see two anonymous model responses side by side &mdash; they vote for the better one without knowing which model produced it.
                     </p>
-                    <p class="res-scoring-intro" style="margin-top:12px;">
+                    <p class="res-scoring-intro" style="margin-top:12px;" data-i18n="res.communityIntro2">
                         These pairwise comparisons are aggregated into Elo ratings (the same system used in chess) using a statistical model called Bradley&ndash;Terry that controls for response style and length bias. With over 3.5 million votes, Arena Elo scores are a strong signal for real-world quality &mdash; especially for subjective tasks like creative writing, chatbots, and instruction following where automated benchmarks fall short.
                     </p>
-                    <p class="res-scoring-intro" style="margin-top:12px;">
+                    <p class="res-scoring-intro" style="margin-top:12px;" data-i18n="res.communityIntro3">
                         We incorporate Arena scores alongside traditional benchmarks because they capture dimensions that automated tests miss: helpfulness, coherence, tone, and the ability to follow nuanced instructions. Each use case uses the most relevant Arena sub-category rather than just the overall score.
                     </p>
-                    <p class="res-scoring-intro" style="margin-top:16px;margin-bottom:12px;"><strong>Arena categories we use in scoring:</strong></p>
+                    <p class="res-scoring-intro" style="margin-top:16px;margin-bottom:12px;" data-i18n="res.arenaCategories"><strong>Arena categories we use in scoring:</strong></p>
                     <div class="res-bench-grid">
                         <div class="res-bench-card">
-                            <h4>Arena Overall</h4>
-                            <p>The general-purpose Elo rating across all prompt types. Captures broad conversational quality and is used as a baseline signal across most use cases.</p>
-                            <a href="https://lmarena.ai/" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                            <h4 data-i18n="res.arena.overall">Arena Overall</h4>
+                            <p data-i18n="res.arena.overallDesc">The general-purpose Elo rating across all prompt types. Captures broad conversational quality and is used as a baseline signal across most use cases.</p>
+                            <a href="https://lmarena.ai/" target="_blank" rel="noopener" data-i18n="res.leaderboard">Leaderboard &#8599;</a>
                         </div>
                         <div class="res-bench-card">
-                            <h4>Arena Coding</h4>
-                            <p>Elo rating from code-related prompts only &mdash; generation, debugging, refactoring. Used in our Coding and Data Extraction scores.</p>
-                            <a href="https://lmarena.ai/leaderboard/text/coding" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                            <h4 data-i18n="res.arena.coding">Arena Coding</h4>
+                            <p data-i18n="res.arena.codingDesc">Elo rating from code-related prompts only &mdash; generation, debugging, refactoring. Used in our Coding and Data Extraction scores.</p>
+                            <a href="https://lmarena.ai/leaderboard/text/coding" target="_blank" rel="noopener" data-i18n="res.leaderboard">Leaderboard &#8599;</a>
                         </div>
                         <div class="res-bench-card">
-                            <h4>Arena Math</h4>
-                            <p>Elo rating from mathematical and quantitative prompts. Captures real-world problem solving that structured benchmarks like AIME can miss. Drives our Reasoning score.</p>
-                            <a href="https://lmarena.ai/leaderboard/text/math" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                            <h4 data-i18n="res.arena.math">Arena Math</h4>
+                            <p data-i18n="res.arena.mathDesc">Elo rating from mathematical and quantitative prompts. Captures real-world problem solving that structured benchmarks like AIME can miss. Drives our Reasoning score.</p>
+                            <a href="https://lmarena.ai/leaderboard/text/math" target="_blank" rel="noopener" data-i18n="res.leaderboard">Leaderboard &#8599;</a>
                         </div>
                         <div class="res-bench-card">
-                            <h4>Arena Creative Writing</h4>
-                            <p>Elo rating from creative and expressive writing prompts &mdash; stories, essays, marketing copy. The primary signal for our Content Writing score.</p>
-                            <a href="https://lmarena.ai/leaderboard/text/creative_writing" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                            <h4 data-i18n="res.arena.writing">Arena Creative Writing</h4>
+                            <p data-i18n="res.arena.writingDesc">Elo rating from creative and expressive writing prompts &mdash; stories, essays, marketing copy. The primary signal for our Content Writing score.</p>
+                            <a href="https://lmarena.ai/leaderboard/text/creative_writing" target="_blank" rel="noopener" data-i18n="res.leaderboard">Leaderboard &#8599;</a>
                         </div>
                         <div class="res-bench-card">
-                            <h4>Arena Instruction Following</h4>
-                            <p>Elo rating for prompts with specific constraints &mdash; format requirements, multi-step instructions, style guidelines. Used in Chatbot, Extraction, and Translation scores.</p>
-                            <a href="https://lmarena.ai/leaderboard/text/instruction_following" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                            <h4 data-i18n="res.arena.instruction">Arena Instruction Following</h4>
+                            <p data-i18n="res.arena.instructionDesc">Elo rating for prompts with specific constraints &mdash; format requirements, multi-step instructions, style guidelines. Used in Chatbot, Extraction, and Translation scores.</p>
+                            <a href="https://lmarena.ai/leaderboard/text/instruction_following" target="_blank" rel="noopener" data-i18n="res.leaderboard">Leaderboard &#8599;</a>
                         </div>
                         <div class="res-bench-card">
-                            <h4>Arena Longer Query</h4>
-                            <p>Elo rating for handling long, detailed prompts. Tests the model's ability to process complex context &mdash; the key community signal for our Document Analysis score.</p>
-                            <a href="https://lmarena.ai/leaderboard/text/longer_query" target="_blank" rel="noopener">Leaderboard &#8599;</a>
+                            <h4 data-i18n="res.arena.longer">Arena Longer Query</h4>
+                            <p data-i18n="res.arena.longerDesc">Elo rating for handling long, detailed prompts. Tests the model's ability to process complex context &mdash; the key community signal for our Document Analysis score.</p>
+                            <a href="https://lmarena.ai/leaderboard/text/longer_query" target="_blank" rel="noopener" data-i18n="res.leaderboard">Leaderboard &#8599;</a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Benchmark Leaderboards -->
-            <div class="resource-section-label">Benchmark Leaderboards</div>
+            <div class="resource-section-label" data-i18n="res.benchLeaderboards">Benchmark Leaderboards</div>
             <div class="resources-grid">
                 <a class="resource-card" href="https://artificialanalysis.ai/" target="_blank" rel="noopener">
                     <div class="resource-card-icon" style="background:rgba(124,58,237,0.08);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><polyline points="4,18 8,12 12,15 16,8 20,11" fill="none" stroke="#8b5cf6" stroke-width="2"/><circle cx="4" cy="18" r="2" fill="#8b5cf6" opacity="0.5"/><circle cx="20" cy="11" r="2" fill="#8b5cf6" opacity="0.5"/></svg>
                     </div>
                     <h3>Artificial Analysis</h3>
-                    <p>Live API measurements updated 8x daily for speed, latency, and price. The most rigorous independent benchmark for real-world performance.</p>
-                    <span class="resource-link">Compare Models &#8599;</span>
+                    <p data-i18n="res.ext.aa">Live API measurements updated 8x daily for speed, latency, and price. The most rigorous independent benchmark for real-world performance.</p>
+                    <span class="resource-link" data-i18n="res.compareModels">Compare Models &#8599;</span>
                 </a>
                 <a class="resource-card" href="https://scale.com/leaderboard" target="_blank" rel="noopener">
                     <div class="resource-card-icon" style="background:rgba(22,163,74,0.08);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 2 L15 9 L22 9 L16 14 L18 21 L12 17 L6 21 L8 14 L2 9 L9 9 Z" fill="none" stroke="var(--green)" stroke-width="2"/></svg>
                     </div>
                     <h3>Scale SEAL Leaderboards</h3>
-                    <p>Expert-driven evaluations from Scale AI covering agentic tasks, professional reasoning, safety, and software engineering.</p>
-                    <span class="resource-link">View Evaluations &#8599;</span>
+                    <p data-i18n="res.ext.scale">Expert-driven evaluations from Scale AI covering agentic tasks, professional reasoning, safety, and software engineering.</p>
+                    <span class="resource-link" data-i18n="res.viewEval">View Evaluations &#8599;</span>
                 </a>
                 <a class="resource-card" href="https://llm-stats.com/leaderboards/llm-leaderboard" target="_blank" rel="noopener">
                     <div class="resource-card-icon" style="background:rgba(248,187,44,0.12);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="14" width="4" height="7" rx="1" fill="var(--accent)"/><rect x="10" y="8" width="4" height="13" rx="1" fill="var(--accent)" opacity="0.7"/><rect x="17" y="3" width="4" height="18" rx="1" fill="var(--accent)" opacity="0.4"/></svg>
                     </div>
                     <h3>LLM Stats</h3>
-                    <p>Aggregated benchmark scores, pricing, context windows, and speed across all major models. Updated daily.</p>
-                    <span class="resource-link">Browse Stats &#8599;</span>
+                    <p data-i18n="res.ext.llmstats">Aggregated benchmark scores, pricing, context windows, and speed across all major models. Updated daily.</p>
+                    <span class="resource-link" data-i18n="res.browseStats">Browse Stats &#8599;</span>
                 </a>
                 <a class="resource-card" href="https://www.vellum.ai/llm-leaderboard" target="_blank" rel="noopener">
                     <div class="resource-card-icon" style="background:rgba(37,99,235,0.08);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 6h16M4 12h16M4 18h10" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/></svg>
                     </div>
                     <h3>Vellum LLM Leaderboard</h3>
-                    <p>Curated benchmark selection that excludes saturated tests. Enterprise-focused with pricing and quality analysis.</p>
-                    <span class="resource-link">Explore Data &#8599;</span>
+                    <p data-i18n="res.ext.vellum">Curated benchmark selection that excludes saturated tests. Enterprise-focused with pricing and quality analysis.</p>
+                    <span class="resource-link" data-i18n="res.exploreData">Explore Data &#8599;</span>
                 </a>
             </div>
 
             <!-- Community Leaderboards -->
-            <div class="resource-section-label">Community Leaderboards</div>
+            <div class="resource-section-label" data-i18n="res.communityLeaderboards">Community Leaderboards</div>
             <div class="resources-grid">
                 <a class="resource-card" href="https://lmarena.ai/" target="_blank" rel="noopener">
                     <div class="resource-card-icon" style="background:rgba(37,99,235,0.08);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="12" width="4" height="9" rx="1" fill="var(--blue)"/><rect x="10" y="6" width="4" height="15" rx="1" fill="var(--blue)" opacity="0.7"/><rect x="17" y="2" width="4" height="19" rx="1" fill="var(--blue)" opacity="0.4"/></svg>
                     </div>
                     <h3>LM Arena (Chatbot Arena)</h3>
-                    <p>ELO rankings from 3.5M+ blind human votes. The most trusted community benchmark for conversational quality.</p>
-                    <span class="resource-link">Visit Leaderboard &#8599;</span>
+                    <p data-i18n="res.ext.lmarena">ELO rankings from 3.5M+ blind human votes. The most trusted community benchmark for conversational quality.</p>
+                    <span class="resource-link" data-i18n="res.visitLeaderboard">Visit Leaderboard &#8599;</span>
                 </a>
                 <a class="resource-card" href="https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard" target="_blank" rel="noopener">
                     <div class="resource-card-icon" style="background:rgba(248,187,44,0.12);">
                         <svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="10" fill="none" stroke="var(--accent)" stroke-width="2"/><path d="M8 14 Q12 18 16 14" fill="none" stroke="var(--accent)" stroke-width="2"/><circle cx="9" cy="10" r="1.5" fill="var(--accent)"/><circle cx="15" cy="10" r="1.5" fill="var(--accent)"/></svg>
                     </div>
                     <h3>Open LLM Leaderboard</h3>
-                    <p>Hugging Face's reproducible benchmark suite for open-source models. The canonical ranking for openly available weights.</p>
-                    <span class="resource-link">View Rankings &#8599;</span>
+                    <p data-i18n="res.ext.openllm">Hugging Face's reproducible benchmark suite for open-source models. The canonical ranking for openly available weights.</p>
+                    <span class="resource-link" data-i18n="res.viewRankings">View Rankings &#8599;</span>
                 </a>
             </div>
 
             <!-- Provider Docs -->
-            <div class="resource-section-label">Provider Docs</div>
+            <div class="resource-section-label" data-i18n="res.providerDocs">Provider Docs</div>
             <div class="resources-grid" id="provider-docs-grid">
             </div>
 
