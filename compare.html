@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));document.documentElement.setAttribute('data-lang',localStorage.getItem('lang')||'en');</script>
 </head>
 <body>
     <nav class="navbar">
@@ -23,30 +24,37 @@
                 <span>LLM Catalog</span>
             </a>
             <div class="nav-links">
-                <a href="index.html" class="nav-link">Find Your LLM</a>
-                <a href="compare.html" class="nav-link active">Compare</a>
-                <a href="providers.html" class="nav-link">Providers</a>
-                <a href="models.html" class="nav-link">All Models</a>
-                <a href="resources.html" class="nav-link">Resources</a>
+                <a href="index.html" class="nav-link" data-i18n="nav.findLlm">Find Your LLM</a>
+                <a href="compare.html" class="nav-link active" data-i18n="nav.compare">Compare</a>
+                <a href="providers.html" class="nav-link" data-i18n="nav.providers">Providers</a>
+                <a href="models.html" class="nav-link" data-i18n="nav.allModels">All Models</a>
+                <a href="resources.html" class="nav-link" data-i18n="nav.resources">Resources</a>
+            </div>
+            <div class="nav-tools">
+                <button class="nav-tool-btn lang-toggle" aria-label="Switch language"><span class="lang-label">TR</span></button>
+                <button class="nav-tool-btn theme-toggle" aria-label="Toggle dark mode">
+                    <svg class="icon-sun" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="10" r="4"/><path d="M10 1v2M10 17v2M1 10h2M17 10h2M3.5 3.5l1.4 1.4M15.1 15.1l1.4 1.4M3.5 16.5l1.4-1.4M15.1 4.9l1.4-1.4" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <svg class="icon-moon" viewBox="0 0 20 20" fill="currentColor"><path d="M17.3 13.3A8 8 0 016.7 2.7 8 8 0 1017.3 13.3z"/></svg>
+                </button>
             </div>
             <button class="mobile-menu-btn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
         </div>
     </nav>
     <div class="mobile-menu-overlay">
         <div class="mobile-menu">
-            <a href="index.html" class="mobile-link">Find Your LLM</a>
-            <a href="compare.html" class="mobile-link active">Compare</a>
-            <a href="providers.html" class="mobile-link">Providers</a>
-            <a href="models.html" class="mobile-link">All Models</a>
-            <a href="resources.html" class="mobile-link">Resources</a>
+            <a href="index.html" class="mobile-link" data-i18n="nav.findLlm">Find Your LLM</a>
+            <a href="compare.html" class="mobile-link active" data-i18n="nav.compare">Compare</a>
+            <a href="providers.html" class="mobile-link" data-i18n="nav.providers">Providers</a>
+            <a href="models.html" class="mobile-link" data-i18n="nav.allModels">All Models</a>
+            <a href="resources.html" class="mobile-link" data-i18n="nav.resources">Resources</a>
         </div>
     </div>
 
     <main>
         <section class="page-header">
             <div class="container">
-                <h1>Compare Models</h1>
-                <p>Pick models to compare side by side.</p>
+                <h1 data-i18n="compare.title">Compare Models</h1>
+                <p data-i18n="compare.subtitle">Pick models to compare side by side.</p>
             </div>
         </section>
 
@@ -58,7 +66,7 @@
             <div class="cmp-search-wrap" id="cmp-search-wrap">
                 <div class="cmp-search-dropdown hidden" id="cmp-search-dropdown">
                     <div class="cmp-search-input-wrap">
-                        <input type="text" class="cmp-search-input" id="cmp-search-input" placeholder="Search models...">
+                        <input type="text" class="cmp-search-input" id="cmp-search-input" placeholder="Search models..." data-i18n="compare.search" data-i18n-attr="placeholder">
                     </div>
                     <div class="cmp-search-list" id="cmp-search-list"></div>
                 </div>
@@ -83,29 +91,29 @@
             <p class="modal-provider" id="modalProvider"></p>
             <p class="modal-description" id="modalOverview"></p>
             <div class="modal-section" id="modalUseCasesSection">
-                <h3>Best Use Cases</h3>
+                <h3 data-i18n="modal.bestUseCases">Best Use Cases</h3>
                 <div id="modalUseCases"></div>
             </div>
             <div class="modal-columns">
                 <div class="modal-section">
-                    <h3>Strengths</h3>
+                    <h3 data-i18n="modal.strengths">Strengths</h3>
                     <ul class="modal-strengths" id="modalStrengths"></ul>
                 </div>
                 <div class="modal-section">
-                    <h3>Limitations</h3>
+                    <h3 data-i18n="modal.limitations">Limitations</h3>
                     <ul class="modal-weaknesses" id="modalWeaknesses"></ul>
                 </div>
             </div>
             <div class="modal-section">
-                <h3>Specifications</h3>
+                <h3 data-i18n="modal.specifications">Specifications</h3>
                 <div class="modal-specs-grid" id="modalSpecs"></div>
             </div>
             <div class="modal-section" id="modalPricingSection">
-                <h3>Pricing</h3>
+                <h3 data-i18n="modal.pricing">Pricing</h3>
                 <div class="modal-pricing" id="modalPricing"></div>
             </div>
             <div class="modal-section" id="modalSourcesSection">
-                <h3>Sources</h3>
+                <h3 data-i18n="modal.sources">Sources</h3>
                 <div class="modal-sources" id="modalSources"></div>
             </div>
         </div>
@@ -118,14 +126,15 @@
                 <span>LLM Catalog</span>
             </div>
             <div class="footer-links">
-                <a href="resources.html">Methodology</a>
-                <a href="resources.html">Resources</a>
+                <a href="resources.html" data-i18n="footer.methodology">Methodology</a>
+                <a href="resources.html" data-i18n="footer.resources">Resources</a>
             </div>
-            <span class="footer-copy">&copy; 2026 Enterprise AI Team</span>
+            <span class="footer-copy"><span data-i18n="footer.copy">&copy; 2026 Enterprise AI Team</span> &middot; <span data-i18n="footer.lastUpdated">Last updated</span> <span id="lastUpdated"></span></span>
         </div>
     </footer>
 
     <script src="data.js"></script>
+    <script src="translations.js"></script>
     <script src="app.js"></script>
     <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -134,25 +143,25 @@
         let searchOpen = false;
 
         // Benchmark & metric definitions for comparison
-        const benchmarkMetrics = [
-            { key: 'benchmarks.sweBenchVerified', label: 'SWE-bench', suffix: '%', desc: 'Reflects the model\'s ability to fix real-world software bugs on its own.' },
-            { key: 'benchmarks.gpqaDiamond', label: 'GPQA Diamond', suffix: '%', desc: 'Reflects expert-level science knowledge in biology, physics, and chemistry.' },
-            { key: 'benchmarks.aime2024', label: 'AIME 2024', suffix: '%', desc: 'Reflects hard math reasoning — competition-level, multi-step problems.' },
-            { key: 'benchmarks.liveCodeBench', label: 'LiveCodeBench', suffix: '%', desc: 'Reflects real-world coding ability using fresh, regularly rotated problems — resistant to memorization.' },
-            { key: 'benchmarks.mmluPro', label: 'MMLU-Pro', suffix: '%', desc: 'Reflects deep knowledge across many subjects — harder than standard MMLU with 10-option questions.' },
-            { key: 'benchmarks.ifEval', label: 'IFEval', suffix: '%', desc: 'Reflects how precisely the model follows specific formatting and structural instructions.' },
-            { key: 'benchmarks.aiderPolyglot', label: 'Aider Polyglot', suffix: '%', desc: 'Reflects the model\'s ability to edit code across multiple programming languages.' },
-            { key: 'benchmarks.math500', label: 'MATH-500', suffix: '%', desc: 'Reflects general math ability — broader and easier than AIME.' },
-            { key: 'benchmarks.mmmlu', label: 'MMMLU', suffix: '%', desc: 'Reflects breadth of knowledge across many subjects and spoken languages.' }
-        ];
+        function getBenchmarkMetrics() { return [
+            { key: 'benchmarks.sweBenchVerified', label: t('benchFull.sweBench'), suffix: '%', desc: t('cmpBench.sweBench') },
+            { key: 'benchmarks.gpqaDiamond', label: t('benchFull.gpqa'), suffix: '%', desc: t('cmpBench.gpqa') },
+            { key: 'benchmarks.aime2024', label: t('benchFull.aime'), suffix: '%', desc: t('cmpBench.aime') },
+            { key: 'benchmarks.liveCodeBench', label: t('benchFull.liveCode'), suffix: '%', desc: t('cmpBench.liveCode') },
+            { key: 'benchmarks.mmluPro', label: t('benchFull.mmluPro'), suffix: '%', desc: t('cmpBench.mmluPro') },
+            { key: 'benchmarks.ifEval', label: t('benchFull.ifEval'), suffix: '%', desc: t('cmpBench.ifEval') },
+            { key: 'benchmarks.aiderPolyglot', label: t('benchFull.aider'), suffix: '%', desc: t('cmpBench.aider') },
+            { key: 'benchmarks.math500', label: t('benchFull.math'), suffix: '%', desc: t('cmpBench.math') },
+            { key: 'benchmarks.mmmlu', label: t('benchFull.mmmlu'), suffix: '%', desc: t('cmpBench.mmmlu') }
+        ]; }
 
-        const arenaMetrics = [
-            { key: 'arenaElo.overall', label: 'Arena Overall', suffix: '', desc: 'Based on real users picking their preferred model in blind side-by-side comparisons.' },
-            { key: 'arenaElo.coding', label: 'Arena Coding', suffix: '', desc: 'Based on user preference specifically for coding tasks.' },
-            { key: 'arenaElo.math', label: 'Arena Math', suffix: '', desc: 'Based on user preference specifically for math tasks.' },
-            { key: 'arenaElo.creativeWriting', label: 'Arena Creative Writing', suffix: '', desc: 'Based on user preference for storytelling, prose, and creative tone.' },
-            { key: 'arenaElo.instructionFollowing', label: 'Arena Instruction Following', suffix: '', desc: 'Based on how precisely the model does exactly what you ask.' }
-        ];
+        function getArenaMetrics() { return [
+            { key: 'arenaElo.overall', label: t('benchFull.arena'), suffix: '', desc: t('cmpBench.arena') },
+            { key: 'arenaElo.coding', label: t('benchFull.arenaCode'), suffix: '', desc: t('cmpBench.arenaCode') },
+            { key: 'arenaElo.math', label: t('benchFull.arenaMath'), suffix: '', desc: t('cmpBench.arenaMath') },
+            { key: 'arenaElo.creativeWriting', label: t('benchFull.arenaCW'), suffix: '', desc: t('cmpBench.arenaCW') },
+            { key: 'arenaElo.instructionFollowing', label: t('benchFull.arenaIF'), suffix: '', desc: t('cmpBench.arenaIF') }
+        ]; }
 
 
         // URL handling
@@ -303,7 +312,7 @@
             // Empty slots (up to 3 total)
             const emptyCount = selectedModels.length >= 3 ? 0 : Math.max(1, 3 - selectedModels.length);
             for (let i = 0; i < emptyCount; i++) {
-                const label = selectedModels.length === 0 && i === 0 ? 'Select a model' : selectedModels.length === 1 && i === 0 ? 'Add model to compare' : selectedModels.length < 2 ? 'Add model' : 'Add model (optional)';
+                const label = selectedModels.length === 0 && i === 0 ? t('compare.selectModel') : selectedModels.length === 1 && i === 0 ? t('compare.addToCompare') : selectedModels.length < 2 ? t('compare.addModel') : t('compare.addOptional');
                 html += `<div class="cmp-slot cmp-slot-empty" data-empty="true">
                     <span class="cmp-plus">+</span>
                     <span class="cmp-plus-label">${label}</span>
@@ -333,7 +342,7 @@
             if (selectedModels.length === 0) {
                 container.innerHTML = `<div class="cmp-empty-state">
                     <svg viewBox="0 0 48 48" width="48" height="48"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M16 24h16M24 16v16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                    <p>Select a model above to view its details, or pick two to compare side by side.</p>
+                    <p>${t('compare.emptyState')}</p>
                 </div>`;
                 return;
             }
@@ -343,7 +352,7 @@
             let html = `<div class="cmp-grid" style="--cmp-cols:${cols}">`;
 
             // Header row: corner + model names
-            html += `<div class="cmp-corner-cell">Model</div>`;
+            html += `<div class="cmp-corner-cell">${t('compare.model')}</div>`;
             mods.forEach(m => {
                 const provClass = getProviderClass(m.provider);
                 const logo = getProviderLogo(m.provider, 28);
@@ -354,16 +363,16 @@
             });
 
             // === Key Specs ===
-            html += `<div class="cmp-section-header">Key Specs</div>`;
+            html += `<div class="cmp-section-header">${t('compare.keySpecs')}</div>`;
 
             // Provider
-            html += `<div class="cmp-label">Provider</div>`;
+            html += `<div class="cmp-label">${t('compare.provider')}</div>`;
             mods.forEach(m => { html += `<div class="cmp-value">${getProviderName(m.provider)}</div>`; });
 
             // Cost Tier
             const costValues = mods.map(m => getBlendedCost(m));
             const bestCost = getBestIndex(costValues, 'lowest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how expensive the model is to run. Based on direct API pricing; platform rates may differ.">Cost Tier</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.costTierDesc')}">${t('compare.costTier')}</div>`;
             mods.forEach((m, i) => {
                 const costClass = m.costTier === 'self-hosted' ? 'self' : m.costTier;
                 html += `<div class="cmp-value${bestCost.includes(i) ? ' cmp-best' : ''}"><span class="cost-badge cost-${costClass}" style="font-size:0.7rem;padding:2px 6px;">${getCostLabel(m.costTier)}</span></div>`;
@@ -372,7 +381,7 @@
             // Context Window
             const ctxValues = mods.map(m => m.contextWindow || 0);
             const bestCtx = getBestIndex(ctxValues, 'highest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how much text the model can process at once — longer documents and conversations need a larger window.">Context Window</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.contextWindowDesc')}">${t('compare.contextWindow')}</div>`;
             mods.forEach((m, i) => {
                 html += `<div class="cmp-value${bestCtx.includes(i) ? ' cmp-best' : ''}">${formatTokenCount(m.contextWindow)}</div>`;
             });
@@ -380,13 +389,13 @@
             // Max Output
             const outValues = mods.map(m => m.maxOutputTokens || 0);
             const bestOut = getBestIndex(outValues, 'highest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how much the model can write in one response. Matters for long code files or detailed reports.">Max Output</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.maxOutputDesc')}">${t('compare.maxOutput')}</div>`;
             mods.forEach((m, i) => {
                 html += `<div class="cmp-value${bestOut.includes(i) ? ' cmp-best' : ''}">${m.maxOutputTokens ? formatTokenCount(m.maxOutputTokens) : '—'}</div>`;
             });
 
             // Released
-            html += `<div class="cmp-label">Released</div>`;
+            html += `<div class="cmp-label">${t('compare.released')}</div>`;
             mods.forEach(m => {
                 const rd = m.specs?.releaseDate;
                 const label = rd ? new Date(rd).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '—';
@@ -394,20 +403,20 @@
             });
 
             // Multimodal
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Whether the model can process images, audio, or video in addition to text.">Multimodal</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.multimodalDesc')}">${t('compare.multimodal')}</div>`;
             mods.forEach(m => {
                 const mm = m.specs?.multimodal;
-                html += `<div class="cmp-value">${mm ? 'Yes — ' + (m.specs.multimodalTypes || []).join(', ') : 'Text only'}</div>`;
+                html += `<div class="cmp-value">${mm ? t('compare.multimodalYes') + ' ' + (m.specs.multimodalTypes || []).join(', ') : t('compare.textOnly')}</div>`;
             });
 
             // Tool Calling
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Whether the model can trigger external tools, APIs, and actions on its own.">Tool Calling</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.toolCallingDesc')}">${t('compare.toolCalling')}</div>`;
             mods.forEach(m => {
-                html += `<div class="cmp-value">${m.specs?.supportsFunctionCalling ? 'Yes' : 'No'}</div>`;
+                html += `<div class="cmp-value">${m.specs?.supportsFunctionCalling ? t('compare.yes') : t('compare.no')}</div>`;
             });
 
             // === Speed ===
-            html += `<div class="cmp-section-header">Speed</div>`;
+            html += `<div class="cmp-section-header">${t('compare.speed')}</div>`;
 
             // Response Time (Total)
             const totalTimeValues = mods.map(m => {
@@ -415,7 +424,7 @@
                 return tps ? (m.ttft || 0) + (100 / tps) : 9999;
             });
             const bestSpeed = getBestIndex(totalTimeValues, 'lowest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Combines Time to First Token and Output Speed — the estimated time to receive a 100-token response.">Latency</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.latencyDesc')}">${t('compare.latency')}</div>`;
             mods.forEach((m, i) => {
                 const tier = getSpeedTier(m);
                 html += `<div class="cmp-value${bestSpeed.includes(i) ? ' cmp-best' : ''}">${formatSpeed(m)}${tier.label !== '—' ? ' <span style="font-size:0.7rem;opacity:0.7;">(' + tier.label + ')</span>' : ''}</div>`;
@@ -424,11 +433,11 @@
             // Latency (TTFT)
             const ttftValues = mods.map(m => m.ttft || 0);
             const bestTtft = getBestIndex(ttftValues.map(v => v || 9999), 'lowest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="How long before the model starts responding. For reasoning models, this includes thinking time.">Time to First Token</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.ttftDesc')}">${t('compare.ttft')}</div>`;
             mods.forEach((m, i) => {
                 if (m.ttft) {
                     const label = m.ttft >= 10 ? m.ttft.toFixed(1) + 's' : m.ttft.toFixed(2) + 's';
-                    const note = m.ttft >= 5 ? ' <span style="font-size:0.7rem;opacity:0.7;">(incl. thinking)</span>' : '';
+                    const note = m.ttft >= 5 ? ' <span style="font-size:0.7rem;opacity:0.7;">' + t('compare.inclThinking') + '</span>' : '';
                     html += `<div class="cmp-value${bestTtft.includes(i) ? ' cmp-best' : ''}">${label}${note}</div>`;
                 } else {
                     html += `<div class="cmp-value">—</div>`;
@@ -438,34 +447,34 @@
             // Output Speed (tok/s)
             const tpsValues = mods.map(m => m.outputTokensPerSec || 0);
             const bestTps = getBestIndex(tpsValues, 'highest');
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Tokens generated per second once the model starts responding. Higher means faster streaming.">Output Speed</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.outputSpeedDesc')}">${t('compare.outputSpeed')}</div>`;
             mods.forEach((m, i) => {
-                html += `<div class="cmp-value${bestTps.includes(i) ? ' cmp-best' : ''}">${m.outputTokensPerSec ? m.outputTokensPerSec + ' tok/s' : '—'}</div>`;
+                html += `<div class="cmp-value${bestTps.includes(i) ? ' cmp-best' : ''}">${m.outputTokensPerSec ? m.outputTokensPerSec + ' ' + t('compare.tokS') : '—'}</div>`;
             });
 
             // === Pricing ===
-            html += `<div class="cmp-section-header">Pricing</div>`;
+            html += `<div class="cmp-section-header">${t('compare.pricing')}</div>`;
 
             const inputCosts = mods.map(m => m.pricing?.inputPerMillion ?? null);
             const outputCosts = mods.map(m => m.pricing?.outputPerMillion ?? null);
             const bestInput = getBestIndex(inputCosts, 'lowest');
             const bestOutput = getBestIndex(outputCosts, 'lowest');
 
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="What you pay for the text you send. 1M tokens ≈ 750k words.">Input / 1M tokens</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.inputPriceDesc')}">${t('compare.inputPrice')}</div>`;
             mods.forEach((m, i) => {
                 const v = m.pricing?.inputPerMillion;
-                html += `<div class="cmp-value${bestInput.includes(i) ? ' cmp-best' : ''}">${v != null ? '$' + v.toFixed(2) : 'Self-hosted'}</div>`;
+                html += `<div class="cmp-value${bestInput.includes(i) ? ' cmp-best' : ''}">${v != null ? '$' + v.toFixed(2) : t('compare.selfHosted')}</div>`;
             });
 
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="What you pay for the text the model writes back. Usually 2–4x more than input.">Output / 1M tokens</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.outputPriceDesc')}">${t('compare.outputPrice')}</div>`;
             mods.forEach((m, i) => {
                 const v = m.pricing?.outputPerMillion;
-                html += `<div class="cmp-value${bestOutput.includes(i) ? ' cmp-best' : ''}">${v != null ? '$' + v.toFixed(2) : 'Self-hosted'}</div>`;
+                html += `<div class="cmp-value${bestOutput.includes(i) ? ' cmp-best' : ''}">${v != null ? '$' + v.toFixed(2) : t('compare.selfHosted')}</div>`;
             });
 
             // === Benchmarks ===
-            html += `<div class="cmp-section-header">Benchmarks</div>`;
-            benchmarkMetrics.forEach(bm => {
+            html += `<div class="cmp-section-header">${t('compare.benchmarks')}</div>`;
+            getBenchmarkMetrics().forEach(bm => {
                 const values = mods.map(m => getMetricValue(m, bm.key));
                 const numericValues = values.filter(v => v !== null);
                 const maxVal = numericValues.length > 0 ? Math.max(...numericValues) : 1;
@@ -488,8 +497,8 @@
             });
 
             // === Arena Ratings ===
-            html += `<div class="cmp-section-header">Community Ratings (Chatbot Arena)</div>`;
-            arenaMetrics.forEach(bm => {
+            html += `<div class="cmp-section-header">${t('compare.communityRatings')}</div>`;
+            getArenaMetrics().forEach(bm => {
                 const values = mods.map(m => getMetricValue(m, bm.key));
                 const numericValues = values.filter(v => v !== null);
                 const maxVal = numericValues.length > 0 ? Math.max(...numericValues) : 1;
@@ -513,16 +522,12 @@
             // === Use Case Scores ===
             const useCaseKeys = ['coding', 'reasoning', 'chatbot', 'documents', 'content', 'extraction', 'translation', 'vision'];
             const useCaseDescs = {
-                coding: 'Reflects ability to write, debug, and review code.',
-                reasoning: 'Reflects ability to handle complex logic, analysis, and multi-step problems.',
-                chatbot: 'Reflects ability to hold natural conversations and handle customer support.',
-                documents: 'Reflects ability to read, summarize, and analyze long documents.',
-                content: 'Reflects ability to write articles, marketing copy, and creative content.',
-                extraction: 'Reflects ability to pull structured data from PDFs, forms, and tables.',
-                translation: 'Reflects ability to translate and work across multiple languages.',
-                vision: 'Reflects ability to understand and analyze images. Only applies to multimodal models.'
+                coding: t('cmpUc.coding'), reasoning: t('cmpUc.reasoning'),
+                chatbot: t('cmpUc.chatbot'), documents: t('cmpUc.documents'),
+                content: t('cmpUc.content'), extraction: t('cmpUc.extraction'),
+                translation: t('cmpUc.translation'), vision: t('cmpUc.vision')
             };
-            html += `<div class="cmp-section-header">Use Case Scores <span class="cmp-section-info">Composite 0–100 scores based on weighted benchmarks and community ratings. <a href="resources.html" style="color:var(--accent-text);">Learn more</a></span></div>`;
+            html += `<div class="cmp-section-header">${t('compare.useCaseScores')} <span class="cmp-section-info">${t('compare.useCaseScoresDesc')}. <a href="resources.html" style="color:var(--accent-text);">${t('compare.learnMore')}</a></span></div>`;
             useCaseKeys.forEach(uc => {
                 const config = modelData.scoringConfig[uc];
                 if (!config) return;
@@ -540,49 +545,49 @@
                 });
             });
 
-            html += `<div class="ranking-disclaimer" style="grid-column:1/-1;"><strong>Disclaimer:</strong> Scores are based on community ratings and benchmarks. Newly released models may score lower until sufficient evaluation data is available.</div>`;
+            html += `<div class="ranking-disclaimer" style="grid-column:1/-1;"><strong>${t('compare.disclaimer')}</strong> ${t('compare.disclaimerText')}</div>`;
 
             // === Strengths & Weaknesses ===
-            html += `<div class="cmp-section-header">Strengths</div>`;
+            html += `<div class="cmp-section-header">${t('compare.strengths')}</div>`;
             html += `<div class="cmp-label"></div>`;
             mods.forEach(m => {
                 html += `<div class="cmp-value"><ul class="cmp-list cmp-strengths">${(m.strengths || []).map(s => `<li>${s}</li>`).join('')}</ul></div>`;
             });
 
-            html += `<div class="cmp-section-header">Weaknesses</div>`;
+            html += `<div class="cmp-section-header">${t('compare.weaknesses')}</div>`;
             html += `<div class="cmp-label"></div>`;
             mods.forEach(m => {
                 html += `<div class="cmp-value"><ul class="cmp-list cmp-weaknesses">${(m.weaknesses || []).map(w => `<li>${w}</li>`).join('')}</ul></div>`;
             });
 
             // === Deployment ===
-            html += `<div class="cmp-section-header">Deployment</div>`;
+            html += `<div class="cmp-section-header">${t('compare.deployment')}</div>`;
 
-            html += `<div class="cmp-label">Hosting</div>`;
+            html += `<div class="cmp-label">${t('compare.hosting')}</div>`;
             mods.forEach(m => { html += `<div class="cmp-value">${getHostingLabel(m)}</div>`; });
 
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Which cloud platforms offer this model — useful if you have an existing cloud provider.">Cloud Platforms</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.cloudPlatformsDesc')}">${t('compare.cloudPlatforms')}</div>`;
             mods.forEach(m => {
                 const platforms = getCloudPlatformLabels(m);
                 html += `<div class="cmp-value">${platforms.length > 0 ? platforms.join(', ') : '—'}</div>`;
             });
 
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Whether you can download and run this model on your own servers for full data privacy.">Self-Hostable</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.selfHostableDesc')}">${t('compare.selfHostable')}</div>`;
             mods.forEach(m => {
-                html += `<div class="cmp-value">${m.deployment?.selfHostable ? 'Yes' : 'No'}</div>`;
+                html += `<div class="cmp-value">${m.deployment?.selfHostable ? t('compare.yes') : t('compare.no')}</div>`;
             });
 
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects the model\'s size. Larger models are generally smarter but need more hardware to run.">Parameters</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.parametersDesc')}">${t('compare.parameters')}</div>`;
             mods.forEach(m => {
                 html += `<div class="cmp-value">${m.specs?.parameters || '—'}</div>`;
             });
 
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Determines what you can legally do with the model. Apache 2.0 and MIT are the most permissive.">License</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.licenseDesc')}">${t('compare.license')}</div>`;
             mods.forEach(m => {
                 html += `<div class="cmp-value">${m.specs?.license || '—'}</div>`;
             });
 
-            html += `<div class="cmp-label cmp-tip" data-tip-desc="Reflects how much GPU memory you need to self-host this model.">Min VRAM (FP16)</div>`;
+            html += `<div class="cmp-label cmp-tip" data-tip-desc="${t('compare.minVramDesc')}">${t('compare.minVram')}</div>`;
             mods.forEach(m => {
                 html += `<div class="cmp-value">${m.specs?.minVram || '—'}</div>`;
             });
@@ -595,7 +600,7 @@
         function renderAwards() {
             const awardsEl = document.getElementById('cmp-awards');
             const picks = [
-                { label: 'Best Overall', finder: () => {
+                { label: t('award.bestOverall'), finder: () => {
                     const useCases = Object.keys(modelData.scoringConfig);
                     const avg = models.map(m => {
                         const total = useCases.reduce((s, uc) => s + computeCapabilityScore(m, uc).score, 0);
@@ -603,17 +608,17 @@
                     });
                     return avg.sort((a, b) => b.avg - a.avg)[0]?.model;
                 }},
-                { label: 'Best for Coding', finder: () => rankModelsForUseCase('coding', 'capability')[0]?.model },
-                { label: 'Best Reasoning', finder: () => rankModelsForUseCase('reasoning', 'capability')[0]?.model },
-                { label: 'Best Value', finder: () => rankModelsForUseCase('coding', 'cost')[0]?.model },
-                { label: 'Lowest Cost', finder: () => { const a = models.filter(m => m.pricing); return a.sort((a, b) => getBlendedCost(a) - getBlendedCost(b))[0]; } },
-                { label: 'Fastest', finder: () => [...models].filter(m => m.outputTokensPerSec).sort((a, b) => { var ta = (a.ttft || 0) + 100 / a.outputTokensPerSec; var tb = (b.ttft || 0) + 100 / b.outputTokensPerSec; return ta - tb; })[0] },
-                { label: 'Longest Context', finder: () => [...models].sort((a, b) => (b.contextWindow || 0) - (a.contextWindow || 0))[0] },
-                { label: 'Best Open Source', finder: () => { const oss = models.filter(m => m.costTier === 'self-hosted'); return oss.map(m => ({ model: m, score: computeCapabilityScore(m, 'coding').score })).sort((a, b) => b.score - a.score)[0]?.model; } },
-                { label: 'Best for Documents', finder: () => rankModelsForUseCase('documents', 'capability')[0]?.model }
+                { label: t('award.bestCoding'), finder: () => rankModelsForUseCase('coding', 'capability')[0]?.model },
+                { label: t('award.bestReasoning'), finder: () => rankModelsForUseCase('reasoning', 'capability')[0]?.model },
+                { label: t('award.bestValue'), finder: () => rankModelsForUseCase('coding', 'cost')[0]?.model },
+                { label: t('award.lowestCost'), finder: () => { const a = models.filter(m => m.pricing); return a.sort((a, b) => getBlendedCost(a) - getBlendedCost(b))[0]; } },
+                { label: t('award.fastest'), finder: () => [...models].filter(m => m.outputTokensPerSec).sort((a, b) => { var ta = (a.ttft || 0) + 100 / a.outputTokensPerSec; var tb = (b.ttft || 0) + 100 / b.outputTokensPerSec; return ta - tb; })[0] },
+                { label: t('award.longestContext'), finder: () => [...models].sort((a, b) => (b.contextWindow || 0) - (a.contextWindow || 0))[0] },
+                { label: t('award.bestOpenSource'), finder: () => { const oss = models.filter(m => m.costTier === 'self-hosted'); return oss.map(m => ({ model: m, score: computeCapabilityScore(m, 'coding').score })).sort((a, b) => b.score - a.score)[0]?.model; } },
+                { label: t('award.bestDocuments'), finder: () => rankModelsForUseCase('documents', 'capability')[0]?.model }
             ];
 
-            let html = `<div class="cmp-awards-title">Quick Awards — click to add to comparison</div><div class="cmp-awards-grid">`;
+            let html = `<div class="cmp-awards-title">${t('award.heading')}</div><div class="cmp-awards-grid">`;
             picks.forEach(p => {
                 const m = p.finder();
                 if (!m) return;
@@ -648,6 +653,9 @@
             renderSelector();
             renderComparison();
         }
+
+        // Expose for language toggle
+        window.renderPage = function() { render(); renderAwards(); };
 
         // Initialize
         loadFromURL();

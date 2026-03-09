@@ -3,6 +3,13 @@
    Shared utilities + page-specific logic
    ============================================ */
 
+// ===== THEME & LANGUAGE INIT (runs before DOMContentLoaded to avoid FOUC) =====
+(function() {
+    // Theme already set by inline <script> in <head>, but wire up toggle here
+    var savedLang = localStorage.getItem('lang') || 'en';
+    document.documentElement.setAttribute('data-lang', savedLang);
+})();
+
 // ===== HELPERS =====
 function getModelById(id) { return modelData.models.find(m => m.id === id); }
 function getProviderName(providerId) { return modelData.providers[providerId]?.displayName || providerId; }
@@ -14,7 +21,7 @@ function formatTokenCount(n) {
 }
 
 function getCostLabel(cost) {
-    if (cost === 'self-hosted') return 'Self-hosted';
+    if (cost === 'self-hosted') return t('cell.selfHosted');
     if (cost === 'low') return '$';
     if (cost === 'mid') return '$$';
     return '$$$';
@@ -81,12 +88,12 @@ function getBlendedCost(model) {
 }
 
 function formatCost(model) {
-    if (!model.pricing) return 'Self-hosted';
+    if (!model.pricing) return t('cell.selfHosted');
     return '$' + model.pricing.inputPerMillion.toFixed(2) + '/' + model.pricing.outputPerMillion.toFixed(2);
 }
 
 function getCostTier(model) {
-    if (!model.pricing) return { label: 'Self-hosted', cls: 'cost-self' };
+    if (!model.pricing) return { label: t('cell.selfHosted'), cls: 'cost-self' };
     var blend = (model.pricing.inputPerMillion + model.pricing.outputPerMillion) / 2;
     if (blend < 2) return { label: '$', cls: 'cost-low' };
     if (blend < 10) return { label: '$$', cls: 'cost-mid' };
@@ -102,9 +109,9 @@ function getTotalResponseTime(model) {
 function getSpeedTier(model) {
     var totalTime = getTotalResponseTime(model);
     if (totalTime === null) return { label: '—', cls: '' };
-    if (totalTime <= 2) return { label: 'Fast', cls: 'speed-fast' };
-    if (totalTime <= 5) return { label: 'Medium', cls: 'speed-med' };
-    return { label: 'Slower', cls: 'speed-slow' };
+    if (totalTime <= 2) return { label: t('cell.fast'), cls: 'speed-fast' };
+    if (totalTime <= 5) return { label: t('cell.medium'), cls: 'speed-med' };
+    return { label: t('cell.slower'), cls: 'speed-slow' };
 }
 
 function formatSpeed(model) {
@@ -117,10 +124,10 @@ function formatSpeed(model) {
 // ===== DEPLOYMENT HELPERS =====
 function getHostingLabel(model) {
     var d = model.deployment;
-    if (!d) return model.specs?.apiAvailability || 'API';
-    if (d.hostedOnPrem) return 'Running On-Prem';
-    if (d.selfHostable) return 'Self-Hosted + API';
-    return 'API';
+    if (!d) return model.specs?.apiAvailability || t('hosting.api');
+    if (d.hostedOnPrem) return t('hosting.onPrem');
+    if (d.selfHostable) return t('hosting.selfHostApi');
+    return t('hosting.api');
 }
 
 function matchesHostingFilter(model, filterValue) {
@@ -482,35 +489,36 @@ function openModelModal(modelId) {
     document.getElementById('modalOverview').textContent = model.overview || model.description;
 
     // Specs — numeric first, then categorical
+    const na = t('modal.na');
     const specs = [
-        { label: 'Context Window', value: formatTokenCount(model.contextWindow) },
-        { label: 'Max Output', value: model.maxOutputTokens ? formatTokenCount(model.maxOutputTokens) : 'N/A' },
-        { label: 'Latency', value: formatSpeed(model) !== '—' ? formatSpeed(model) : 'N/A' },
-        { label: 'Output Speed', value: model.outputTokensPerSec ? model.outputTokensPerSec + ' tok/s' : 'N/A' },
-        { label: 'Time to First Token', value: model.ttft ? (model.ttft >= 10 ? model.ttft.toFixed(1) + 's' : model.ttft.toFixed(2) + 's') : 'N/A' },
+        { label: t('modal.contextWindow'), value: formatTokenCount(model.contextWindow) },
+        { label: t('modal.maxOutput'), value: model.maxOutputTokens ? formatTokenCount(model.maxOutputTokens) : na },
+        { label: t('modal.latency'), value: formatSpeed(model) !== '—' ? formatSpeed(model) : na },
+        { label: t('modal.outputSpeed'), value: model.outputTokensPerSec ? model.outputTokensPerSec + ' tok/s' : na },
+        { label: t('modal.ttft'), value: model.ttft ? (model.ttft >= 10 ? model.ttft.toFixed(1) + 's' : model.ttft.toFixed(2) + 's') : na },
     ];
     // Pricing
     if (model.pricing?.inputPerMillion != null) {
-        specs.push({ label: 'Input / 1M tokens', value: '$' + model.pricing.inputPerMillion.toFixed(2) });
-        specs.push({ label: 'Output / 1M tokens', value: '$' + model.pricing.outputPerMillion.toFixed(2) });
+        specs.push({ label: t('modal.inputPrice'), value: '$' + model.pricing.inputPerMillion.toFixed(2) });
+        specs.push({ label: t('modal.outputPrice'), value: '$' + model.pricing.outputPerMillion.toFixed(2) });
     } else {
-        specs.push({ label: 'Pricing', value: 'Self-hosted' });
+        specs.push({ label: t('modal.pricing'), value: t('cell.selfHosted') });
     }
     // Categorical
     specs.push(
-        { label: 'Multimodal', value: model.specs?.multimodal ? model.specs.multimodalTypes.join(', ') : 'Text only' },
-        { label: 'Released', value: model.specs?.releaseDate || 'N/A' },
-        { label: 'Hosting', value: getHostingLabel(model) },
-        { label: 'Available via', value: (function() {
+        { label: t('modal.multimodal'), value: model.specs?.multimodal ? model.specs.multimodalTypes.join(', ') : t('modal.textOnly') },
+        { label: t('modal.released'), value: model.specs?.releaseDate || na },
+        { label: t('modal.hosting'), value: getHostingLabel(model) },
+        { label: t('modal.availableVia'), value: (function() {
             var avail = model.specs?.apiAvailability || getCloudPlatformLabels(model).join(', ') || '';
             avail = avail.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s && s.toLowerCase() !== 'api'; }).join(', ');
-            return avail || 'N/A';
+            return avail || na;
         })() }
     );
     // Add self-hosting specs only for open-source models
     if (model.deployment?.selfHostable) {
-        if (model.specs?.parameters) specs.push({ label: 'Parameters', value: model.specs.parameters });
-        if (model.specs?.minVram) specs.push({ label: 'Min VRAM (FP16)', value: model.specs.minVram });
+        if (model.specs?.parameters) specs.push({ label: t('modal.parameters'), value: model.specs.parameters });
+        if (model.specs?.minVram) specs.push({ label: t('modal.minVram'), value: model.specs.minVram });
     }
     document.getElementById('modalSpecs').innerHTML = specs.map(s =>
         `<div class="modal-spec"><div class="modal-spec-label">${s.label}</div><div class="modal-spec-value">${s.value}</div></div>`
@@ -521,8 +529,8 @@ function openModelModal(modelId) {
     if (pricingSection) pricingSection.style.display = 'none';
 
     // Strengths & Weaknesses
-    document.getElementById('modalStrengths').innerHTML = (model.strengths || []).map(s => `<li>${s}</li>`).join('') || '<li>No data</li>';
-    document.getElementById('modalWeaknesses').innerHTML = (model.weaknesses || []).map(w => `<li>${w}</li>`).join('') || '<li>No data</li>';
+    document.getElementById('modalStrengths').innerHTML = (model.strengths || []).map(s => `<li>${s}</li>`).join('') || '<li>' + t('modal.noData') + '</li>';
+    document.getElementById('modalWeaknesses').innerHTML = (model.weaknesses || []).map(w => `<li>${w}</li>`).join('') || '<li>' + t('modal.noData') + '</li>';
 
     // Use Cases
     const ucEl = document.getElementById('modalUseCases');
@@ -540,7 +548,7 @@ function openModelModal(modelId) {
     // Sources
     const sourcesEl = document.getElementById('modalSources');
     const sourcesSection = document.getElementById('modalSourcesSection');
-    const sourceLabels = { pricing: 'Pricing', docs: 'Documentation', announcement: 'Announcement', guide: 'Developer Guide', github: 'GitHub', huggingface: 'HuggingFace', benchmarks: 'Benchmarks' };
+    const sourceLabels = { pricing: t('source.pricing'), docs: t('source.docs'), announcement: t('source.announcement'), guide: t('source.guide'), github: t('source.github'), huggingface: t('source.huggingface'), benchmarks: t('source.benchmarks') };
     if (model.sourceUrls && Object.keys(model.sourceUrls).length > 0) {
         sourcesEl.innerHTML = Object.entries(model.sourceUrls).map(([key, url]) =>
             `<a href="${url}" target="_blank" rel="noopener">${sourceLabels[key] || key} &#8599;</a>`
@@ -550,8 +558,8 @@ function openModelModal(modelId) {
         const provider = modelData.providers[model.provider];
         if (provider?.docsUrl || provider?.pricingUrl) {
             let html = '';
-            if (provider.pricingUrl) html += `<a href="${provider.pricingUrl}" target="_blank" rel="noopener">Provider Pricing &#8599;</a>`;
-            if (provider.docsUrl) html += `<a href="${provider.docsUrl}" target="_blank" rel="noopener">Provider Docs &#8599;</a>`;
+            if (provider.pricingUrl) html += `<a href="${provider.pricingUrl}" target="_blank" rel="noopener">${t('source.providerPricing')} &#8599;</a>`;
+            if (provider.docsUrl) html += `<a href="${provider.docsUrl}" target="_blank" rel="noopener">${t('source.providerDocs')} &#8599;</a>`;
             sourcesEl.innerHTML = html;
             sourcesSection.style.display = '';
         } else {
@@ -568,7 +576,7 @@ function closeModelModal() {
     document.body.style.overflow = '';
 }
 
-// ===== MOBILE MENU =====
+// ===== MOBILE MENU + TOGGLES =====
 document.addEventListener("DOMContentLoaded", () => {
     const menuBtn = document.querySelector(".mobile-menu-btn");
     const menuOverlay = document.querySelector(".mobile-menu-overlay");
@@ -582,4 +590,36 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modalOverlay) {
         modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModelModal(); });
     }
+
+    // Theme toggle
+    document.querySelectorAll('.theme-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+    });
+
+    // Language toggle
+    function updateLangBtns() {
+        var lang = document.documentElement.getAttribute('data-lang') || 'en';
+        document.querySelectorAll('.lang-label').forEach(el => { el.textContent = lang === 'en' ? 'TR' : 'EN'; });
+    }
+    updateLangBtns();
+    document.querySelectorAll('.lang-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            var current = document.documentElement.getAttribute('data-lang') || 'en';
+            var next = current === 'en' ? 'tr' : 'en';
+            document.documentElement.setAttribute('data-lang', next);
+            localStorage.setItem('lang', next);
+            applyTranslations();
+            updateLangBtns();
+            // Re-render page content if a render function exists
+            if (typeof window.renderPage === 'function') window.renderPage();
+        });
+    });
+
+    // Apply translations on load
+    applyTranslations();
 });
