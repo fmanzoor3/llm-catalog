@@ -75,11 +75,11 @@
                         <div class="filter-group">
                             <span class="filter-label-tag" data-i18n="filter.optimizeFor">OPTIMIZE FOR</span>
                             <div class="chip-group" id="optimize-group">
-                                <button class="filter-chip active" data-value="balanced" data-tip-desc="Weighs both capability and cost — best performance for the price." data-i18n="filter.balance">Balance</button>
-                                <button class="filter-chip" data-value="quality" data-tip-desc="Ranks purely by capability — smartest models first, regardless of cost." data-i18n="filter.performance">Performance</button>
-                                <button class="filter-chip" data-value="low-cost" data-tip-desc="Ranks by value — most capable models at the lowest price first." data-i18n="filter.lowCost">Low Cost</button>
-                                <button class="filter-chip" data-value="fast" data-tip-desc="Weighs capability and response speed — fast models that are still good." data-i18n="filter.speed">Speed</button>
-                                <button class="filter-chip" data-value="context" data-tip-desc="Prioritizes models with the largest context windows for long documents." data-i18n="filter.context">Context</button>
+                                <button class="filter-chip active" data-value="balanced" data-tip-key="tip.balance" data-tip-desc="Weighs both capability and cost — best performance for the price." data-i18n="filter.balance">Balance</button>
+                                <button class="filter-chip" data-value="quality" data-tip-key="tip.performance" data-tip-desc="Ranks purely by capability — smartest models first, regardless of cost." data-i18n="filter.performance">Performance</button>
+                                <button class="filter-chip" data-value="low-cost" data-tip-key="tip.lowCost" data-tip-desc="Ranks by value — most capable models at the lowest price first." data-i18n="filter.lowCost">Low Cost</button>
+                                <button class="filter-chip" data-value="fast" data-tip-key="tip.speed" data-tip-desc="Weighs capability and response speed — fast models that are still good." data-i18n="filter.speed">Speed</button>
+                                <button class="filter-chip" data-value="context" data-tip-key="tip.context" data-tip-desc="Prioritizes models with the largest context windows for long documents." data-i18n="filter.context">Context</button>
                             </div>
                         </div>
                         <div class="filter-group">
@@ -562,7 +562,7 @@
             const target = th || chip;
             if (!target) { tip.classList.remove('show'); return; }
             const title = target.dataset.tipTitle || target.textContent || '';
-            const desc = target.dataset.tipDesc || '';
+            const desc = target.dataset.tipKey ? t(target.dataset.tipKey) : (target.dataset.tipDesc || '');
             if (!desc) { tip.classList.remove('show'); return; }
             tip.innerHTML = '<div class="tip-title">' + title + '</div><div class="tip-desc">' + desc + '</div>';
             tip.classList.add('show');
