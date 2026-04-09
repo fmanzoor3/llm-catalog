@@ -16,6 +16,12 @@ take-screenshots.js
 convo*.txt
 *.pptx
 
+# Local dev files
+_local/
+
+# Environment
+.env
+
 # OS files
 .DS_Store
 Thumbs.db
